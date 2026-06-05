@@ -219,19 +219,25 @@ function Index() {
                 ))}
               </div>
 
-              {/* Availability badge */}
+              {/* Availability + status badges */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.55, duration: 0.7 }}
-                className="mt-4 inline-flex items-center gap-2"
+                className="mt-4 flex flex-wrap items-center gap-2"
               >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                <span className="inline-flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                  </span>
+                  <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                    OPEN TO OPPORTUNITIES · GERMANY & REMOTE
+                  </span>
                 </span>
-                <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
-                  OPEN TO OPPORTUNITIES · GERMANY & REMOTE
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border font-mono text-[9px] tracking-[0.14em] text-muted-foreground/70">
+                  <span className="text-foreground/50 text-[8px]">▲</span>
+                  LEARNING GERMAN · B2
                 </span>
               </motion.div>
 
