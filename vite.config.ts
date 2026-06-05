@@ -9,8 +9,10 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    // preset: "vercel" outputs to .vercel/output/ (Vercel Build Output API v3)
-    server: { entry: "server", preset: "vercel" },
+    server: { entry: "server" },
   },
+  // nitro must be a top-level key to activate the Nitro deploy plugin (line 327-333 of
+  // @lovable.dev/vite-tanstack-config). Setting preset here overrides the cloudflare-module
+  // default and makes Nitro output to .vercel/output/ (Vercel Build Output API v3).
+  nitro: { preset: "vercel" },
 });
