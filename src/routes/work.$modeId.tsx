@@ -15,6 +15,28 @@ export const Route = createFileRoute("/work/$modeId")({
 }
     return { mode };
   },
+  head: ({ loaderData }) => {
+    if (!loaderData) return {};
+    const { mode } = loaderData;
+    const url = `https://www.nadeemsaif.com/work/${mode.id}`;
+    return {
+      meta: [
+        { title: `${mode.label} — Nadeem Saif` },
+        { name: "description", content: mode.description },
+        { name: "author", content: "Nadeem Saif" },
+        { property: "og:title", content: `${mode.label} — Nadeem Saif` },
+        { property: "og:description", content: mode.description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: `${mode.label} — Nadeem Saif` },
+        { name: "twitter:description", content: mode.tagline },
+      ],
+      links: [
+        { rel: "canonical", href: url },
+      ],
+    };
+  },
   component: WorkDetail,
   notFoundComponent: () => (
     <div className="min-h-screen flex items-center justify-center">

@@ -87,8 +87,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Branding, UX/UI, marketing, content creation, and AI-assisted product development — six disciplines, one person.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.nadeemsaif.com/" },
       { property: "og:locale", content: "en_US" },
+      { property: "og:site_name", content: "Nadeem Saif" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@nadeemsaifrind" },
       { name: "twitter:title", content: "Nadeem Saif — Creative Technologist & Marketing Designer" },
       {
         name: "twitter:description",
@@ -96,6 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     links: [
+      { rel: "canonical", href: "https://www.nadeemsaif.com/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

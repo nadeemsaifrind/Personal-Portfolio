@@ -25,9 +25,13 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: `${PERSONAL.name} — ${PERSONAL.title}` },
       { property: "og:description", content: PERSONAL.description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.nadeemsaif.com/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: `${PERSONAL.name} — ${PERSONAL.title}` },
       { name: "twitter:description", content: PERSONAL.description },
+    ],
+    links: [
+      { rel: "canonical", href: "https://www.nadeemsaif.com/" },
     ],
   }),
   component: Index,
@@ -172,7 +176,7 @@ function Index() {
 
               {/* Subtitle */}
               <p className="mt-4 text-sm md:text-base text-foreground/55 leading-relaxed max-w-104">
-                Film & TV → Germany → design, marketing, products. Six disciplines, one integrated practice.
+                Helping businesses communicate clearly through design, content, and digital experiences.
               </p>
 
               {/* View Work + Badge side by side */}
