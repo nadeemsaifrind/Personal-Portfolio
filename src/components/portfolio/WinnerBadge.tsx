@@ -71,7 +71,7 @@ export function WinnerBadge() {
               Two-Time First-Place Winner
             </h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Won two national German digital product innovation challenges — against teams from universities and agencies.
+              Won two real-time challenges issued by German companies — competed against teams from universities and agencies to build their solution.
             </p>
           </div>
 

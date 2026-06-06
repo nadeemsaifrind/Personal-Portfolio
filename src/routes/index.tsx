@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Linkedin, Youtube, Instagram } from "lucide-react";
+import { Menu, Linkedin, ArrowUpRight } from "lucide-react";
 import { MODES, PERSONAL, CASE_STUDIES, type ModeId, type CaseStudy } from "@/lib/portfolio-data";
 import { HeroCarousel } from "@/components/portfolio/HeroCarousel";
 import { DisciplineGrid } from "@/components/portfolio/DisciplineGrid";
@@ -87,10 +87,10 @@ function Index() {
 
             {/* Desktop CTA */}
             <a
-              href="#contact"
+              href="#projects"
               className="hidden md:block bg-accent text-accent-foreground px-4 py-1.5 rounded-full font-mono text-[10px] tracking-[0.15em] hover:opacity-90 transition"
             >
-              HIRE ME
+              CASE STUDIES
             </a>
 
             {/* Mobile hamburger */}
@@ -179,44 +179,65 @@ function Index() {
                 Helping businesses communicate clearly through design, content, and digital experiences.
               </p>
 
-              {/* View Work + Badge side by side */}
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <a
-                  href="#work"
-                  className="inline-flex items-center gap-2 border border-border bg-card text-foreground px-7 py-3.5 rounded-full text-sm font-medium tracking-tight hover:border-foreground/25 hover:bg-secondary transition-colors"
-                >
-                  View Work
-                </a>
-                <WinnerBadge />
-              </div>
+              {/* Case Studies strip */}
+              <motion.a
+                href="#projects"
+                onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="group mt-6 inline-flex items-center gap-4 px-4 py-3 rounded-2xl border border-border bg-card hover:border-foreground/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-pointer"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* Overlapping thumbnails */}
+                <div className="flex items-end">
+                  {CASE_STUDIES.slice(0, 4).map((cs, i) => {
+                    const rotations = [-2.5, 1.5, -1, 2];
+                    return (
+                      <motion.div
+                        key={cs.id}
+                        className="relative overflow-hidden rounded-md border-2 border-background shadow-sm shrink-0"
+                        style={{ width: 36, height: 46, marginLeft: i === 0 ? 0 : -10, zIndex: i + 1, rotate: rotations[i] }}
+                        whileHover={{ zIndex: 10, y: -5, rotate: 0, boxShadow: "0 8px 20px rgba(0,0,0,0.15)" }}
+                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {cs.coverImage && (
+                          <motion.img
+                            src={cs.coverImage}
+                            alt={cs.title}
+                            className="w-full h-full object-cover"
+                            whileHover={{ scale: 1.22 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          />
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
 
-              {/* Social links */}
-              <div className="mt-5 flex items-center gap-2">
-                {[
-                  { href: "https://www.linkedin.com/in/nadeemsaifrind/", icon: <Linkedin className="w-4 h-4" />, label: "LinkedIn" },
-                  { href: "https://www.youtube.com/@nadeemslife", icon: <Youtube className="w-4 h-4" />, label: "YouTube" },
-                  { href: "https://www.instagram.com/nadeemsaifrind/", icon: <Instagram className="w-4 h-4" />, label: "Instagram" },
-                  {
-                    href: "https://www.tiktok.com/@nadeemsaifrind",
-                    icon: (
-                      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
-                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.12 8.12 0 004.74 1.5V6.75a4.85 4.85 0 01-.97-.06z" />
-                      </svg>
-                    ),
-                    label: "TikTok",
-                  },
-                ].map(({ href, icon, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-secondary transition-all duration-200"
-                  >
-                    {icon}
-                  </a>
-                ))}
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-mono text-[9px] tracking-[0.18em] text-muted-foreground/45">
+                    {CASE_STUDIES.length} DOCUMENTED PROJECTS
+                  </span>
+                  <span className="text-sm font-medium text-foreground">
+                    View Case Studies
+                  </span>
+                </div>
+
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+              </motion.a>
+
+              {/* Winner badge + LinkedIn */}
+              <div className="mt-4 flex items-center gap-3">
+                <WinnerBadge />
+                <a
+                  href="https://www.linkedin.com/in/nadeemsaifrind/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-secondary transition-all duration-200 shrink-0"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
               </div>
 
               {/* Availability + status badges */}
