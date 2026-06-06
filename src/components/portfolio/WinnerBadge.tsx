@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { CASE_STUDIES } from "@/lib/portfolio-data";
 
@@ -37,20 +38,18 @@ export function WinnerBadge() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         onClick={() => setOpen(true)}
-        className="group inline-flex items-center gap-2.5 rounded-full border border-amber-200/80 bg-amber-50/60 px-4 py-2 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 cursor-pointer"
+        className="group inline-flex items-center gap-2.5 rounded-full border border-green-200/80 bg-green-50/50 px-4 py-2 hover:bg-green-50 hover:border-green-300 transition-all duration-300 cursor-pointer"
       >
-        <span className="text-base leading-none">🏆</span>
-        <div className="flex flex-col items-start">
-          <span className="text-[11px] font-semibold text-amber-800 leading-tight tracking-tight">
+        <span className="text-base leading-none shrink-0">🏆</span>
+        <div className="flex flex-col items-start min-w-0">
+          <span className="text-[11px] font-semibold text-green-800 leading-tight tracking-tight whitespace-nowrap">
             Two-Time First-Place Winner
           </span>
-          <span className="text-[9px] font-mono tracking-[0.12em] text-amber-700/70 leading-tight mt-0.5">
+          <span className="text-[9px] font-mono tracking-[0.12em] text-green-700/60 leading-tight mt-0.5 whitespace-nowrap">
             GERMAN DIGITAL PRODUCT INNOVATION
           </span>
         </div>
-        <span className="text-amber-400/60 group-hover:text-amber-500 transition-colors text-xs ml-0.5">
-          →
-        </span>
+        <ArrowRight className="w-3 h-3 text-green-400/70 group-hover:text-green-600 transition-colors ml-0.5 shrink-0" />
       </motion.button>
 
       {/* Dialog */}

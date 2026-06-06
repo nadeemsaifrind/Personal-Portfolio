@@ -226,18 +226,9 @@ function Index() {
                 <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
               </motion.a>
 
-              {/* Winner badge + LinkedIn */}
-              <div className="mt-4 flex items-center gap-3">
+              {/* Winner badge */}
+              <div className="mt-4">
                 <WinnerBadge />
-                <a
-                  href="https://www.linkedin.com/in/nadeemsaifrind/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-secondary transition-all duration-200 shrink-0"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
               </div>
 
               {/* Availability + status badges */}
@@ -245,7 +236,7 @@ function Index() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.55, duration: 0.7 }}
-                className="mt-4 flex flex-wrap items-center gap-2"
+                className="mt-4 hidden md:flex flex-wrap items-center gap-2"
               >
                 <span className="inline-flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
@@ -267,7 +258,7 @@ function Index() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.75, duration: 0.6 }}
-                className="mt-4 flex flex-wrap gap-1.5"
+                className="mt-4 hidden md:flex flex-wrap gap-1.5"
               >
                 {MODES.map((mode) => (
                   <button
@@ -292,8 +283,22 @@ function Index() {
               initial={{ opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 1.05, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full"
+              className="w-full relative"
             >
+              {/* LinkedIn badge — floats on top-left of image */}
+              <motion.a
+                href="https://www.linkedin.com/in/nadeemsaifrind/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.9, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute top-3 left-3 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center hover:shadow-lg hover:bg-white hover:scale-105 transition-all duration-200"
+              >
+                <Linkedin className="w-4 h-4 text-[#0077B5]" />
+              </motion.a>
+
               <HeroCarousel activeMode={activeMode} onSelect={setActiveMode} />
             </motion.div>
 
