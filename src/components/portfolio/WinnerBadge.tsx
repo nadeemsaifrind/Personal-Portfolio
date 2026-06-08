@@ -70,7 +70,7 @@ export function WinnerBadge() {
               Two-Time First-Place Winner
             </h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Won two real-time challenges issued by German companies — competed against teams from universities and agencies to build their solution.
+              Won two real-time challenges issued by German companies, competing against teams from universities and agencies to build their solution.
             </p>
           </div>
 
@@ -263,7 +263,7 @@ export function WinnerBadge() {
                     {/* Post body */}
                     <div className="px-5 py-4 space-y-3">
                       <p className="text-sm text-foreground/90 font-medium leading-relaxed">
-                        The winning streak continues — we secured{" "}
+                        The winning streak continues: we secured{" "}
                         <span className="text-[#0a66c2]">1st place</span> at the{" "}
                         <span className="text-[#0a66c2]">LAUNCH Rhein-Main</span> Build Days for{" "}
                         <span className="text-[#0a66c2]">Kenergy Solutions GmbH</span> Challenge.

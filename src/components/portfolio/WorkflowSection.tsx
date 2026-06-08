@@ -6,11 +6,8 @@ export function WorkflowSection() {
     <section className="border-t border-border">
       <div className="container mx-auto px-6 lg:px-10 py-16 md:py-20">
         <div className="mb-10">
-          <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
-            HOW I CREATE VALUE
-          </span>
-          <p className="mt-3 text-base text-muted-foreground max-w-lg leading-relaxed">
-            I can contribute at every stage — from the first idea to lasting growth. Most professionals cover one or two steps. I cover the whole arc.
+          <p className="text-base text-muted-foreground max-w-lg leading-relaxed">
+            I can contribute at every stage, from the first idea to lasting growth. Most professionals cover one or two steps. I cover the whole arc.
           </p>
         </div>
 
@@ -24,9 +21,6 @@ export function WorkflowSection() {
               transition={{ delay: i * 0.06, duration: 0.45 }}
               className="bg-background p-6 md:p-8"
             >
-              <div className="font-mono text-[10px] tracking-[0.2em] mb-4" style={{ color: "#02AC87" }}>
-                {step.stage}
-              </div>
               <h3 className="text-xl md:text-2xl mb-3 leading-tight">{step.label}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-5">
                 {step.description}

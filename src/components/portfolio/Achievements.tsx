@@ -6,10 +6,7 @@ export function Achievements() {
   return (
     <section className="border-t border-border" id="achievements">
       <div className="container mx-auto px-6 lg:px-10 py-24">
-        <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
-          ACHIEVEMENTS
-        </span>
-        <h2 className="text-3xl md:text-4xl mt-4 mb-12 max-w-2xl leading-tight">
+        <h2 className="text-3xl md:text-4xl mb-12 max-w-2xl leading-tight">
           Numbers and recognition that tell the story.
         </h2>
 

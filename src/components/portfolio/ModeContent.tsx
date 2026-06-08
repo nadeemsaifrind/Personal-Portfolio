@@ -46,7 +46,7 @@ export function ModeContent({ mode }: { mode: Mode }) {
                   <ul className="space-y-3">
                     {mode.valuePoints.map((point) => (
                       <li key={point} className="flex items-start gap-3">
-                        <span className="text-muted-foreground/40 shrink-0 text-sm leading-snug">—</span>
+                        <span className="text-muted-foreground/40 shrink-0 text-sm leading-snug">-</span>
                         <span className="text-sm md:text-base text-foreground/85 leading-snug">{point}</span>
                       </li>
                     ))}
@@ -109,7 +109,7 @@ export function ModeContent({ mode }: { mode: Mode }) {
           <div className="container mx-auto px-6 lg:px-10 pb-24">
             <div className="flex items-end justify-between mb-8">
               <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
-                SELECTED WORK — {mode.label.toUpperCase()}
+                SELECTED WORK / {mode.label.toUpperCase()}
               </span>
               <span className="font-mono text-xs text-muted-foreground hidden md:inline">
                 {mode.projects.length} projects

@@ -42,11 +42,8 @@ export function ServiceStack() {
 
   return (
     <section id="work" className="bg-background">
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12 pt-24 lg:pt-36">
+      <div className="max-w-375 mx-auto px-4 sm:px-8 lg:px-12 pt-24 lg:pt-36">
         <div className="flex flex-col gap-3 lg:gap-6">
-          <span className="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-            What I do
-          </span>
           <RevealText
             as="h2"
             className="display-hero text-[clamp(2.2rem,6vw,6rem)] max-w-[16ch]"
@@ -58,7 +55,7 @@ export function ServiceStack() {
       {/* Sticky stack */}
       <div
         ref={root}
-        className="relative max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12 mt-16 lg:mt-24 pb-[8vh]"
+        className="relative max-w-375 mx-auto px-4 sm:px-8 lg:px-12 mt-16 lg:mt-24 pb-[8vh]"
       >
         {MODES.map((mode, i) => (
           <div
@@ -71,7 +68,7 @@ export function ServiceStack() {
             }}
           >
             <div
-              className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.75rem] grid lg:grid-cols-[1.15fr_0.85fr] min-h-[68vh] lg:min-h-[64vh]"
+              className="relative overflow-hidden rounded-lg grid lg:grid-cols-[1.15fr_0.85fr] min-h-[68vh] lg:min-h-[64vh]"
               style={{ backgroundColor: SHADES[i % SHADES.length] }}
             >
               {/* Text side */}
@@ -99,7 +96,7 @@ export function ServiceStack() {
                     {mode.skills.slice(0, 5).map((s) => (
                       <span
                         key={s}
-                        className="text-white/85 text-xs sm:text-sm px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 hover:bg-white/[0.12] transition-colors"
+                        className="text-white/85 text-xs sm:text-sm px-4 py-2 rounded-full bg-white/6 border border-white/10 hover:bg-white/12 transition-colors"
                       >
                         {s}
                       </span>

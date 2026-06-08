@@ -140,7 +140,7 @@ function WorkDetail() {
             <ul className="space-y-4">
               {mode.valuePoints.map((point) => (
                 <li key={point} className="flex items-start gap-3">
-                  <span className="text-muted-foreground/30 shrink-0 mt-0.5">—</span>
+                  <span className="text-muted-foreground/30 shrink-0 mt-0.5">-</span>
                   <span className="text-base text-foreground/80 leading-snug">{point}</span>
                 </li>
               ))}

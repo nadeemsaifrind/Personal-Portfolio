@@ -17,9 +17,9 @@ const CLIENTS = [
   {
     name: "Arascow",
     role: "BPO & Digital Marketing",
-    year: "2024 — 2025",
+    year: "2024-2025",
     summary:
-      "End-to-end brand and performance design for Arascow — a BPO and digital marketing agency. Work spanned social campaign creative, Google Ads visuals, recruitment posts, and conversion-focused brand storytelling across a unified visual system.",
+      "End-to-end brand and performance design for Arascow, a BPO and digital marketing agency. Work spanned social campaign creative, Google Ads visuals, recruitment posts, and conversion-focused brand storytelling across a unified visual system.",
     deliverables: ["Brand Creative", "Google Ads", "Social Campaigns", "Recruitment"],
     images: [arascow1, arascow2, arascow3, arascow4],
   },
@@ -56,7 +56,7 @@ export function ClientShowcase() {
     <section className="border-t border-border">
       <div className="container mx-auto px-6 lg:px-10 py-24">
         <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
-          PORTFOLIO — CLIENTS
+          PORTFOLIO / CLIENTS
         </span>
         <h2 className="text-3xl md:text-4xl mt-4 mb-12 max-w-2xl">
           Selected client work. Tap a name to open the case.

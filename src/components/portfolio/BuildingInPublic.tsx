@@ -7,14 +7,11 @@ export function BuildingInPublic() {
       <div className="container mx-auto px-6 lg:px-10 py-24">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
-              BUILDING IN PUBLIC
-            </span>
-            <h2 className="text-3xl md:text-4xl mt-4 max-w-xl leading-tight">
-              Execution record, 2023 — 2025.
+            <h2 className="text-3xl md:text-4xl max-w-xl leading-tight">
+              Execution record, 2023-2025.
             </h2>
             <p className="mt-3 text-sm text-muted-foreground max-w-md">
-              Every entry is something shipped, won, or built — not planned.
+              Every entry is something shipped, won, or built. Not planned.
             </p>
           </div>
           <span className="font-mono text-xs text-muted-foreground hidden md:inline self-end">

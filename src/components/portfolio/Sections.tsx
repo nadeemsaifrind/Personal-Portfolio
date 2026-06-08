@@ -16,7 +16,7 @@ export function Contact() {
 
           <div className="space-y-6">
             <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
-              Open to brand design, UX/UI, marketing, and creative technologist roles. Based in Germany — available for remote and hybrid engagements worldwide.
+              Open to brand design, UX/UI, marketing, and creative technologist roles. Based in Germany, available for remote and hybrid engagements worldwide.
             </p>
 
             <a

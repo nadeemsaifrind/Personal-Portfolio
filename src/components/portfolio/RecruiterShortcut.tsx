@@ -137,7 +137,7 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
             viewport={{ once: true }}
             transition={{ delay: 0.12, duration: 0.5 }}
           >
-            Pick a role — the portfolio adapts to what matters most to you.
+            Pick a role. The portfolio adapts to what matters most to you.
           </motion.p>
         </div>
 

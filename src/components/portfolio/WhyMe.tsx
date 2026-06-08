@@ -15,7 +15,7 @@ export function WhyMe() {
             </h2>
           </div>
           <p className="text-sm max-w-50 md:text-right leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
-            Not a claim — a pattern across every project.
+            Not a claim. A pattern across every project.
           </p>
         </div>
 
@@ -32,14 +32,6 @@ export function WhyMe() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#0F2820"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#0A1F1A"; }}
             >
-              {/* Step number */}
-              <div
-                className="inline-flex items-center justify-center w-7 h-7 rounded-full mb-6 font-mono text-[10px] tracking-widest"
-                style={{ background: "rgba(2,172,135,0.15)", color: "#02AC87" }}
-              >
-                {(i + 1).toString().padStart(2, "0")}
-              </div>
-
               <p className="text-lg md:text-xl leading-snug tracking-tight mb-4 text-white">
                 {item.statement}
               </p>
