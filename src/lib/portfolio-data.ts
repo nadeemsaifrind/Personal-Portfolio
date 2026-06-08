@@ -142,7 +142,7 @@ export const PERSONAL = {
   title: "Creative Technologist & Marketing Designer",
   tagline: "Brand. Design. Code. Content. All of it, by one person.",
   description:
-    "I studied Film & Television in Pakistan, moved to Germany for a Master's in Media, Technology and Society, and built a career at the intersection of design, marketing, and technology. I design brands, run campaigns, ship products, and write code — often within the same project.",
+    "Film school in Pakistan. Master's in Germany. Now I design brands, run campaigns, build products, and write code — often in the same project.",
   email: "nsaif092@gmail.com",
   linkedin: "https://linkedin.com/in/nadeemsaif",
   location: "Germany",
@@ -167,6 +167,7 @@ export interface Project {
   highlights: string[];
   caseStudyId?: string;
   screens?: string[];
+  youtubeUrl?: string;
 }
 
 export interface Mode {
@@ -194,7 +195,7 @@ export const MODES: Mode[] = [
     accent: "oklch(0.85 0.15 30)",
     tagline: "Identity and visual systems that communicate before a word is read.",
     description:
-      "I build brands that position, persuade, and persist across every touchpoint. From logo to layout, every visual decision carries strategic intent — designed for the audience, not the designer.",
+      "Brands that position, persuade, and persist — every visual decision backed by strategic intent.",
     skills: [
       "Branding",
       "Logo Design",
@@ -206,10 +207,10 @@ export const MODES: Mode[] = [
       "Social Media Visuals",
     ],
     valuePoints: [
-      "Help businesses communicate who they are before saying a word",
-      "Create visual identities that work across every platform and format",
-      "Build design systems teams can use independently — no designer needed for every asset",
-      "Turn vague brand briefs into clear visual decisions backed by strategic rationale",
+      "A brand that communicates before a word is spoken",
+      "Identities that scale across every platform and format",
+      "Design systems teams run without a designer on call",
+      "Strategy-backed decisions from even the vaguest brief",
     ],
     tools: [
       { name: "FIGMA", bg: "#1e1e1e", label: "Fg", color: "#a259ff" },
@@ -249,7 +250,7 @@ export const MODES: Mode[] = [
     accent: "oklch(0.82 0.14 80)",
     tagline: "Cinematic storytelling and social content systems that travel.",
     description:
-      "I studied Film & Television. I think in frames, sequences, and emotion — and that sensibility shapes every video, reel, and photo I produce. Always narrative-first.",
+      "Film school trained. I think in frames and emotion — narrative-first in every video, reel, and photo.",
     skills: [
       "Photography",
       "Videography",
@@ -261,10 +262,10 @@ export const MODES: Mode[] = [
       "YouTube",
     ],
     valuePoints: [
-      "Produce content that stops people scrolling and makes them feel something",
-      "Build content systems that generate consistently — without burning out or losing quality",
-      "Translate a brand's story into visual media people actually share",
-      "Apply filmmaker instincts — composition, rhythm, emotional timing — to brand media",
+      "Content that stops scrolling and makes people feel something",
+      "Systems that generate consistently — quality without burnout",
+      "A brand's story turned into visual media people share",
+      "Filmmaker instincts — composition, rhythm, emotional timing — applied to brand media",
     ],
     tools: [
       { name: "PREMIERE PRO", bg: "#1a0033", label: "Pr", color: "#9999ff" },
@@ -291,6 +292,7 @@ export const MODES: Mode[] = [
         description:
           "Ongoing social content series documenting student and startup life in Germany — built an engaged audience from scratch.",
         highlights: ["Audience building", "Ongoing series", "Student life", "Social-first"],
+        youtubeUrl: "https://www.youtube.com/@nadeemslife",
       },
     ],
   },
@@ -303,7 +305,7 @@ export const MODES: Mode[] = [
     accent: "oklch(0.8 0.18 330)",
     tagline: "Campaigns, content engines, and growth systems that compound.",
     description:
-      "I build marketing systems that run — not one-off campaigns, but repeatable engines across LinkedIn, Meta, email, and organic content. Designed for measurable results.",
+      "Repeatable engines across LinkedIn, Meta, and email — built for measurable results, not one-off campaigns.",
     skills: [
       "Social Media Marketing",
       "Content Strategy",
@@ -315,10 +317,10 @@ export const MODES: Mode[] = [
       "Google Ads",
     ],
     valuePoints: [
-      "Build content engines that keep attracting attention after the initial push",
-      "Help brands grow audiences that actually convert — not just accumulate followers",
-      "Design campaigns where creative quality and data drive the same decision",
-      "Turn social media from a time cost into a compounding business asset",
+      "Content engines that keep attracting attention long after launch",
+      "Audiences that convert — not just accumulate followers",
+      "Campaigns driven by creative quality and data together",
+      "Social media as a compounding business asset, not a time cost",
     ],
     tools: [
       { name: "META ADS", bg: "#3b82f6", label: "∞", color: "#ffffff" },
@@ -376,7 +378,7 @@ export const MODES: Mode[] = [
     accent: "oklch(0.75 0.18 280)",
     tagline: "Research-led design, from wireframe to working product.",
     description:
-      "I design products that actually get used. User research first, wireframes second, pixel polish last. The experience has to work before it has to look good.",
+      "Research first, wireframes second, pixel polish last. The experience has to work before it looks good.",
     skills: [
       "UX Research",
       "UI Design",
@@ -388,10 +390,10 @@ export const MODES: Mode[] = [
       "Usability Testing",
     ],
     valuePoints: [
-      "Design products people understand in seconds and choose to return to",
-      "Translate user research into decisions — not just deliverables",
-      "Reduce friction at the exact points where users give up",
-      "Build design systems that keep products coherent as they grow",
+      "Products people understand in seconds and return to",
+      "User research turned into decisions — not just deliverables",
+      "Friction reduced at the exact points users give up",
+      "Design systems that keep products coherent as they scale",
     ],
     tools: [
       { name: "FIGMA", bg: "#1e1e1e", label: "Fg", color: "#a259ff" },
@@ -449,7 +451,7 @@ export const MODES: Mode[] = [
     accent: "oklch(0.8 0.18 240)",
     tagline: "Turning ideas into usable digital products — faster than a team.",
     description:
-      "I build things. With AI as a collaborator, I move from design to deployed product faster than most teams. I design what I can ship — no handoff gaps, no context lost.",
+      "Design to deployed product — faster than most teams. No handoff gaps, no context lost.",
     skills: [
       "Next.js",
       "React",
@@ -461,10 +463,10 @@ export const MODES: Mode[] = [
       "AI-Assisted Coding",
     ],
     valuePoints: [
-      "Take a product from research to deployed code — no handoff, no context lost",
-      "Ship functional software faster by designing and building as one person",
-      "Use AI as a collaborator to move at startup speed without startup chaos",
-      "Deliver products that are both well-designed and technically maintainable",
+      "Research to deployed code — no handoff, no context lost",
+      "Design and build as one — faster than a split team",
+      "AI as a collaborator to move at startup speed",
+      "Products that are well-designed and technically maintainable",
     ],
     tools: [
       { name: "NEXT.JS", bg: "#000000", label: "N↗", color: "#ffffff" },
@@ -514,13 +516,13 @@ export const MODES: Mode[] = [
   {
     id: "startup",
     label: "Entrepreneurship",
-    category: "ZERO TO ONE",
+    category: "ENTREPRENEURSHIP",
     title: "Ventures",
     image: startupImg,
     accent: "oklch(0.82 0.15 50)",
     tagline: "Building businesses from identified gap to first paying customer.",
     description:
-      "I've started companies, acquired clients, and delivered across multiple countries. I know what it takes to build something from nothing — with limited resources and high stakes.",
+      "Started companies, acquired clients, delivered across countries. Built from nothing — limited resources, high stakes.",
     skills: [
       "Startup Building",
       "Business Development",
@@ -531,10 +533,10 @@ export const MODES: Mode[] = [
       "Problem Solving",
     ],
     valuePoints: [
-      "Build businesses from identified gap to first paying customer",
-      "Make strategic decisions under real resource constraints and still ship",
-      "Navigate the full product journey: idea → design → build → sell → deliver",
-      "Understand what founders actually need — because I've been one",
+      "Identified gap to first paying customer",
+      "Strategic decisions under real resource constraints",
+      "Full journey: idea → design → build → sell → deliver",
+      "What founders actually need — because I've been one",
     ],
     tools: [
       { name: "NOTION", bg: "#000000", label: "N", color: "#ffffff" },
@@ -642,19 +644,18 @@ export const CASE_STUDIES: CaseStudy[] = [
     screens: [csOliverlott1, csOliverlott2, csOliverlott3, csOliverlott4, csOliverlott5],
     accent: "oklch(0.85 0.15 30)",
     challenge:
-      "OliverLott IT Development — a Cloud, DevOps, and SecOps company based in Eberstadt, Darmstadt — had the technical expertise but no visible brand presence. Without a recognisable identity, a website, or a consistent marketing voice, they were invisible to the German enterprise market. The problem wasn't capability — it was visibility. They needed a brand that could speak before anyone picked up the phone.",
+      "A Cloud, DevOps, and SecOps company in Darmstadt with deep technical expertise — and zero brand presence. No identity, no website, no marketing voice. Invisible to the German enterprise market.",
     actionsToken: [
-      "Joined as a working student (Werkstudent) from October 2024, embedded in the team at their Eberstadt office in Darmstadt",
-      "Built the complete brand identity from zero: logo system, color palette, typography, and icon language reflecting their three core areas — Backend, DevOps, and Administration",
-      "Designed and developed the company website oliverlott.de — from layout and copy structure to visual design and responsiveness",
-      "Took office photography to create authentic, professional visual content for the brand and social media",
-      "Managed and grew their LinkedIn presence: wrote and published regular posts, designed content templates, and established a consistent brand voice for the German IT market",
-      "Launched and managed the company newsletter 'IT Systems & Trends' — writing and publishing biweekly issues that reached 150+ subscribers",
-      "Designed marketing materials including pitch decks, social media templates, and campaign visuals tailored to the German B2B audience",
-      "Gained hands-on experience in German market marketing strategies — tone, positioning, and B2B communication standards",
+      "Embedded as Werkstudent at their Eberstadt office from Oct 2024",
+      "Built the full brand identity from zero — logo, color palette, typography, icon language",
+      "Designed and developed oliverlott.de — layout, copy, visual design, responsiveness",
+      "Shot office photography for brand and social content",
+      "Managed LinkedIn — regular posts, content templates, B2B brand voice for German IT",
+      "Launched 'IT Systems & Trends' newsletter — biweekly, 150+ subscribers",
+      "Designed pitch decks, social templates, and campaign visuals for German B2B",
     ],
     outcome:
-      "OliverLott went from no online presence to a fully functioning brand with a live website, active LinkedIn channel, and a biweekly newsletter with 150+ subscribers. The identity I built — logo, visual system, and content framework — is what Oliver Lott publicly launched at the start of 2025. The client's own words: 'Vielen Dank an Nadeem Saif für die exzellente kreative Begleitung und die Umsetzung.'",
+      "Zero to a live website, active LinkedIn, and 150+ newsletter subscribers. The brand I built is what Oliver Lott publicly launched in early 2025.",
     tools: ["Figma", "Adobe Illustrator", "Adobe Photoshop", "Canva", "PowerPoint", "LinkedIn", "Webflow / HTML"],
     skillsDemonstrated: ["Brand Identity", "Logo Design", "Web Design", "LinkedIn Marketing", "Content Strategy", "Newsletter Management", "Photography", "German B2B Marketing"],
     highlights: ["Werkstudent · 18 months", "Website oliverlott.de", "150+ newsletter subscribers", "Darmstadt, Germany"],
@@ -685,17 +686,17 @@ export const CASE_STUDIES: CaseStudy[] = [
     coverImage: coverLivingroom,
     accent: "oklch(0.82 0.14 80)",
     challenge:
-      "A furnished apartment brand targeting international professionals in Germany had no consistent content presence. Potential tenants were searching online but finding nothing that built trust or showed the quality of the space.",
+      "A furnished apartment brand in Germany — no content presence, no trust signals online. Potential tenants searched and found nothing.",
     actionsToken: [
-      "Mapped the tenant journey from search to move-in to identify content moments that build trust at each stage",
-      "Planned and executed 3 lifestyle photography sessions across the property — focused on warmth and comfort",
-      "Produced 10+ short-form video reels for Instagram and LinkedIn targeting international professionals",
-      "Designed seasonal campaign assets: story templates, post formats, and promotional banners",
-      "Built a content calendar and managed publishing schedule across two platforms",
-      "Created a reusable visual template system so the client could continue producing content independently",
+      "Mapped the tenant journey to identify content moments that build trust",
+      "Executed 3 lifestyle photography sessions across the property",
+      "Produced 10+ short-form video reels for Instagram and LinkedIn",
+      "Designed seasonal campaign assets — story templates, post formats, promotional banners",
+      "Built a content calendar and managed publishing across two platforms",
+      "Created a reusable template system for independent client use",
     ],
     outcome:
-      "Consistent social media presence established with a clear visual identity. Content successfully positioned the brand as the premium, trusted choice for international professionals relocating to Germany. Ongoing content partnership extended beyond the initial engagement.",
+      "Consistent social presence and clear visual identity established. Positioned as the premium choice for international professionals relocating to Germany.",
     tools: ["Premiere Pro", "Lightroom", "Adobe Photoshop", "Canva", "CapCut"],
     skillsDemonstrated: ["Content Strategy", "Photography", "Video Production", "Short-form Video", "Social Media Management", "Campaign Design", "Brand Storytelling"],
     highlights: ["Lifestyle photography", "Short-form video", "Social campaigns", "International audience"],
@@ -719,19 +720,18 @@ export const CASE_STUDIES: CaseStudy[] = [
     coverImage: coverDreamfly,
     accent: "oklch(0.8 0.18 240)",
     challenge:
-      "Running a startup with a small team exposed a painful financial blind spot: transaction reports never came on time. Partners and managers were expected to log expenses and income into a shared Excel sheet — but it was tedious, error-prone, and always delayed. Someone always needed to chase someone else. At month-end, reconciling everything took hours. The real cost wasn't money — it was lost trust and distraction from actual business. We needed an extra person just to manage a spreadsheet. I decided to build the tool instead.",
+      "Running a startup, transaction reports never came on time. A shared spreadsheet — tedious, error-prone, always delayed. Month-end reconciliation took hours. We needed an extra hire just to manage a spreadsheet. I built the tool instead.",
     actionsToken: [
-      "Identified the core bottleneck: manual Excel entry was the single point of failure for team financial visibility",
-      "Designed the full product architecture — role-based access for partners, managers, and admins — each with a personalised dashboard showing their own share, withdrawals, and transaction history",
-      "Built the entire web app solo using AI-assisted development (vibe coding) — React, Next.js, Supabase, Tailwind CSS, TypeScript",
-      "Built a real-time transaction entry system: any team member or manager can log a payment or expense from their phone the moment it happens",
-      "Developed automatic cash flow tracking: incoming vs. outgoing, company asset balance, and partner equity — all updated live without manual input",
-      "Implemented a monthly audit report generator — on the last day of the month, a full financial summary exports automatically, no accountant or extra hire needed",
-      "Added role-separated partner dashboards: each partner sees only their share, withdrawals, and position — no spreadsheet, no confusion",
-      "Shipped a fully functional production app used daily by the real team — not a prototype, a live internal tool solving a live business problem",
+      "Identified the bottleneck: manual Excel entry was the single failure point for financial visibility",
+      "Designed role-based dashboards for partners, managers, and admins",
+      "Built the full web app solo — React, Next.js, Supabase, Tailwind, TypeScript",
+      "Real-time transaction entry — any team member logs payments the moment they happen",
+      "Automatic cash flow tracking — incoming, outgoing, and partner equity updated live",
+      "Monthly audit report auto-generated on the last day of each month",
+      "Partner dashboards show each person's share and position — no spreadsheet needed",
     ],
     outcome:
-      "The platform eliminated the need for a dedicated finance admin entirely. Transaction reporting went from a weekly chase to a real-time feed. Partners stopped asking each other for updates — the dashboard answered everything. Month-end audit now takes minutes, not hours. Built solo, shipped to production, used daily. This was not a portfolio exercise — it was a real problem in a real company, solved by building the product myself.",
+      "Eliminated the need for a finance admin. Real-time reporting replaced weekly chasing. Month-end audits cut from hours to minutes. Built solo, shipped to production, used daily.",
     tools: ["React", "Next.js", "Supabase", "Tailwind CSS", "TypeScript", "Figma", "Vercel"],
     skillsDemonstrated: ["Product Thinking", "Full-Stack Development", "UI/UX Design", "Supabase Auth & DB", "AI-Assisted Development", "System Architecture", "Business Problem Solving"],
     highlights: ["Live production app", "Zero extra hire needed", "Real-time audit reports", "Solo built & shipped"],
@@ -753,17 +753,17 @@ export const CASE_STUDIES: CaseStudy[] = [
     screens: [csWisag2, csWisag3, csWisag4, csWisag5, undefined],
     accent: "oklch(0.75 0.18 280)",
     challenge:
-      "Building WISAG Pilot — an AI-powered Financial Co-Pilot that detects, explains and predicts Contribution Margin developments based on financial and operational data. The idea was simple but powerful: managers shouldn't just see that their margin dropped. They should understand why, and know exactly what to do about it.",
+      "Managers could see their margin dropped — not why, or what to do next. The challenge: build an AI co-pilot that turns financial and operational data into clear, actionable insight.",
     actionsToken: [
-      "Researched WISAG's existing operations and interviewed facility managers to identify the critical workflow breakdowns",
-      "Built 3 user personas: a field worker, a team supervisor, and an operations manager — each with distinct needs",
+      "Researched WISAG's operations and interviewed facility managers",
+      "Built 3 user personas — field worker, team supervisor, operations manager",
       "Mapped end-to-end journeys for task assignment, issue reporting, and shift handover",
-      "Designed information architecture optimised for one-handed mobile use in field environments",
-      "Built an interactive Figma prototype with task flows, real-time notifications, and team status views",
-      "Presented the solution to a jury of WISAG executives — won 1st Place in the national challenge",
+      "Designed information architecture for one-handed mobile use in field environments",
+      "Built an interactive Figma prototype — task flows, real-time notifications, team status",
+      "Presented to a jury of WISAG executives — won 1st Place",
     ],
     outcome:
-      "The solution secured 1st Place by demonstrating how complex business data could be transformed into clear, actionable insights for decision-makers. The intuitive UX/UI approach enabled managers to compare key variables, identify trends, and make informed decisions faster without relying on technical specialists.",
+      "1st Place. Complex business data transformed into clear, actionable insight. Managers identify trends and act without relying on technical specialists.",
     tools: ["Figma", "FigJam", "Notion", "Miro"],
     skillsDemonstrated: ["UX Research", "Persona Development", "Journey Mapping", "Information Architecture", "Mobile UI Design", "Figma Prototyping", "Stakeholder Presentation"],
     highlights: ["1st Place — Germany", "Mobile-first UX", "10k+ employee scope", "Enterprise pitch"],
@@ -784,17 +784,17 @@ export const CASE_STUDIES: CaseStudy[] = [
     screens: [csKenergy2, csKenergy3, csKenergy4, csKenergy5, undefined],
     accent: "oklch(0.82 0.15 50)",
     challenge:
-      "Kenergy Solutions GmbH posed one question: how do you give anyone a personal plan to make their home energy efficient — no expert, no big budget? In 32 hours, we built Kenwatt — an AI energy consultant that turns a few simple questions into a personalised report: your home's rating, where money is leaking, and what to fix first. It works for renters and owners alike, estimates solar potential, simulates upgrade impact, and explains everything through Ken — a friendly mascot that makes energy decisions feel simple.",
+      "How do you give anyone a personal plan to make their home energy efficient — no expert, no big budget? In 32 hours, we built Kenwatt: an AI energy consultant turning simple answers into a personalised action plan.",
     actionsToken: [
-      "Researched behavioural economics literature on energy consumption, habit formation, and motivation design",
-      "Identified 3 key behavioural levers: loss aversion (spending vs. saving framing), social proof (neighbourhood benchmarks), and progress momentum (visible streak and milestone systems)",
-      "Designed a gamified challenge system with shared neighbourhood goals and a community leaderboard",
-      "Created personalised savings recommendation logic based on usage history and household size",
-      "Built the complete Figma prototype: onboarding, dashboard, social features, and reward system",
-      "Delivered a competitive pitch to the Kenergy jury — won both the jury award and the community vote",
+      "Researched behavioural economics on energy consumption and motivation design",
+      "Identified 3 behavioural levers — loss aversion, social proof, and progress momentum",
+      "Designed a gamified challenge system with neighbourhood goals and a community leaderboard",
+      "Built personalised savings recommendations based on usage history and household size",
+      "Built the full Figma prototype — onboarding, dashboard, social features, reward system",
+      "Delivered a competitive pitch — won the jury award and the community vote",
     ],
     outcome:
-      "The only team in the competition to win both the jury's 1st Place and the Community Favorite Award — two separate evaluations. Judges specifically noted the combination of behavioural design rigour and business viability. The community vote signals that the concept resonated not just with experts, but with actual users.",
+      "The only team to win both the jury's 1st Place and the Community Favorite Award. Judges cited the combination of behavioural design rigour and business viability.",
     tools: ["Figma", "FigJam", "Notion", "Whimsical"],
     skillsDemonstrated: ["Behavioral Design", "Gamification Strategy", "Product Strategy", "UX Research", "UI Design", "Competitive Pitching", "Sustainability Design"],
     highlights: ["1st Place + Comm. Fav", "Dual award winner", "Behavioral design", "Kenergy · Germany"],
@@ -810,20 +810,20 @@ export const CASE_STUDIES: CaseStudy[] = [
     coverImage: coverNextstep,
     accent: "oklch(0.8 0.18 330)",
     challenge:
-      "What began as NS Production — a small creative studio producing ads for local clients — grew over six years into Next Step Digital & Studio: a full-service agency with a physical office, a working team, and a roster of national and international clients across branding, digital marketing, content production, and paid media. The evolution wasn't planned — it was built one client, one result, and one iteration at a time.",
+      "Started as a small video ad studio. Grew over six years into a full-service agency — office, team, national and international clients. Built one client, one result at a time.",
     actionsToken: [
-      "Started as NS Production — creating video ads and promotional content for businesses that needed visibility but didn't know how to get it",
-      "Recognised that clients needed more than production: they needed strategy, consistency, and results — evolved the offering into NS Digital, a full digital marketing service",
-      "Rebranded and expanded into Next Step Digital & Studio — a complete agency covering brand identity, social media, content, paid ads, and creative production",
-      "Opened a physical office and built a team — hired, trained, and structured people around a delivery system that could handle multiple clients simultaneously",
-      "Personally supervise every project: no deliverable goes out without my review — quality control is not delegated",
-      "Built long-term client relationships across Pakistan and internationally — several clients have been with the agency for multiple years, returning because of results, not habit",
-      "Acquired national and international clients across sectors: cargo, food, education, consulting, professional services, and more",
-      "Developed repeatable creative workflows and campaign systems that allow the team to produce consistently without burning out or losing quality",
-      "Managed the business alongside my own postgraduate education in Germany — running operations remotely while staying embedded in delivery",
+      "Started as NS Production — video ads and promotional content for local businesses",
+      "Evolved into NS Digital as clients needed strategy, not just production",
+      "Rebranded to Next Step Digital & Studio — brand, social, content, ads, production",
+      "Opened a physical office and built a delivery team for multiple simultaneous clients",
+      "Personally review every deliverable — quality control is not delegated",
+      "Built long-term client relationships across Pakistan and internationally",
+      "Acquired clients across cargo, food, education, consulting, and professional services",
+      "Developed repeatable creative workflows for consistent quality at scale",
+      "Ran the business remotely while completing postgraduate studies in Germany",
     ],
     outcome:
-      "Six years in, Next Step Digital & Studio is a running business — with a team, an office, and a client roster that spans national and international brands across multiple industries. Clients don't stay for years because of promises. They stay because the work delivers. I built this from a one-person ad studio to a structured agency, and I still personally supervise every project that goes out. This was not a side hustle — it is a business I built from zero.",
+      "Six years in — team, office, clients across multiple industries. Built from a one-person studio. I still personally supervise every project that goes out.",
     tools: ["Figma", "Adobe Suite", "Meta Ads Manager", "Google Ads", "Canva", "Premiere Pro", "Notion", "LinkedIn"],
     skillsDemonstrated: ["Agency Building", "Team Leadership", "Brand Design", "Campaign Strategy", "Client Management", "Paid Advertising", "Content Production", "Creative Direction"],
     highlights: ["6 years running", "Team + office", "National & international clients", "Personally supervised"],
@@ -848,19 +848,18 @@ export const CASE_STUDIES: CaseStudy[] = [
     coverImage: coverDreamflyConsultancy,
     accent: "oklch(0.72 0.19 210)",
     challenge:
-      "Growing up in DG Khan, Pakistan, the path to studying abroad was buried in misinformation, unreliable agents, and zero guidance for students from smaller cities. Most families had no idea where to start, who to trust, or what was actually possible. My co-founder and I had both navigated this journey ourselves — and we knew the gap wasn't just real, it was fixable. We founded Dreamfly to become the guide we never had: honest, structured, and built around actual student outcomes.",
+      "Growing up in DG Khan, studying abroad meant navigating misinformation and unreliable agents — with no real guidance. My co-founder and I had both lived this. We built the guide we never had.",
     actionsToken: [
-      "Co-founded Dreamfly with a close friend as a dedicated overseas education consultancy for students in DG Khan and surrounding areas",
-      "Set up a physical office and recruited a team of trained counsellors to handle student enquiries, documentation, and university applications end-to-end",
-      "Designed the full brand identity — logo, visual language, social media system, and all client-facing materials",
-      "Built and executed marketing campaigns across Meta, Instagram, and WhatsApp to reach students and their families in the target cities",
-      "Organised awareness events where students could meet the team, ask questions, and hear directly from successful alumni who had gone abroad",
-      "Documented and published student success stories — real faces, real visas, real countries — to build social proof and community trust",
-      "Developed a content engine that kept Dreamfly visible, credible, and approachable on social media throughout the year",
-      "Positioned Dreamfly as the leading consultancy in the region — through results, not just marketing",
+      "Co-founded Dreamfly as a dedicated overseas education consultancy in DG Khan",
+      "Set up a physical office and recruited trained counsellors",
+      "Designed the full brand identity — logo, visual system, and client-facing materials",
+      "Built marketing campaigns across Meta, Instagram, and WhatsApp",
+      "Organised student awareness events with Q&A sessions and successful alumni",
+      "Documented and published real student success stories for social proof",
+      "Built a content engine keeping Dreamfly visible and credible year-round",
     ],
     outcome:
-      "Dreamfly is now a recognised consultancy with a physical office, a team of counsellors, and a growing list of students who have successfully received visas and gone on to study in Germany, the UK, and beyond. Success stories — real students from the same towns and communities — are the core of the brand's credibility. The business continues to grow through word of mouth, events, and active digital marketing. We didn't just build a consultancy. We built a path.",
+      "A consultancy with an office, a team, and students holding visas to study in Germany, the UK, and beyond. Built on results, grown through word of mouth.",
     tools: ["Figma", "Canva", "Meta Ads Manager", "Instagram", "Premiere Pro", "WhatsApp Business", "Notion"],
     skillsDemonstrated: ["Startup Co-founding", "Brand Design", "Campaign Strategy", "Event Management", "Content Creation", "Community Building", "Social Media Marketing", "Student Counselling Systems"],
     highlights: ["Co-founded 2024", "Office + team", "Verified visa successes", "Leading consultancy · DG Khan"],
@@ -953,34 +952,34 @@ export interface WhyItem {
 
 export const WHY_ME: WhyItem[] = [
   {
-    statement: "Most professionals specialize in one area. I connect five.",
+    statement: "Most professionals specialise in one area. I connect five.",
     explanation:
-      "Business problem → Brand → Marketing → Product → Code. This is the complete creative arc. Most companies need 4–5 people to cover it. I contribute across the whole journey — and the connections between disciplines are where the real value is created.",
+      "Business problem → Brand → Marketing → Product → Code. Most companies need 4–5 people for this arc. I cover the whole journey — the connections between disciplines are where real value lives.",
   },
   {
     statement: "I've competed against specialists — and won.",
     explanation:
-      "WISAG and Kenergy both selected my work over dedicated design teams in national competitions. I don't win on breadth. I win by solving the right problem more completely than someone working in a single lane.",
+      "WISAG and Kenergy selected my work over dedicated design teams. Not because of breadth — because I solved the right problem more completely.",
   },
   {
     statement: "I've worked in the German market for two years.",
     explanation:
-      "IT, real estate, consulting — I understand precision, directness, and what builds trust in a German B2B context. International perspective, German professional standards.",
+      "IT, real estate, consulting. I understand precision and what builds trust in a German B2B context. International perspective, German professional standards.",
   },
   {
     statement: "I ship products. Not presentations.",
     explanation:
-      "The Finance Dashboard exists as deployed code. This portfolio is a production application with SSR. Next Step Digital has paying clients. I measure success by what gets done — not what gets designed.",
+      "The finance dashboard is deployed code. This portfolio runs on SSR. Next Step has paying clients. I measure success by what ships.",
   },
   {
     statement: "My Film & TV background is a design advantage.",
     explanation:
-      "Narrative, composition, and emotional timing — skills most designers don't have. That perspective shapes every brand, every campaign, and every product. Storytelling is structure.",
+      "Narrative, composition, emotional timing — skills most designers don't have. This perspective shapes every brand, campaign, and product I make.",
   },
   {
     statement: "I understand the brief and the business behind it.",
     explanation:
-      "I've been the client, the designer, and the founder simultaneously. That context changes how I prioritize, communicate, and define 'done' — every single time.",
+      "I've been the client, the designer, and the founder at the same time. That shapes how I prioritise, communicate, and define done.",
   },
 ];
 
