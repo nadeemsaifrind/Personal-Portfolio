@@ -9,7 +9,7 @@ export function DisciplineGrid() {
       <div className="container mx-auto px-6 lg:px-10 pt-20 pb-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div>
-            <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
+            <span className="font-mono text-[10px] tracking-[0.22em]" style={{ color: "#02AC87" }}>
               MY WORK
             </span>
             <h2 className="mt-3 text-3xl md:text-4xl tracking-[-0.03em] font-normal">
@@ -31,7 +31,7 @@ export function DisciplineGrid() {
               transition={{ delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link to="/work/$modeId" params={{ modeId: mode.id }} className="block group">
-                <div className="relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 hover:shadow-float hover:border-foreground/12">
+                <div className="relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 hover:shadow-float hover:border-[#02AC87]/25">
 
                   {/* Image area */}
                   <div className="relative overflow-hidden h-44 sm:h-48">
@@ -65,7 +65,7 @@ export function DisciplineGrid() {
                       <h3 className="text-base md:text-lg font-medium tracking-tight leading-snug">
                         {mode.label}
                       </h3>
-                      <span className="shrink-0 w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/50 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-all duration-300">
+                      <span className="shrink-0 w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/50 group-hover:bg-[#02AC87] group-hover:text-white group-hover:border-[#02AC87] transition-all duration-300">
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </span>
                     </div>

@@ -38,18 +38,18 @@ export function WinnerBadge() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         onClick={() => setOpen(true)}
-        className="group inline-flex items-center gap-2.5 rounded-full border border-green-200/80 bg-green-50/50 px-4 py-2 hover:bg-green-50 hover:border-green-300 transition-all duration-300 cursor-pointer"
+        className="group inline-flex items-center gap-2.5 rounded-full border border-[#02AC87]/30 bg-[#02AC87]/6 px-4 py-2 hover:bg-[#02AC87]/10 hover:border-[#02AC87]/50 transition-all duration-300 cursor-pointer"
       >
         <span className="text-base leading-none shrink-0">🏆</span>
         <div className="flex flex-col items-start min-w-0">
-          <span className="text-[11px] font-semibold text-green-800 leading-tight tracking-tight whitespace-nowrap">
+          <span className="text-[11px] font-semibold text-[#017a60] leading-tight tracking-tight whitespace-nowrap">
             Two-Time First-Place Winner
           </span>
-          <span className="text-[9px] font-mono tracking-[0.12em] text-green-700/60 leading-tight mt-0.5 whitespace-nowrap">
+          <span className="text-[9px] font-mono tracking-[0.12em] text-[#02AC87]/60 leading-tight mt-0.5 whitespace-nowrap">
             GERMAN DIGITAL PRODUCT INNOVATION
           </span>
         </div>
-        <ArrowRight className="w-3 h-3 text-green-400/70 group-hover:text-green-600 transition-colors ml-0.5 shrink-0" />
+        <ArrowRight className="w-3 h-3 text-[#02AC87]/50 group-hover:text-[#02AC87] transition-colors ml-0.5 shrink-0" />
       </motion.button>
 
       {/* Dialog */}
@@ -83,7 +83,7 @@ export function WinnerBadge() {
                 className={[
                   "flex-1 px-6 py-3.5 text-sm font-medium transition-all duration-200 text-left border-b-2 -mb-px",
                   active === c.id
-                    ? "border-foreground text-foreground"
+                    ? "border-[#02AC87] text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground",
                 ].join(" ")}
               >

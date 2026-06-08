@@ -7,7 +7,7 @@ export function Journey() {
       <div className="container mx-auto px-6 lg:px-10 py-24">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
+            <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
               JOURNEY
             </span>
             <h2 className="text-3xl md:text-4xl mt-4 leading-tight max-w-2xl">
@@ -27,10 +27,10 @@ export function Journey() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: (i % 4) * 0.07, duration: 0.5 }}
-              className="bg-background p-6 md:p-8"
+              className="bg-background p-6 md:p-8 group hover:bg-secondary/40 transition-colors duration-300"
             >
               <div className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground mb-6">
-                <span className="text-foreground/30 mr-2">
+                <span className="mr-2 font-semibold" style={{ color: "#02AC87" }}>
                   {(i + 1).toString().padStart(2, "0")}
                 </span>
                 {step.era.toUpperCase()}

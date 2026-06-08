@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { Mode, Project } from "@/lib/portfolio-data";
 
@@ -133,7 +134,7 @@ export function ModeContent({ mode }: { mode: Mode }) {
                   </div>
                   <h3 className="text-3xl md:text-4xl mb-3 leading-tight">{p.title}</h3>
                   <p className="text-muted-foreground max-w-md">{p.description}</p>
-                  <div className="mt-8 inline-flex items-center gap-2 text-sm">
+                  <div className="mt-8 inline-flex items-center gap-2 text-sm group-hover:text-[#02AC87] transition-colors duration-200">
                     <span className="font-mono tracking-wide">VIEW DETAILS</span>
                     <span className="transition-transform group-hover:translate-x-1">→</span>
                   </div>
@@ -216,6 +217,26 @@ export function ModeContent({ mode }: { mode: Mode }) {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* YouTube CTA */}
+                {selectedProject.youtubeUrl && (
+                  <div className="mb-8">
+                    <a
+                      href={selectedProject.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-3 bg-[#FF0000] hover:bg-[#d90000] text-white px-5 py-3 rounded-full shadow-sm hover:shadow-[0_4px_20px_rgba(255,0,0,0.3)] transition-all duration-250"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current shrink-0" aria-hidden="true">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                      </svg>
+                      <span className="font-mono text-[10px] tracking-[0.2em] font-medium">
+                        WATCH ON YOUTUBE
+                      </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 opacity-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+                    </a>
                   </div>
                 )}
 

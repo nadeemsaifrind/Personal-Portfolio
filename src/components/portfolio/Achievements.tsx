@@ -5,7 +5,7 @@ export function Achievements() {
   return (
     <section className="border-t border-border" id="achievements">
       <div className="container mx-auto px-6 lg:px-10 py-24">
-        <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
+        <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
           ACHIEVEMENTS
         </span>
         <h2 className="text-3xl md:text-4xl mt-4 mb-12 max-w-2xl leading-tight">
@@ -23,7 +23,7 @@ export function Achievements() {
               transition={{ delay: i * 0.07, duration: 0.5 }}
               className="bg-background p-8 md:p-10"
             >
-              <p className="text-4xl md:text-5xl tracking-tight mb-2">{a.value}</p>
+              <p className="text-4xl md:text-5xl tracking-tight mb-2" style={{ color: "#02AC87" }}>{a.value}</p>
               <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/70 mb-2">
                 {a.label.toUpperCase()}
               </p>

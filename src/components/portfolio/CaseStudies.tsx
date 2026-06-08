@@ -67,7 +67,7 @@ export function CaseStudies({ selected: externalSelected, setSelected: externalS
       <div className="container mx-auto px-6 lg:px-10 py-24">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
+            <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
               FEATURED CASE STUDIES
             </span>
             <h2 className="text-3xl md:text-4xl mt-4 max-w-2xl leading-tight">
@@ -93,7 +93,7 @@ export function CaseStudies({ selected: externalSelected, setSelected: externalS
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: (i % 2) * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
               onClick={() => { setSelected(cs); setOpenClient(null); setOpenMediaFolder(null); }}
-              className={`group text-left rounded-2xl overflow-hidden border border-border/60 bg-card hover:shadow-float hover:border-foreground/12 transition-all duration-400${isLastOdd ? " md:col-span-2" : ""}`}
+              className={`group text-left rounded-2xl overflow-hidden border border-border/60 bg-card hover:shadow-float hover:border-[#02AC87]/25 transition-all duration-400${isLastOdd ? " md:col-span-2" : ""}`}
               style={{ boxShadow: "0 2px 16px oklch(0.2 0.05 250 / 0.06)" }}
             >
               {/* Top: header image or blurred backdrop */}
@@ -193,10 +193,10 @@ export function CaseStudies({ selected: externalSelected, setSelected: externalS
 
                 {/* CTA row */}
                 <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                  <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground group-hover:text-foreground transition-colors">
+                  <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground group-hover:text-[#02AC87] transition-colors">
                     VIEW CASE STUDY
                   </span>
-                  <span className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/40 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-all duration-300 text-xs">
+                  <span className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/40 group-hover:bg-[#02AC87] group-hover:text-white group-hover:border-[#02AC87] transition-all duration-300 text-xs">
                     →
                   </span>
                 </div>

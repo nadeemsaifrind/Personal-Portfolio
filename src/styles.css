@@ -61,8 +61,8 @@
   --muted: oklch(0.96 0.005 250);
   --muted-foreground: oklch(0.5 0.01 250);
 
-  --accent: oklch(0.92 0.18 105); /* electric lime/yellow accent like reference */
-  --accent-foreground: oklch(0.15 0.01 250);
+  --accent: oklch(0.64 0.17 168); /* #02AC87 brand teal */
+  --accent-foreground: oklch(0.98 0 0); /* white on teal */
 
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.985 0 0);

@@ -150,7 +150,7 @@ function Index() {
       </Sheet>
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
-      <section className="relative pt-16 md:pt-20 pb-10 overflow-hidden bg-background">
+      <section className="relative pt-16 md:pt-20 pb-10 overflow-hidden bg-background" style={{ backgroundImage: "radial-gradient(ellipse 70% 50% at 30% 0%, rgba(2,172,135,0.06) 0%, transparent 70%)" }}>
         <div className="relative container mx-auto px-10 lg:px-16 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-6 lg:gap-8 items-center">
 
@@ -163,15 +163,15 @@ function Index() {
               {/* Headline — strong sans + pale serif italic */}
               <h1 className="text-[1.9rem] sm:text-[2.3rem] lg:text-[2.7rem] xl:text-[3.2rem] leading-[1.15] tracking-[-0.03em] font-normal w-full">
                 Design,{" "}
-                <span style={{ color: "oklch(0.62 0.01 250)" }}>
+                <em style={{ color: "#02AC87", fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
                   Ideas
-                </span>
+                </em>
                 <br />
                 and Everything
                 <br />
-                <span style={{ color: "oklch(0.62 0.01 250)" }}>
+                <em style={{ color: "#02AC87", fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
                   in between.
-                </span>
+                </em>
               </h1>
 
               {/* Subtitle */}
@@ -183,7 +183,7 @@ function Index() {
               <motion.a
                 href="#projects"
                 onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="group mt-6 inline-flex items-center gap-4 px-4 py-3 rounded-2xl border border-border bg-card hover:border-foreground/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-pointer"
+                className="group mt-6 inline-flex items-center gap-4 px-4 py-3 rounded-2xl border border-border bg-card hover:border-[#02AC87]/30 hover:shadow-[0_4px_20px_rgba(2,172,135,0.1)] transition-all duration-300 cursor-pointer"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -223,7 +223,7 @@ function Index() {
                   </span>
                 </div>
 
-                <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-[#02AC87] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
               </motion.a>
 
               {/* Winner badge */}
@@ -267,8 +267,8 @@ function Index() {
                     className={[
                       "px-3 py-1.5 rounded-full font-mono text-[9px] tracking-[0.14em] border transition-all duration-200",
                       activeMode === mode.id
-                        ? "bg-foreground text-background border-foreground"
-                        : "bg-transparent text-muted-foreground border-border hover:border-foreground/30 hover:text-foreground",
+                        ? "bg-[#02AC87] text-white border-[#02AC87]"
+                        : "bg-transparent text-muted-foreground border-border hover:border-[#02AC87]/40 hover:text-foreground",
                     ].join(" ")}
                   >
                     {mode.category.split(" ")[0]}

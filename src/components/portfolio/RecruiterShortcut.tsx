@@ -110,7 +110,8 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
             <motion.span
-              className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground/60"
+              className="font-mono text-[10px] tracking-[0.22em]"
+              style={{ color: "#02AC87" }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -203,7 +204,7 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
             <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground/35 hidden sm:block">
               {CASE_STUDIES.length} documented projects
             </span>
-            <span className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground/30 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-all duration-300 shrink-0">
+            <span className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground/30 group-hover:bg-[#02AC87] group-hover:text-white group-hover:border-[#02AC87] transition-all duration-300 shrink-0">
               <ArrowUpRight className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -255,7 +256,7 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
                         {lens.index}
                       </span>
                     </div>
-                    <span className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/30 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-all duration-300 shrink-0">
+                    <span className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/30 group-hover:bg-[#02AC87] group-hover:text-white group-hover:border-[#02AC87] transition-all duration-300 shrink-0">
                       <ArrowUpRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -292,7 +293,7 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
                                 key={item.label}
                                 type="button"
                                 onClick={() => onOpenCaseStudy(item.caseStudyId!)}
-                                className="font-mono text-[9px] tracking-[0.12em] text-foreground/80 border border-foreground/20 bg-background/60 hover:bg-foreground hover:text-background hover:border-foreground px-2.5 py-1 rounded-full transition-all duration-200 flex items-center gap-1"
+                                className="font-mono text-[9px] tracking-[0.12em] text-foreground/80 border border-foreground/20 bg-background/60 hover:bg-[#02AC87] hover:text-white hover:border-[#02AC87] px-2.5 py-1 rounded-full transition-all duration-200 flex items-center gap-1"
                               >
                                 {item.label}
                                 <ArrowUpRight className="w-2.5 h-2.5" />

@@ -6,7 +6,7 @@ export function Contact() {
       <div className="container mx-auto px-6 lg:px-10 py-24 md:py-32">
         <div className="grid md:grid-cols-2 gap-16 items-end">
           <div>
-            <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
+            <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
               LET'S WORK TOGETHER
             </span>
             <h2 className="text-3xl md:text-4xl mt-4 leading-[0.95] text-balance">
@@ -21,7 +21,10 @@ export function Contact() {
 
             <a
               href={`mailto:${PERSONAL.email}`}
-              className="inline-flex items-center gap-3 bg-foreground text-background px-6 py-4 rounded-sm hover:bg-foreground/90 transition-colors group"
+              className="inline-flex items-center gap-3 px-6 py-4 rounded-sm transition-all duration-200 group"
+              style={{ background: "#02AC87", color: "white" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#029a78"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#02AC87"; }}
             >
               <span className="font-mono text-sm tracking-wide">START A CONVERSATION</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>
