@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Trophy } from "@phosphor-icons/react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { CASE_STUDIES } from "@/lib/portfolio-data";
 
@@ -38,9 +38,9 @@ export function WinnerBadge() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         onClick={() => setOpen(true)}
-        className="group inline-flex items-center gap-2.5 rounded-full border border-[#02AC87]/30 bg-[#02AC87]/6 px-4 py-2 hover:bg-[#02AC87]/10 hover:border-[#02AC87]/50 transition-all duration-300 cursor-pointer"
+        className="group inline-flex items-center gap-2.5 rounded-full border border-[#02AC87]/30 bg-[#02AC87]/8 px-4 py-2 hover:bg-[#02AC87]/14 hover:border-[#02AC87]/50 transition-all duration-300 cursor-pointer"
       >
-        <span className="text-base leading-none shrink-0">🏆</span>
+        <Trophy size={16} weight="fill" className="text-[#02AC87] shrink-0" />
         <div className="flex flex-col items-start min-w-0">
           <span className="text-[11px] font-semibold text-[#017a60] leading-tight tracking-tight whitespace-nowrap">
             Two-Time First-Place Winner
@@ -61,7 +61,7 @@ export function WinnerBadge() {
           {/* Header */}
           <div className="px-8 pt-8 pb-6 border-b border-border">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-lg">🏆</span>
+              <Trophy size={18} weight="fill" className="text-[#02AC87]" />
               <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground">
                 DESIGN COMPETITION · GERMANY
               </span>

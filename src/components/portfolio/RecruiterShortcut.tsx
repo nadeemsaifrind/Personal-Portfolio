@@ -250,7 +250,7 @@ export function RecruiterShortcut({ onSelect, onOpenCaseStudy }: Props) {
                   <div className="flex items-start justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl border border-border/70 bg-secondary/50 flex items-center justify-center group-hover:border-foreground/15 group-hover:bg-secondary/80 transition-all duration-300">
-                        <Signal className="w-[17px] h-[17px] text-foreground/45" strokeWidth={1.6} />
+                        <Signal className="w-[17px] h-[17px] text-foreground/55" strokeWidth={1.8} />
                       </div>
                       <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground/30">
                         {lens.index}

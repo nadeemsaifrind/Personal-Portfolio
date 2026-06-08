@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Star } from "@phosphor-icons/react";
 import { ACHIEVEMENTS, AWARDS } from "@/lib/portfolio-data";
 
 export function Achievements() {
@@ -44,8 +45,8 @@ export function Achievements() {
               className="bg-background p-8 md:p-10"
             >
               <div className="inline-flex items-center gap-2 mb-4">
-                <span className="text-accent text-sm">★</span>
-                <span className="font-mono text-[10px] tracking-[0.15em] text-accent">
+                <Star size={13} weight="fill" className="text-primary" />
+                <span className="font-mono text-[10px] tracking-[0.15em] text-primary">
                   {award.result.toUpperCase()}
                 </span>
                 <span className="font-mono text-[10px] text-muted-foreground">· {award.year}</span>
