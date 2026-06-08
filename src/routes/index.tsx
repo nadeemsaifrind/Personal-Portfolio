@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Linkedin, ArrowUpRight } from "lucide-react";
 import { MODES, PERSONAL, CASE_STUDIES, type ModeId, type CaseStudy } from "@/lib/portfolio-data";
-import { HeroCarousel } from "@/components/portfolio/HeroCarousel";
 import { DisciplineGrid } from "@/components/portfolio/DisciplineGrid";
 import { WinnerBadge } from "@/components/portfolio/WinnerBadge";
 import { CaseStudies } from "@/components/portfolio/CaseStudies";
@@ -44,11 +43,31 @@ const NAV_LINKS = [
   { href: "#contact", label: "CONTACT" },
 ];
 
+const WHEEL_INTERVAL = 4000;
+
 function Index() {
   const [activeMode, setActiveMode] = useState<ModeId>("brand");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLens, setActiveLens] = useState<string | null>(null);
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+
+  // Auto-cycle discipline wheel
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (pausedRef.current) return;
+      setActiveMode((current) => {
+        const idx = MODES.findIndex((m) => m.id === current);
+        return MODES[(idx + 1) % MODES.length].id as ModeId;
+      });
+    }, WHEEL_INTERVAL);
+    return () => clearInterval(timer);
+  }, []);
 
   const openCaseStudy = (id: string) => {
     const cs = CASE_STUDIES.find((c) => c.id === id);
@@ -58,6 +77,8 @@ function Index() {
       document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
+
+  const currentIndex = MODES.findIndex((m) => m.id === activeMode);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -138,7 +159,8 @@ function Index() {
             <a
               href="#contact"
               onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 py-3 rounded-full font-mono text-[10px] tracking-[0.15em] hover:opacity-90 transition w-full"
+              className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full font-mono text-[10px] tracking-[0.15em] hover:opacity-90 transition w-full"
+              style={{ background: "#02AC87" }}
             >
               HIRE ME →
             </a>
@@ -149,162 +171,235 @@ function Index() {
         </SheetContent>
       </Sheet>
 
-      {/* ── Hero ──────────────────────────────────────────────────────── */}
-      <section className="relative pt-16 md:pt-20 pb-10 overflow-hidden bg-background" style={{ backgroundImage: "radial-gradient(ellipse 70% 50% at 30% 0%, rgba(2,172,135,0.06) 0%, transparent 70%)" }}>
-        <div className="relative container mx-auto px-10 lg:px-16 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-6 lg:gap-8 items-center">
+      {/* ── Hero — full-bleed discipline wheel ────────────────────────── */}
+      <section
+        className="relative overflow-hidden pt-14"
+        style={{ height: "92vh", minHeight: "600px" }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {/* Animated background image */}
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={activeMode}
+            src={MODES.find((m) => m.id === activeMode)?.image ?? ""}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </AnimatePresence>
 
-            {/* Left — text */}
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
+        {/* Brand teal gradient: strong left, fades right to reveal image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(105deg, rgba(2,172,135,0.93) 0%, rgba(2,172,135,0.62) 26%, rgba(1,80,62,0.30) 55%, rgba(0,0,0,0.10) 100%)",
+          }}
+        />
+
+        {/* Top vignette */}
+        <div className="absolute inset-x-0 top-0 h-24 bg-linear-to-b from-black/20 to-transparent" />
+
+        {/* LinkedIn badge — top right */}
+        <motion.a
+          href="https://www.linkedin.com/in/nadeemsaifrind/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute top-20 right-6 md:right-10 z-20 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center hover:shadow-lg hover:bg-white hover:scale-105 transition-all duration-200"
+        >
+          <Linkedin className="w-4 h-4 text-[#0077B5]" />
+        </motion.a>
+
+        {/* ── Vertical discipline wheel ── */}
+        <motion.div
+          className="absolute left-8 md:left-14 lg:left-20 top-1/2 -translate-y-1/2 z-10"
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {MODES.map((mode, i) => {
+            const distance = Math.abs(i - currentIndex);
+            const isActive = mode.id === activeMode;
+            const itemOpacity = isActive ? 1 : Math.max(0.18, 0.58 - distance * 0.13);
+
+            return (
+              <motion.button
+                key={mode.id}
+                onClick={() => { setActiveMode(mode.id); setPaused(true); setTimeout(() => setPaused(false), 6000); }}
+                className="flex items-center cursor-pointer py-2.5 md:py-3 group"
+                animate={{ opacity: itemOpacity }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* Arrow indicator */}
+                <motion.span
+                  className="shrink-0 text-[9px] text-white mr-1"
+                  style={{ width: 14 }}
+                  animate={{ opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  ▶
+                </motion.span>
+
+                {/* Category label */}
+                <motion.span
+                  className="font-mono tracking-[0.2em] text-white uppercase leading-none"
+                  animate={{ fontSize: isActive ? "1.05rem" : "0.78rem" }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {mode.category}
+                </motion.span>
+
+                {/* Horizontal line for active */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      className="ml-4 h-px shrink-0"
+                      style={{ background: "rgba(255,255,255,0.45)" }}
+                      initial={{ width: 0 }}
+                      animate={{ width: 80 }}
+                      exit={{ width: 0 }}
+                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            );
+          })}
+        </motion.div>
+
+        {/* ── Name + headline — bottom right ── */}
+        <motion.div
+          className="absolute bottom-10 right-8 md:right-12 lg:right-16 z-10 text-right max-w-xs md:max-w-sm lg:max-w-md"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p
+            style={{ fontFamily: "var(--font-signature)" }}
+            className="text-2xl md:text-3xl text-white/70 mb-3 leading-none"
+          >
+            Nadeem Saif
+          </p>
+          <h1 className="text-[1.75rem] md:text-[2.4rem] lg:text-[2.9rem] leading-[1.1] tracking-[-0.03em] font-normal text-white">
+            Design,{" "}
+            <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>Ideas</em>
+            <br />and Everything
+            <br />
+            <em style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}>in between.</em>
+          </h1>
+        </motion.div>
+
+        {/* Progress dots — bottom center */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
+          {MODES.map((mode) => (
+            <button
+              key={mode.id}
+              onClick={() => { setActiveMode(mode.id); setPaused(true); setTimeout(() => setPaused(false), 6000); }}
+              className="transition-all duration-400"
+              style={{
+                width: mode.id === activeMode ? 20 : 6,
+                height: 6,
+                borderRadius: 3,
+                background: mode.id === activeMode ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
+              }}
+              aria-label={mode.label}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ── Hero info bar ─────────────────────────────────────────────── */}
+      <div className="bg-background border-b border-border">
+        <div className="container mx-auto px-6 lg:px-10 py-5">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+
+            {/* Subtitle */}
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm shrink-0">
+              Helping businesses communicate clearly through design, content, and digital experiences.
+            </p>
+
+            {/* Divider */}
+            <div className="hidden md:block w-px h-8 bg-border shrink-0" />
+
+            {/* Case Studies strip */}
+            <motion.a
+              href="#projects"
+              onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
+              className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-border bg-card hover:border-[#02AC87]/30 hover:shadow-[0_4px_20px_rgba(2,172,135,0.1)] transition-all duration-300 cursor-pointer self-start"
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Headline — strong sans + pale serif italic */}
-              <h1 className="text-[1.9rem] sm:text-[2.3rem] lg:text-[2.7rem] xl:text-[3.2rem] leading-[1.15] tracking-[-0.03em] font-normal w-full">
-                Design,{" "}
-                <em style={{ color: "#02AC87", fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
-                  Ideas
-                </em>
-                <br />
-                and Everything
-                <br />
-                <em style={{ color: "#02AC87", fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 400 }}>
-                  in between.
-                </em>
-              </h1>
-
-              {/* Subtitle */}
-              <p className="mt-4 text-sm md:text-base text-foreground/55 leading-relaxed max-w-104">
-                Helping businesses communicate clearly through design, content, and digital experiences.
-              </p>
-
-              {/* Case Studies strip */}
-              <motion.a
-                href="#projects"
-                onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="group mt-6 inline-flex items-center gap-4 px-4 py-3 rounded-2xl border border-border bg-card hover:border-[#02AC87]/30 hover:shadow-[0_4px_20px_rgba(2,172,135,0.1)] transition-all duration-300 cursor-pointer"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {/* Overlapping thumbnails */}
-                <div className="flex items-end">
-                  {CASE_STUDIES.slice(0, 4).map((cs, i) => {
-                    const rotations = [-2.5, 1.5, -1, 2];
-                    return (
-                      <motion.div
-                        key={cs.id}
-                        className="relative overflow-hidden rounded-md border-2 border-background shadow-sm shrink-0"
-                        style={{ width: 36, height: 46, marginLeft: i === 0 ? 0 : -10, zIndex: i + 1, rotate: rotations[i] }}
-                        whileHover={{ zIndex: 10, y: -5, rotate: 0, boxShadow: "0 8px 20px rgba(0,0,0,0.15)" }}
-                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        {cs.coverImage && (
-                          <motion.img
-                            src={cs.coverImage}
-                            alt={cs.title}
-                            className="w-full h-full object-cover"
-                            whileHover={{ scale: 1.22 }}
-                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                          />
-                        )}
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-mono text-[9px] tracking-[0.18em] text-muted-foreground/45">
-                    {CASE_STUDIES.length} DOCUMENTED PROJECTS
-                  </span>
-                  <span className="text-sm font-medium text-foreground">
-                    View Case Studies
-                  </span>
-                </div>
-
-                <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-[#02AC87] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
-              </motion.a>
-
-              {/* Winner badge */}
-              <div className="mt-4">
-                <WinnerBadge />
+              <div className="flex items-end">
+                {CASE_STUDIES.slice(0, 4).map((cs, i) => {
+                  const rotations = [-2.5, 1.5, -1, 2];
+                  return (
+                    <motion.div
+                      key={cs.id}
+                      className="relative overflow-hidden rounded-md border-2 border-background shadow-sm shrink-0"
+                      style={{ width: 30, height: 38, marginLeft: i === 0 ? 0 : -8, zIndex: i + 1, rotate: rotations[i] }}
+                      whileHover={{ zIndex: 10, y: -4, rotate: 0, boxShadow: "0 8px 20px rgba(0,0,0,0.15)" }}
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {cs.coverImage && (
+                        <motion.img
+                          src={cs.coverImage}
+                          alt={cs.title}
+                          className="w-full h-full object-cover"
+                          whileHover={{ scale: 1.22 }}
+                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                      )}
+                    </motion.div>
+                  );
+                })}
               </div>
-
-              {/* Availability + status badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.55, duration: 0.7 }}
-                className="mt-4 hidden md:flex flex-wrap items-center gap-2"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                  </span>
-                  <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
-                    OPEN TO OPPORTUNITIES · GERMANY & REMOTE
-                  </span>
+              <div className="flex flex-col gap-0.5">
+                <span className="font-mono text-[9px] tracking-[0.18em] text-muted-foreground/45">
+                  {CASE_STUDIES.length} DOCUMENTED PROJECTS
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border font-mono text-[9px] tracking-[0.14em] text-muted-foreground/70">
-                  <span className="text-foreground/50 text-[8px]">▲</span>
-                  LEARNING GERMAN · B2
-                </span>
-              </motion.div>
+                <span className="text-sm font-medium text-foreground">View Case Studies</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-muted-foreground/35 group-hover:text-[#02AC87] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+            </motion.a>
 
-              {/* Discipline chips */}
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.75, duration: 0.6 }}
-                className="mt-4 hidden md:flex flex-wrap gap-1.5"
-              >
-                {MODES.map((mode) => (
-                  <button
-                    key={mode.id}
-                    onClick={() => setActiveMode(mode.id)}
-                    className={[
-                      "px-3 py-1.5 rounded-full font-mono text-[9px] tracking-[0.14em] border transition-all duration-200",
-                      activeMode === mode.id
-                        ? "bg-[#02AC87] text-white border-[#02AC87]"
-                        : "bg-transparent text-muted-foreground border-border hover:border-[#02AC87]/40 hover:text-foreground",
-                    ].join(" ")}
-                  >
-                    {mode.category.split(" ")[0]}
-                  </button>
-                ))}
-              </motion.div>
+            {/* WinnerBadge */}
+            <WinnerBadge />
 
-            </motion.div>
-
-            {/* Right — image carousel */}
+            {/* Availability — right side, large screens only */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1.05, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="hidden lg:flex flex-wrap items-center gap-3 ml-auto"
             >
-              {/* LinkedIn badge — floats on top-left of image */}
-              <motion.a
-                href="https://www.linkedin.com/in/nadeemsaifrind/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.9, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute top-3 left-3 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center hover:shadow-lg hover:bg-white hover:scale-105 transition-all duration-200"
-              >
-                <Linkedin className="w-4 h-4 text-[#0077B5]" />
-              </motion.a>
-
-              <HeroCarousel activeMode={activeMode} onSelect={setActiveMode} />
+              <span className="inline-flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                </span>
+                <span className="font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                  OPEN TO OPPORTUNITIES · GERMANY & REMOTE
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border font-mono text-[9px] tracking-[0.14em] text-muted-foreground/70">
+                <span className="text-foreground/50 text-[8px]">▲</span>
+                LEARNING GERMAN · B2
+              </span>
             </motion.div>
 
           </div>
         </div>
-      </section>
+      </div>
 
       {/* ── Lens breadcrumb ───────────────────────────────────────────── */}
       <AnimatePresence>
