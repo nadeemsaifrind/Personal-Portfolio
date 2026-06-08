@@ -77,42 +77,16 @@ function Index() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* Reveal cutout on first downward scroll, block page movement during animation */
+  /* Reveal cutout on first scroll — works on desktop and mobile */
   useEffect(() => {
-    let triggered = false;
-
-    const lockScroll  = () => {
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow           = "hidden";
-    };
-    const unlockScroll = () => {
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow           = "";
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      if (triggered) {
-        e.preventDefault(); // keep blocking while animation plays
-        return;
+    const onScroll = () => {
+      if (window.scrollY > 30) {
+        setCutoutVisible(true);
+        window.removeEventListener("scroll", onScroll);
       }
-      if (e.deltaY <= 0) return; // before trigger: ignore upward scroll
-
-      e.preventDefault();        // block the triggering scroll
-      triggered = true;
-      lockScroll();              // CSS-level scroll lock (belt + suspenders)
-      setCutoutVisible(true);
-
-      setTimeout(() => {
-        unlockScroll();
-        window.removeEventListener("wheel", onWheel);
-      }, 1500);
     };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      unlockScroll();
-    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const activeModeIdx = ((wheelIdx % N) + N) % N;
