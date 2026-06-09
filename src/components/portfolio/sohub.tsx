@@ -16,6 +16,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export function MagneticButton({
   children,
   href,
+  target,
+  rel,
   onClick,
   variant = "primary",
   className = "",
@@ -23,6 +25,8 @@ export function MagneticButton({
 }: {
   children: ReactNode;
   href?: string;
+  target?: string;
+  rel?: string;
   onClick?: () => void;
   variant?: "primary" | "ink" | "ghost";
   className?: string;
@@ -83,6 +87,8 @@ export function MagneticButton({
       <motion.a
         ref={ref}
         href={href}
+        target={target}
+        rel={rel}
         onMouseMove={onMove}
         onMouseLeave={reset}
         style={{ x: sx, y: sy }}

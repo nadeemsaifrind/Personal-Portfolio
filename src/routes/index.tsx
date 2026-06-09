@@ -598,13 +598,13 @@ function Index() {
             <RevealText
               as="h2"
               className="display-hero mt-4 max-w-[8ch] text-[clamp(5rem,14vw,13rem)] leading-[0.82]"
-              lines={["Don't", "be shy"]}
+              lines={["Let's do", "Magic", "Together"]}
             />
             <div className="mt-10 flex flex-wrap items-center gap-3 lg:mt-16">
               <MagneticButton href={`mailto:${PERSONAL.email}`} variant="ink" icon>
                 Start a conversation
               </MagneticButton>
-              <MagneticButton href={PERSONAL.linkedin} variant="ghost" icon>
+              <MagneticButton href={PERSONAL.linkedin} target="_blank" rel="noopener noreferrer" variant="ghost" icon>
                 LinkedIn
               </MagneticButton>
             </div>

@@ -144,7 +144,7 @@ export const PERSONAL = {
   description:
     "Film school in Pakistan. Master's in Germany. Now I design brands, run campaigns, build products, and write code — often in the same project.",
   email: "nsaif092@gmail.com",
-  linkedin: "https://linkedin.com/in/nadeemsaif",
+  linkedin: "https://www.linkedin.com/in/nadeemsaifrind/",
   location: "Germany",
 } as const;
 
