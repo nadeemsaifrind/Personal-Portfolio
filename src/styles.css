@@ -36,7 +36,6 @@
   --color-ring: var(--ring);
   --color-grid-line: var(--grid-line);
   --color-node: var(--node);
-
   --color-brand: var(--brand);
   --color-brand-bright: var(--brand-bright);
   --color-ink: var(--ink);
@@ -45,54 +44,54 @@
 }
 
 /*
-  LIGHT EDITORIAL THEME (SOHub-style) — one locked theme.
-  Single accent: brand green (#02AC87). Dark "ink" used for type + dark blocks.
+  DARK THEME — Resend-inspired deep black.
+  Single accent: brand green #02AC87. Everything else is dark.
 */
 :root {
-  --radius: 1.5rem;
+  --radius: 1.25rem;
 
-  /* Cool off-white page, near-black ink — never pure #fff / #000 */
-  --background: oklch(0.972 0.004 220);   /* ~ #F0F4F6 */
-  --foreground: oklch(0.18 0.012 250);    /* ~ #0C1016 ink */
-  --ink: oklch(0.16 0.013 255);
+  /* Near-black page, near-white text */
+  --background: oklch(0.072 0.005 250);     /* ~#0A0A0E */
+  --foreground: oklch(0.97 0.003 250);      /* ~#F5F5F8 */
+  --ink: oklch(0.072 0.005 250);
 
-  --surface: oklch(1 0 0);
-  --surface-2: oklch(0.93 0.005 225);
+  --surface: oklch(0.105 0.006 250);        /* ~#111118 */
+  --surface-2: oklch(0.145 0.008 250);      /* ~#181820 */
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.012 250);
+  --card: oklch(0.105 0.006 250);
+  --card-foreground: oklch(0.97 0.003 250);
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.012 250);
+  --popover: oklch(0.105 0.006 250);
+  --popover-foreground: oklch(0.97 0.003 250);
 
-  /* Brand green stays the single accent */
-  --brand: oklch(0.64 0.145 168);         /* #02AC87 */
-  --brand-bright: oklch(0.7 0.155 168);
+  /* Brand green — single accent */
+  --brand: oklch(0.64 0.145 168);           /* #02AC87 */
+  --brand-bright: oklch(0.70 0.155 168);
 
   --primary: oklch(0.64 0.145 168);
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.93 0.005 225);
-  --secondary-foreground: oklch(0.18 0.012 250);
+  --secondary: oklch(0.145 0.008 250);
+  --secondary-foreground: oklch(0.97 0.003 250);
 
-  --muted: oklch(0.93 0.005 225);
-  --muted-foreground: oklch(0.52 0.012 250);
+  --muted: oklch(0.145 0.008 250);
+  --muted-foreground: oklch(0.52 0.009 250);
 
   --accent: oklch(0.64 0.145 168);
   --accent-foreground: oklch(0.99 0 0);
 
-  --destructive: oklch(0.6 0.21 25);
+  --destructive: oklch(0.60 0.21 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.18 0.012 250 / 0.1);
-  --input: oklch(0.18 0.012 250 / 0.14);
+  --border: oklch(0.97 0.003 250 / 0.09);
+  --input: oklch(0.97 0.003 250 / 0.07);
   --ring: oklch(0.64 0.145 168 / 0.5);
 
-  --grid-line: oklch(0.18 0.012 250 / 0.05);
+  --grid-line: oklch(0.97 0.003 250 / 0.04);
   --node: oklch(0.64 0.145 168);
 
-  --shadow-float: 0 40px 80px -32px oklch(0.2 0.03 250 / 0.25), 0 12px 28px -14px oklch(0.2 0.03 250 / 0.14);
-  --shadow-soft: 0 10px 36px -14px oklch(0.2 0.03 250 / 0.16);
+  --shadow-float: 0 40px 80px -24px oklch(0 0 0 / 0.7), 0 10px 24px -12px oklch(0 0 0 / 0.4);
+  --shadow-soft: 0 10px 36px -14px oklch(0 0 0 / 0.45);
   --glow-brand: 0 18px 50px -16px oklch(0.64 0.145 168 / 0.5);
 }
 
@@ -102,10 +101,9 @@
   }
 
   html {
-    color-scheme: light;
+    color-scheme: dark;
     background: var(--background);
   }
-  /* Lenis smooth-scroll: disable native smooth so Lenis owns scrolling */
   html.lenis, html.lenis body { height: auto; }
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
   .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
@@ -123,11 +121,11 @@
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: -0.04em;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   ::selection {
-    background: var(--ink);
+    background: var(--brand);
     color: oklch(0.99 0 0);
   }
 }
@@ -142,24 +140,24 @@
   }
 
   .dot-bg {
-    background-image: radial-gradient(circle, oklch(0.18 0.012 250 / 0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle, oklch(0.97 0.003 250 / 0.05) 1px, transparent 1px);
     background-size: 26px 26px;
   }
 
   .glass {
-    background: color-mix(in oklab, var(--surface) 70%, transparent);
+    background: color-mix(in oklab, var(--surface) 78%, transparent);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
     border: 1px solid var(--border);
-    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06);
   }
 
   .glass-strong {
-    background: color-mix(in oklab, var(--surface) 86%, transparent);
+    background: color-mix(in oklab, var(--surface) 92%, transparent);
     backdrop-filter: blur(26px) saturate(150%);
     -webkit-backdrop-filter: blur(26px) saturate(150%);
     border: 1px solid var(--border);
-    box-shadow: 0 10px 36px -14px oklch(0.2 0.03 250 / 0.18), inset 0 1px 0 oklch(1 0 0 / 0.6);
+    box-shadow: 0 10px 36px -14px oklch(0 0 0 / 0.55), inset 0 1px 0 oklch(1 0 0 / 0.06);
   }
 
   .shadow-float { box-shadow: var(--shadow-float); }
@@ -169,17 +167,14 @@
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
 
-  /* Massive editorial display sizing + super-tight tracking (SOHub feel) */
   .display-hero {
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.045em;
     line-height: 0.92;
   }
   .tracking-tightest { letter-spacing: -0.05em; }
 
-  /* Masked line reveal: clip wrapper, child slides up */
   .reveal-mask { display: block; overflow: clip; padding: 0.06em 0; }
-
   .brand-text { color: var(--brand); }
 
   .scrollbar-none {
@@ -187,6 +182,53 @@
     -ms-overflow-style: none;
   }
   .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  /* Floating ambient glow behind sections */
+  @keyframes glow-float {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+    50%       { transform: translate(5%, -4%) scale(1.1); opacity: 0.6; }
+  }
+
+  .section-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .section-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(ellipse 55% 50% at 22% 55%, oklch(1 0 0 / 0.032) 0%, transparent 65%);
+    animation: glow-float 18s ease-in-out infinite;
+  }
+  .section-glow-r::before {
+    background: radial-gradient(ellipse 55% 50% at 78% 45%, oklch(1 0 0 / 0.032) 0%, transparent 65%);
+    animation-delay: -9s;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 36s linear infinite;
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .animate-marquee-slow {
+    animation: marquee 50s linear infinite;
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .animate-marquee-reverse {
+    animation: marquee 62s linear infinite reverse;
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

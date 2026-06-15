@@ -1,24 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { motion } from "framer-motion";
 import {
-  ArrowRight,
   ArrowUp,
   ArrowUpRight,
-  ChatCircleText,
   DotsThree,
   LinkedinLogo,
   X,
 } from "@phosphor-icons/react";
-import heroBgImg from "@/assets/hero-bg.png";
 import heroCutoutImg from "@/assets/hero-cutout.png";
-import { MODES, PERSONAL, CASE_STUDIES, type ModeId, type CaseStudy } from "@/lib/portfolio-data";
+import { PERSONAL, CASE_STUDIES, type CaseStudy } from "@/lib/portfolio-data";
 import { CaseStudies } from "@/components/portfolio/CaseStudies";
 import { ServiceStack } from "@/components/portfolio/ServiceStack";
-import { MagneticButton, RevealText } from "@/components/portfolio/sohub";
+import { RevealText } from "@/components/portfolio/sohub";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    role: typeof search.role === "string" ? search.role : undefined,
+  }),
   head: () => ({
     meta: [
       { title: `${PERSONAL.name} — ${PERSONAL.title}` },
@@ -37,196 +37,390 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-/* ─── Wheel constants ────────────────────────────────────────────────── */
-const WHEEL_INTERVAL = 4200;
-const ITEM_H  = 52;
-const VISIBLE = 5;
-const PAD     = Math.floor(VISIBLE / 2);
-const N       = MODES.length;
-const REEL    = Array.from({ length: N * 3 }, (_, i) => MODES[i % N]);
-const INIT_IDX = N;
-
+/* ── Nav links ─────────────────────────────────────────────────────── */
 const NAV_LINKS = [
-  { href: "#projects", label: "Work" },
-  { href: "#services", label: "Services" },
+  { href: "#projects", label: "Case Studies" },
   { href: "#contact", label: "Contact" },
 ];
 
-function Index() {
-  const [mobileOpen,   setMobileOpen]   = useState(false);
-  const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
-  const [wheelIdx,     setWheelIdx]     = useState(INIT_IDX);
-  const [instant,      setInstant]      = useState(false);
-  const [cutoutVisible, setCutoutVisible] = useState(false);
-  const [overviewOpen,  setOverviewOpen]  = useState(false);
-  const pausedRef = useRef(false);
+/* ── Discipline marquee items ───────────────────────────────────────── */
+const DISCIPLINES = [
+  "Brand Identity",
+  "Marketing Design",
+  "Content Creation",
+  "UX Design",
+  "Web Development",
+  "Startup Strategy",
+  "Photography",
+  "Social Media",
+  "Campaign Design",
+  "Motion & Video",
+];
 
-  useEffect(() => {
-    let triggered = false;
+/* ── Stats ──────────────────────────────────────────────────────────── */
+const STATS = [
+  { value: "6+", label: "Years of creative work", sub: "Film school through to Germany" },
+  { value: "20+", label: "Projects shipped", sub: "Across brand, digital, and product" },
+  { value: "2", label: "Hackathon & award wins", sub: "WISAG & Kenergy competitions" },
+];
 
-    const onFirstScroll = () => {
-      if (triggered) return;
-      triggered = true;
+/* ── Client showcase gallery rows ──────────────────────────────────── */
+const _ns = CASE_STUDIES.find(cs => cs.id === "nextstep")!;
+const _g = (slug: string) => _ns.clientGallery?.find(g => g.slug === slug)?.images ?? [];
 
-      // Stop lenis immediately so the page doesn't move at all
-      const lenis = (window as any).__lenis;
-      if (lenis) lenis.stop();
+const SHOWCASE_ROW_A = [..._g("arascow"), ..._g("bcl"), ..._g("pakworldhoney")];
+const SHOWCASE_ROW_B = [..._g("potentialwecker"), ..._g("ednex"), ..._g("mousamargi")];
 
-      setCutoutVisible(true);
+/* ── Role SEO ───────────────────────────────────────────────────────── */
+const roles = [
+  {
+    slug: "marketing-designer",
+    title: "Marketing Designer.",
+    description: "Campaigns, brand systems, and visual communication that drives results.",
+  },
+  {
+    slug: "social-media-manager",
+    title: "Social Media Manager.",
+    description: "Content strategy, community growth, and social campaigns that compound.",
+  },
+  {
+    slug: "brand-designer",
+    title: "Brand Designer.",
+    description: "Visual identities and design systems built to last.",
+  },
+  {
+    slug: "content-creator",
+    title: "Content Creator.",
+    description: "Photography, video, and storytelling that travels across platforms.",
+  },
+  {
+    slug: "ux-designer",
+    title: "UX Designer.",
+    description: "Research-led design from wireframe to working product.",
+  },
+  {
+    slug: "digital-marketing-specialist",
+    title: "Digital Marketing Specialist.",
+    description: "Growth systems, content engines, and campaigns that convert.",
+  },
+] as const;
 
-      // Cutout animation is 1.4s — give it a touch of extra breathing room
-      setTimeout(() => {
-        if (lenis) lenis.start();
-      }, 1600);
+function getRoleBySlug(slug?: string) {
+  return roles.find((r) => r.slug === slug);
+}
 
-      window.removeEventListener("wheel",     onFirstScroll, { capture: true } as EventListenerOptions);
-      window.removeEventListener("touchmove", onFirstScroll, { capture: true } as EventListenerOptions);
-    };
+function getRoleMeta(role?: (typeof roles)[number]) {
+  const title = role
+    ? `Nadeem Saif — ${role.title.replace(/\.$/, "")}, Germany`
+    : "Nadeem Saif — Marketing Designer, Germany";
+  const description = role
+    ? `${role.description} Based in Germany.`
+    : "Marketing Designer with experience in brand, campaigns, content and digital. Based in Germany.";
+  return { title, description };
+}
 
-    window.addEventListener("wheel",     onFirstScroll, { capture: true, passive: true });
-    window.addEventListener("touchmove", onFirstScroll, { capture: true, passive: true });
+/* ── Ease ───────────────────────────────────────────────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as const;
 
-    return () => {
-      window.removeEventListener("wheel",     onFirstScroll, { capture: true } as EventListenerOptions);
-      window.removeEventListener("touchmove", onFirstScroll, { capture: true } as EventListenerOptions);
-      // Safety: ensure lenis isn't left stopped if component unmounts mid-lock
-      (window as any).__lenis?.start();
-    };
-  }, []);
+/* ── Client Work Showcase ───────────────────────────────────────────── */
+function ClientShowcase() {
+  return (
+    <section className="section-glow section-glow-r py-12 sm:py-16 lg:py-24">
+      {/* Header */}
+      <div className="mx-auto max-w-375 px-4 sm:px-8 lg:px-12 mb-10 lg:mb-14">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-px w-5 bg-primary" />
+              <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Client Portfolio</span>
+            </div>
+            <RevealText
+              as="h2"
+              className="display-hero text-[clamp(2rem,4vw,4rem)] max-w-[14ch]"
+              lines={["Visual work done", "for real clients."]}
+            />
+          </div>
+          <p className="text-sm text-foreground/40 max-w-[38ch] leading-relaxed sm:pb-1">
+            Graphic design, branding, social visuals, and campaign assets — delivered across six industries.
+          </p>
+        </div>
+      </div>
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      if (pausedRef.current) return;
-      setWheelIdx(p => p + 1);
-    }, WHEEL_INTERVAL);
-    return () => clearInterval(t);
-  }, []);
+      {/* Scrolling rows */}
+      <div className="space-y-3 overflow-hidden">
+        {/* Row A — scrolls left */}
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
+          <div className="animate-marquee-slow">
+            {[...SHOWCASE_ROW_A, ...SHOWCASE_ROW_A].map((img, i) => (
+              <div key={i} className="shrink-0 mx-1.5 w-44 sm:w-56 lg:w-64 aspect-square overflow-hidden rounded-xl bg-surface border border-border/50">
+                <img
+                  src={img}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
-  useEffect(() => {
-    if (wheelIdx >= N * 2) {
-      setInstant(true);
-      setWheelIdx(w => w - N);
-      requestAnimationFrame(() => setInstant(false));
-    } else if (wheelIdx < N) {
-      setInstant(true);
-      setWheelIdx(w => w + N);
-      requestAnimationFrame(() => setInstant(false));
-    }
-  }, [wheelIdx]);
+        {/* Row B — scrolls right */}
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
+          <div className="animate-marquee-reverse">
+            {[...SHOWCASE_ROW_B, ...SHOWCASE_ROW_B].map((img, i) => (
+              <div key={i} className="shrink-0 mx-1.5 w-44 sm:w-56 lg:w-64 aspect-square overflow-hidden rounded-xl bg-surface border border-border/50">
+                <img
+                  src={img}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-  const activeModeIdx = ((wheelIdx % N) + N) % N;
-  const activeMode    = MODES[activeModeIdx].id as ModeId;
+/* ── Hero portrait with grayscale→color brush reveal on hover ────── */
+const BRUSH = 150;
 
-  const pickMode = (id: ModeId) => {
-    const pos  = MODES.findIndex(m => m.id === id);
-    if (pos < 0) return;
-    const best = [0, N, N * 2]
-      .map(o => o + pos)
-      .reduce((a, b) => Math.abs(b - wheelIdx) < Math.abs(a - wheelIdx) ? b : a);
-    setWheelIdx(best);
-    pausedRef.current = true;
-    setTimeout(() => { pausedRef.current = false; }, 7000);
+function HeroPortrait() {
+  const imgWrapRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ x: -800, y: -800 });
+
+  const onMove = (e: React.MouseEvent) => {
+    const rect = imgWrapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
-  return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-clip selection:bg-ink selection:text-white">
+  const onTouch = (e: React.TouchEvent) => {
+    const rect = imgWrapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    setPos({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });
+  };
 
-      {/* ══ NAV (unchanged) ════════════════════════════════════════════════ */}
+  const mask = `radial-gradient(circle ${BRUSH}px at ${pos.x}px ${pos.y}px, transparent 30%, black ${BRUSH}px)`;
+  const active = pos.x > 0 && pos.y > 0;
+
+  return (
+    <>
+      {/* ── Mobile (<sm): full-bleed background — object-cover, no stretching ── */}
+      <div className="pointer-events-none absolute inset-0 z-5 sm:hidden">
+        <img
+          src={heroCutoutImg}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-cover object-[center_8%]"
+          style={{ filter: "grayscale(100%) brightness(0.48) contrast(1.12)" }}
+        />
+        {/* Left-heavy gradient — text zone stays dark, right edge shows portrait */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(110deg, var(--background) 28%, oklch(0.072 0.005 250 / 0.78) 52%, oklch(0.072 0.005 250 / 0.22) 88%)",
+          }}
+        />
+        {/* Top vignette — blends behind fixed nav */}
+        <div
+          className="absolute inset-x-0 top-0 h-28"
+          style={{ background: "linear-gradient(to bottom, var(--background), transparent)" }}
+        />
+        {/* Bottom vignette — dissolves cleanly into next section */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-16"
+          style={{ background: "linear-gradient(to top, var(--background), transparent)" }}
+        />
+      </div>
+
+      {/* ── Tablet & Desktop (sm+): right-column, brush-reveal on hover ── */}
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 z-5 hidden sm:block sm:w-[55%] sm:h-full lg:w-[60%] lg:h-screen"
+      >
+        {/* Left-edge fade */}
+        <div
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-2/5"
+          style={{ background: "linear-gradient(to right, var(--background) 10%, transparent)" }}
+        />
+        {/* Top-edge fade */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36"
+          style={{ background: "linear-gradient(to bottom, var(--background), transparent)" }}
+        />
+
+        {/* Inner wrapper sized by image — getBoundingClientRect() aligns with mask coords */}
+        <div
+          ref={imgWrapRef}
+          onMouseMove={onMove}
+          onMouseLeave={() => setPos({ x: -800, y: -800 })}
+          onTouchStart={onTouch}
+          onTouchMove={onTouch}
+          onTouchEnd={() => setPos({ x: -800, y: -800 })}
+          onTouchCancel={() => setPos({ x: -800, y: -800 })}
+          className="pointer-events-auto absolute bottom-0 right-0 select-none touch-none"
+          style={{ height: "96%", cursor: "none" }}
+        >
+          {/* Color base */}
+          <img
+            src={heroCutoutImg}
+            alt="Nadeem Saif"
+            draggable={false}
+            className="block h-full w-auto"
+            style={{ filter: "drop-shadow(0 30px 80px rgba(0,0,0,0.55))" }}
+          />
+          {/* Grayscale overlay with brush-reveal mask */}
+          <img
+            src={heroCutoutImg}
+            alt=""
+            aria-hidden
+            draggable={false}
+            className="absolute top-0 left-0 block h-full w-auto"
+            style={{
+              filter: "grayscale(100%) brightness(0.82) contrast(1.1)",
+              WebkitMaskImage: mask,
+              maskImage: mask,
+            }}
+          />
+          {/* Brush cursor ring */}
+          {active && (
+            <div
+              className="pointer-events-none absolute rounded-full border border-white/30"
+              style={{ width: BRUSH * 2, height: BRUSH * 2, left: pos.x - BRUSH, top: pos.y - BRUSH }}
+            />
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+
+function Index() {
+  const { role } = Route.useSearch();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+
+  const activeRole = useMemo(() => getRoleBySlug(role), [role]);
+
+  /* Update meta tags for role-based SEO links */
+  useEffect(() => {
+    const meta = getRoleMeta(activeRole);
+    document.title = meta.title;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", meta.description);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", meta.title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", meta.description);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", meta.title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", meta.description);
+  }, [activeRole]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground overflow-x-clip">
+
+      {/* ══ NAV ══════════════════════════════════════════════════════════ */}
       <motion.header
-        className="fixed top-0 left-0 z-50 flex w-full items-start justify-between px-4 py-4 md:px-8 lg:px-12 lg:py-8 pointer-events-none"
+        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-4 py-3.5 md:px-8 lg:px-10"
+        style={{
+          background: "oklch(0.072 0.005 250 / 0.88)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          borderBottom: "1px solid oklch(0.97 0.003 250 / 0.07)",
+        }}
         initial={{ y: -28, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.45, ease: EASE }}
       >
+        {/* Logo */}
         <a
           href="#top"
-          className="pointer-events-auto block select-none text-[26px] font-black lowercase tracking-[-0.06em] lg:text-[38px]"
+          className="text-[20px] font-black lowercase tracking-[-0.06em] text-foreground select-none"
         >
           nadeem<span className="text-primary">.</span>
         </a>
 
-        <div className="pointer-events-auto flex items-center gap-2.5 lg:gap-3">
+        {/* Desktop links */}
+        <nav className="hidden items-center gap-1 md:flex">
+          {NAV_LINKS.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/50 transition-colors hover:bg-surface hover:text-foreground"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Right CTAs */}
+        <div className="flex items-center gap-2">
+          <a
+            href="/nadeem-saif-cv.pdf"
+            download
+            className="hidden items-center rounded-full border border-border px-4 py-2 text-[13px] font-medium text-foreground/55 transition hover:border-white/18 hover:text-foreground md:flex"
+          >
+            Download CV
+          </a>
           <a
             href="#contact"
-            className="group hidden items-center rounded-full bg-foreground/6 p-1.5 pl-8 text-ink transition-transform duration-500 hover:scale-105 md:flex"
+            className="hidden items-center rounded-full border border-border bg-surface px-5 py-2 text-[13px] font-medium text-foreground/80 transition hover:bg-surface-2 md:flex"
           >
-            <span className="mr-5 text-base font-semibold uppercase tracking-tight">
-              Let's talk
-            </span>
-            <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-surface">
-              <ChatCircleText size={20} weight="bold" className="transition-transform duration-500 group-hover:-translate-y-8" />
-              <ChatCircleText size={20} weight="bold" className="absolute translate-y-8 transition-transform duration-500 group-hover:translate-y-0" />
-            </span>
+            Let's talk
           </a>
-
           <button
             onClick={() => setMobileOpen(true)}
-            className="group flex items-center rounded-full bg-ink p-1.5 pl-8 text-white transition-transform duration-500 hover:scale-105"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition hover:bg-surface-2 md:hidden"
             aria-label="Open menu"
           >
-            <span className="mr-5 text-base font-semibold uppercase tracking-tight">Menu</span>
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/8">
-              <DotsThree size={28} weight="bold" className="transition-transform duration-500 group-hover:rotate-90" />
-            </span>
+            <DotsThree size={20} weight="bold" />
           </button>
         </div>
       </motion.header>
 
-      {/* ══ MOBILE SHEET (unchanged) ════════════════════════════════════════ */}
+      {/* ══ MOBILE SHEET ═════════════════════════════════════════════════ */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="right" className="w-80 flex flex-col bg-background border-l border-border [&>button]:hidden">
+        <SheetContent side="right" className="w-80 flex flex-col border-l border-border bg-background [&>button]:hidden">
           <button
             onClick={() => setMobileOpen(false)}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white"
+            className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-foreground/60"
             aria-label="Close menu"
           >
-            <X size={16} weight="bold" />
+            <X size={15} weight="bold" />
           </button>
           <div className="mt-6 mb-2">
-            <p className="text-2xl font-bold tracking-tightest">{PERSONAL.name}</p>
-            <p className="text-sm text-muted-foreground mt-1">{PERSONAL.title}</p>
+            <p className="text-2xl font-bold tracking-tightest text-foreground">{PERSONAL.name}</p>
+            <p className="mt-1 text-sm text-foreground/40">{PERSONAL.title}</p>
           </div>
-          <nav className="flex flex-col gap-1 mt-6">
+          <nav className="mt-6 flex flex-col gap-1">
             {NAV_LINKS.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation(); // prevent lenis doc handler from double-firing
-                  setMobileOpen(false);
-                  setTimeout(() => {
-                    const el = document.querySelector(item.href);
-                    if (!el) return;
-                    const lenis = (window as any).__lenis;
-                    if (lenis) lenis.scrollTo(el, { offset: -80 });
-                    else el.scrollIntoView({ behavior: "smooth" });
-                  }, 320);
-                }}
-                className="rounded-2xl px-3 py-3 text-4xl font-semibold tracking-tight text-foreground/80 transition-colors hover:bg-foreground/5 hover:text-foreground"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-2xl px-3 py-3 text-4xl font-semibold tracking-tight text-foreground/70 transition-colors hover:bg-surface hover:text-foreground"
               >
                 {item.label}
               </a>
             ))}
           </nav>
           <div className="mt-auto pt-8">
-            {/* No href so lenis doc-handler doesn't fire; we do it manually */}
-            <MagneticButton
-              variant="primary"
-              className="w-full justify-between"
-              onClick={() => {
-                setMobileOpen(false);
-                setTimeout(() => {
-                  const el = document.querySelector("#contact");
-                  if (!el) return;
-                  const lenis = (window as any).__lenis;
-                  if (lenis) lenis.scrollTo(el, { offset: -80 });
-                  else el.scrollIntoView({ behavior: "smooth" });
-                }, 320);
-              }}
+            <a
+              href="#contact"
+              onClick={() => setMobileOpen(false)}
+              className="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-brand-bright"
             >
-              Hire me
-            </MagneticButton>
+              Let's talk
+            </a>
           </div>
         </SheetContent>
       </Sheet>
@@ -234,501 +428,349 @@ function Index() {
       <main id="top">
 
         {/* ══ HERO ════════════════════════════════════════════════════════ */}
-        <div
-          className="pt-20 lg:pt-24 px-2.5 sm:px-4 md:px-5 lg:px-7"
-          onMouseEnter={() => { pausedRef.current = true; }}
-          onMouseLeave={() => { pausedRef.current = false; }}
-        >
-          <div
-            className="relative rounded-lg overflow-hidden"
-            style={{ height: "58vh", minHeight: "400px", maxHeight: "680px" }}
-          >
-            {/* Background image */}
-            <img
-              src={heroBgImg}
-              alt=""
-              aria-hidden
-              fetchPriority="high"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ objectPosition: "center center" }}
-            />
+        <section className="relative overflow-hidden lg:min-h-screen">
+          {/* Background glows */}
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <div className="absolute right-0 top-0 h-full w-[55%]"
+              style={{ background: "radial-gradient(ellipse 70% 55% at 80% 45%, oklch(0.64 0.145 168 / 0.07), transparent 70%)" }} />
+            <div className="absolute bottom-0 right-[18%] h-80 w-80 rounded-full bg-primary/5 blur-[110px]" />
+          </div>
 
-            {/* Dual-vignette overlay */}
-            <div className="absolute inset-0 pointer-events-none"
-              style={{
-                background: [
-                  "linear-gradient(to right,",
-                  "  rgba(0,0,0,0.97) 0%,",
-                  "  rgba(0,0,0,0.88) 26%,",
-                  "  rgba(0,0,0,0.28) 50%,",
-                  "  rgba(0,0,0,0.68) 70%,",
-                  "  rgba(0,0,0,0.93) 88%,",
-                  "  rgba(0,0,0,0.97) 100%",
-                  ")"
-                ].join("")
-              }}
-            />
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 30%, transparent 68%, rgba(0,0,0,0.60) 100%)" }}
-            />
+          {/* Portrait — absolutely positioned, full section height, brush reveal on hover */}
+          <HeroPortrait />
 
-            {/* Left: headline + CTA */}
+          {/* Text content — z-10 floats above portrait; pointer-events-none on wrappers so mouse events reach the portrait behind */}
+          <div className="pointer-events-none relative z-10 mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
             <motion.div
-              className="absolute top-0 bottom-0 z-10 flex flex-col justify-center"
-              style={{ left: 0, width: "clamp(260px, 62%, 820px)", paddingLeft: "clamp(18px, 4%, 56px)", paddingRight: "clamp(12px, 2%, 32px)" }}
-              initial={{ x: -16 }}
-              animate={{ x: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="pointer-events-none flex flex-col justify-start pt-24 pb-16 sm:pt-28 sm:pb-14 lg:pt-36 lg:pb-20"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, ease: EASE }}
             >
+              {/* Availability chip */}
+              <span className="mb-10 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] text-foreground/45">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                Open to work · Germany
+              </span>
+
+              {/* Name */}
               <h1
-                className="text-white font-black lowercase leading-[1.1] tracking-[-0.06em]"
-                style={{ fontSize: "clamp(2rem, 5.4vw, 6.5rem)" }}
+                className="font-black lowercase text-foreground"
+                style={{
+                  fontSize: "clamp(3.2rem, 14vw, 15rem)",
+                  letterSpacing: "-0.06em",
+                  lineHeight: 0.88,
+                }}
               >
-                Design,{" "}
-                <span style={{ color: "#02AC87" }}>Ideas</span>
-                <br />
-                and Everything
-                <br />
-                <span style={{ color: "#02AC87" }}>in between.</span>
+                nadeem<span className="text-primary">.</span>
               </h1>
 
-              <button
-                onClick={() => setOverviewOpen(true)}
-                className="inline-flex items-center group self-start mt-7"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.16)",
-                  borderRadius: "999px",
-                  padding: "0.48rem 1.1rem",
-                  background: "rgba(255,255,255,0.05)",
-                  cursor: "pointer",
-                }}
+              {/* Lightweight tagline */}
+              <p
+                className="mt-5 sm:mt-6 max-w-[44ch] sm:max-w-[52ch] text-foreground/38"
+                style={{ fontSize: "clamp(0.78rem, 2.8vw, 1.05rem)", fontWeight: 300, lineHeight: 1.5 }}
               >
-                <span className="font-mono text-[10px] tracking-[0.22em] text-white/60 group-hover:text-white transition-colors">
-                  QUICK OVERVIEW
-                </span>
-              </button>
-            </motion.div>
+                Graphic Designer &amp; Content Creator&nbsp;&nbsp;|&nbsp;&nbsp;
+                <span className="hidden sm:inline">Social Media · Marketing · Digital Publishing · Branding</span>
+                <span className="sm:hidden">Social Media · Marketing · Branding</span>
+              </p>
 
-            {/* Cutout PNG — rises from bottom on first scroll */}
-            <motion.img
-              src={heroCutoutImg}
-              alt="Nadeem Saif"
-              className="absolute bottom-0 z-20 pointer-events-none select-none"
-              style={{ left: "65%", height: "150%", width: "auto", maxWidth: "none" }}
-              initial={{ y: "100%", x: "-50%" }}
-              animate={{ y: cutoutVisible ? "0%" : "100%", x: "-50%" }}
-              transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            />
-
-            {/* Drum-roll wheel — desktop */}
-            <motion.div
-              className="hidden sm:flex flex-col absolute top-1/2 -translate-y-1/2 z-20"
-              style={{ right: "clamp(18px, 3.8%, 56px)" }}
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.32, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div
-                style={{
-                  position:        "relative",
-                  height:          VISIBLE * ITEM_H,
-                  overflow:        "hidden",
-                  maskImage:       "linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)",
-                }}
-              >
-                <div className="absolute inset-x-0 pointer-events-none z-10"
-                  style={{
-                    top:          PAD * ITEM_H,
-                    height:       ITEM_H,
-                    borderTop:    "1px solid rgba(255,255,255,0.12)",
-                    borderBottom: "1px solid rgba(255,255,255,0.12)",
-                  }}
-                />
-
-                <motion.div
-                  className="flex flex-col items-end"
-                  animate={{ y: -wheelIdx * ITEM_H }}
-                  transition={
-                    instant
-                      ? { duration: 0 }
-                      : { type: "spring", stiffness: 310, damping: 36, mass: 0.7 }
-                  }
+              {/* CTAs */}
+              <div className="pointer-events-auto mt-10 flex flex-wrap items-center gap-3">
+                <a
+                  href="#projects"
+                  className="inline-flex items-center rounded-full bg-foreground px-7 py-3.5 text-sm font-semibold text-background transition hover:bg-foreground/88"
                 >
-                  {Array.from({ length: PAD }).map((_, i) => (
-                    <div key={`pt${i}`} style={{ height: ITEM_H }} />
-                  ))}
-
-                  {REEL.map((mode, i) => {
-                    const dist    = Math.abs(i - wheelIdx);
-                    const isAct   = dist === 0;
-                    const opacity = isAct ? 1 : dist === 1 ? 0.36 : dist === 2 ? 0.13 : 0.04;
-                    const scale   = isAct ? 1 : dist === 1 ? 0.80 : 0.68;
-                    return (
-                      <motion.button
-                        key={`${mode.id}-${i}`}
-                        onClick={() => pickMode(mode.id as ModeId)}
-                        className="flex items-center justify-end cursor-pointer shrink-0 select-none"
-                        style={{ height: ITEM_H }}
-                        animate={{ opacity }}
-                        transition={{ duration: 0.28 }}
-                      >
-                        <motion.span
-                          className="font-mono text-white uppercase leading-none block text-right"
-                          style={{
-                            fontSize:        "clamp(0.58rem, 1.0vw, 0.86rem)",
-                            letterSpacing:   "0.20em",
-                            transformOrigin: "right center",
-                          }}
-                          animate={{ scale, fontWeight: isAct ? 700 : 400 }}
-                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                          {mode.category}
-                        </motion.span>
-                      </motion.button>
-                    );
-                  })}
-
-                  {Array.from({ length: PAD }).map((_, i) => (
-                    <div key={`pb${i}`} style={{ height: ITEM_H }} />
-                  ))}
-                </motion.div>
+                  View Projects
+                </a>
+                <a
+                  href="/nadeem-saif-cv.pdf"
+                  download
+                  className="inline-flex items-center rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground/65 transition hover:bg-surface-2 hover:text-foreground"
+                >
+                  Download CV
+                </a>
               </div>
             </motion.div>
+          </div>
+        </section>
 
-            {/* Mobile chip strip */}
-            <motion.div
-              className="sm:hidden absolute bottom-10 left-0 right-0 z-20 px-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                {MODES.map(m => {
-                  const isAct = m.id === activeMode;
-                  return (
-                    <motion.button
-                      key={m.id}
-                      onClick={() => pickMode(m.id as ModeId)}
-                      className="shrink-0 font-mono text-[8px] tracking-[0.14em] px-3 py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none"
-                      style={{
-                        borderColor: isAct ? "#02AC87" : "rgba(255,255,255,0.20)",
-                        color:       isAct ? "#02AC87" : "rgba(255,255,255,0.45)",
-                        background:  isAct ? "rgba(2,172,135,0.10)" : "transparent",
-                      }}
-                      animate={{ opacity: isAct ? 1 : 0.7 }}
-                    >
-                      {m.category}
-                    </motion.button>
-                  );
-                })}
+        {/* ══ DISCIPLINE MARQUEE ══════════════════════════════════════════ */}
+        <div className="relative overflow-hidden border-y border-border py-4">
+          <div className="animate-marquee flex">
+            {[...DISCIPLINES, ...DISCIPLINES].map((item, i) => (
+              <div key={i} className="flex shrink-0 items-center gap-5 px-5">
+                <span className="text-[11px] uppercase tracking-[0.24em] text-foreground/28">
+                  {item}
+                </span>
+                <span className="text-primary" aria-hidden>·</span>
               </div>
-            </motion.div>
-
-            {/* LinkedIn */}
-            <motion.a
-              href={PERSONAL.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.9, duration: 0.35 }}
-              className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm border border-white/12 flex items-center justify-center hover:bg-white/20 hover:scale-105 transition-all duration-200"
-            >
-              <LinkedinLogo className="w-4 h-4 text-white/75" weight="fill" />
-            </motion.a>
-
-            {/* Progress dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
-              {MODES.map(m => (
-                <button
-                  key={m.id}
-                  onClick={() => pickMode(m.id as ModeId)}
-                  aria-label={m.label}
-                  className="transition-all duration-300 rounded-full"
-                  style={{
-                    width:      m.id === activeMode ? 16 : 5,
-                    height:     5,
-                    background: m.id === activeMode
-                      ? "rgba(2,172,135,0.85)"
-                      : "rgba(255,255,255,0.22)",
-                  }}
-                />
-              ))}
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* ══ QUICK OVERVIEW MODAL ════════════════════════════════════════ */}
-        <AnimatePresence>
-          {overviewOpen && (
-            <>
-              <motion.div
-                className="fixed inset-0 z-50"
-                style={{ background: "rgba(0,0,0,0.72)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.22 }}
-                onClick={() => setOverviewOpen(false)}
-              />
+        {/* ══ CLIENT SHOWCASE ═════════════════════════════════════════════ */}
+        <ClientShowcase />
 
-              <motion.div
-                className="fixed z-50"
-                style={{
-                  top: "50%", left: "50%",
-                  width: "min(460px, 92vw)",
-                  background: "rgba(10,10,12,0.96)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  borderRadius: 24,
-                  padding: "clamp(24px, 4vw, 36px)",
-                  boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
-                }}
-                initial={{ opacity: 0, scale: 0.94, x: "-50%", y: "-44%" }}
-                animate={{ opacity: 1, scale: 1,    x: "-50%", y: "-50%" }}
-                exit={{    opacity: 0, scale: 0.94, x: "-50%", y: "-44%" }}
-                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <button
-                  onClick={() => setOverviewOpen(false)}
-                  className="absolute top-4 right-4 flex items-center justify-center rounded-full transition-colors"
-                  style={{ width: 28, height: 28, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+        {/* ══ PROJECTS ════════════════════════════════════════════════════ */}
+        <section id="projects" className="section-glow py-16 sm:py-24 lg:py-36">
+          <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
+
+            {/* Section header — label + heading left, subtext right */}
+            <div className="mb-12 lg:mb-16 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+              <div>
+                <div className="mb-5 flex items-center gap-3">
+                  <span className="h-px w-5 bg-primary" />
+                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Selected Work</span>
+                </div>
+                <RevealText
+                  as="h2"
+                  className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)]"
+                  lines={["Projects worth", "looking at."]}
+                />
+              </div>
+              <p className="text-sm text-foreground/40 max-w-[34ch] leading-relaxed sm:pb-1">
+                Case studies across brand, product, and digital — each one solving a real problem.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {CASE_STUDIES.slice(0, 6).map((project, index) => (
+                <motion.button
+                  key={project.id}
+                  type="button"
+                  onClick={() => setSelectedCase(project)}
+                  className="group text-left flex flex-col rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-500 hover:border-white/14"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ delay: index * 0.05, duration: 0.6, ease: EASE }}
                 >
-                  <X size={13} weight="bold" className="text-white/60" />
-                </button>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 6 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#02AC87", boxShadow: "0 0 8px #02AC87", flexShrink: 0 }} />
-                  <h2 style={{ margin: 0, fontWeight: 700, fontSize: "clamp(1.3rem, 3vw, 1.7rem)", color: "white", letterSpacing: "-0.02em", lineHeight: 1 }}>
-                    {PERSONAL.name}
-                  </h2>
-                </div>
-
-                <p style={{ margin: "0 0 16px", fontWeight: 300, fontSize: "0.78rem", color: "rgba(255,255,255,0.50)", lineHeight: 1.6 }}>
-                  Graphics &amp; Marketing &nbsp;·&nbsp; Master in Media Technology &amp; Society
-                </p>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 20 }}>
-                  <span className="font-mono" style={{ fontSize: 9, color: "rgba(255,255,255,0.38)", letterSpacing: "0.08em" }}>
-                    Darmstadt, Hesse, Germany
-                  </span>
-                  <span className="font-mono" style={{ fontSize: 9, color: "rgba(255,255,255,0.38)", letterSpacing: "0.08em" }}>
-                    Darmstadt University of Applied Sciences
-                  </span>
-                </div>
-
-                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 20 }} />
-
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ fontWeight: 500, fontSize: "0.78rem", color: "rgba(255,255,255,0.80)" }}>
-                      Branding &amp; Marketing Manager
-                    </span>
-                    <a href="https://www.oliverlott.de" target="_blank" rel="noopener noreferrer"
-                      className="group" style={{ textDecoration: "none" }}>
-                      <span className="font-mono group-hover:text-white transition-colors" style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "0.06em" }}>oliverlott.de</span>
-                    </a>
+                  {/* Full-bleed image with title overlaid */}
+                  <div className="relative aspect-video overflow-hidden bg-surface-2">
+                    {project.coverImage && (
+                      <img
+                        src={project.coverImage}
+                        alt={project.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+                      />
+                    )}
+                    {/* Strong bottom gradient for text legibility */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                    {/* Achievement badge top-right */}
+                    {project.achievement && (
+                      <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary/90 backdrop-blur-sm px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
+                        {project.achievement}
+                      </span>
+                    )}
+                    {/* Title + context overlaid at bottom of image */}
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+                        {project.context}
+                      </p>
+                      <h3 className="text-[15px] font-bold leading-snug tracking-tight text-white">
+                        {project.title}
+                      </h3>
+                    </div>
                   </div>
-                  <span className="font-mono" style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: "0.06em" }}>
-                    Working Student · OliverLott IT Development · 2 Years
-                  </span>
-                </div>
 
-                <div style={{ marginBottom: 24 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ fontWeight: 500, fontSize: "0.78rem", color: "rgba(255,255,255,0.80)" }}>
-                      Media &amp; Marketing Designer
+                  {/* Minimal footer strip */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
+                      {project.tag}
                     </span>
-                    <a href="https://www.capture21.de" target="_blank" rel="noopener noreferrer"
-                      className="group" style={{ textDecoration: "none" }}>
-                      <span className="font-mono group-hover:text-white transition-colors" style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "0.06em" }}>capture21.de</span>
-                    </a>
+                    <div className="flex items-center gap-2 text-foreground/28">
+                      <span className="font-mono text-[9px]">{project.year}</span>
+                      <ArrowUpRight size={11} weight="bold" className="transition-colors duration-200 group-hover:text-primary" />
+                    </div>
                   </div>
-                  <span className="font-mono" style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: "0.06em" }}>
-                    Capture21
-                  </span>
-                </div>
+                </motion.button>
+              ))}
+            </div>
 
-                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 20 }} />
+          </div>
+        </section>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <a
-                    href="#contact"
-                    onClick={() => setOverviewOpen(false)}
-                    className="inline-flex items-center gap-2 group"
-                    style={{ border: "1px solid rgba(255,255,255,0.14)", borderRadius: "999px", padding: "0.42rem 1rem 0.42rem 0.85rem", textDecoration: "none", flex: 1, justifyContent: "center" }}
+        {/* ══ SERVICES (ServiceStack bento) ═══════════════════════════════ */}
+        <ServiceStack />
+
+        {/* ══ STATS ═══════════════════════════════════════════════════════ */}
+        <section className="section-glow section-glow-r border-y border-border py-12 sm:py-20 lg:py-28">
+          <div className="mx-auto max-w-375 px-4 sm:px-8 lg:px-12">
+            <div className="mb-14 lg:mb-18">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="h-px w-5 bg-primary" />
+                <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">By the numbers</span>
+              </div>
+              <RevealText
+                as="h2"
+                className="display-hero text-[clamp(2rem,4vw,4rem)] max-w-[18ch]"
+                lines={["Actions speak", "louder than words."]}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+              {STATS.map((stat, i) => (
+                <motion.div
+                  key={stat.value}
+                  className="flex flex-col gap-2 py-10 sm:px-10 lg:px-14 first:pl-0 last:pr-0 first:pt-0 last:pb-0 sm:first:pt-10 sm:last:pb-10"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-8% 0px" }}
+                  transition={{ duration: 0.65, ease: EASE, delay: i * 0.08 }}
+                >
+                  <p
+                    className="font-black tracking-tightest leading-none text-foreground"
+                    style={{ fontSize: "clamp(3.5rem, 7vw, 6.5rem)" }}
                   >
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#02AC87", boxShadow: "0 0 5px #02AC87" }} />
-                    <span className="font-mono text-[9px] tracking-[0.20em] text-white/55 group-hover:text-white transition-colors">OPEN TO WORK</span>
-                  </a>
-                  <a
-                    href={PERSONAL.linkedin} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center group"
-                    style={{ border: "1px solid rgba(255,255,255,0.14)", borderRadius: "999px", padding: "0.42rem 1rem", textDecoration: "none", flex: 1, justifyContent: "center" }}
-                  >
-                    <span className="font-mono text-[9px] tracking-[0.20em] text-white/55 group-hover:text-white transition-colors">LINKEDIN</span>
-                  </a>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* ══ REST: unchanged from new design ════════════════════════════ */}
-        <ProjectsGrid onSelect={setSelectedCase} />
-
-        <div id="services">
-          <ServiceStack />
-        </div>
-
-        <section
-          id="contact"
-          className="relative flex min-h-screen w-screen flex-col justify-center overflow-hidden py-24 lg:py-32"
-        >
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(ellipse 50% 45% at 75% 40%, oklch(0.64 0.145 168 / 0.10), transparent 65%)",
-            }}
-          />
-          <div className="relative z-10 mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
-            <RevealText
-              as="h2"
-              className="display-hero mt-4 max-w-[8ch] text-[clamp(5rem,14vw,13rem)] leading-[0.82]"
-              lines={["Let's do", "Magic", "Together"]}
-            />
-            <div className="mt-10 flex flex-wrap items-center gap-3 lg:mt-16">
-              <MagneticButton href={`mailto:${PERSONAL.email}`} variant="ink" icon>
-                Start a conversation
-              </MagneticButton>
-              <MagneticButton href={PERSONAL.linkedin} target="_blank" rel="noopener noreferrer" variant="ghost" icon>
-                LinkedIn
-              </MagneticButton>
+                    {stat.value}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground/75">{stat.label}</p>
+                  <p className="text-xs text-foreground/38">{stat.sub}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-        <footer className="relative w-screen px-4 pb-6 sm:px-8 lg:px-12">
-          <div className="mx-auto w-full max-w-375 overflow-hidden rounded-lg bg-ink text-white">
-            <div className="flex flex-col gap-10 px-6 py-12 sm:px-10 lg:gap-12 lg:px-14 lg:py-16">
-              <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-                <div>
-                  <p className="select-none text-5xl font-black lowercase tracking-tighter lg:text-7xl">
-                    nadeem<span className="text-primary">.</span>
-                  </p>
-                  <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/50 lg:text-base">
-                    Creative Technologist &amp; Marketing Designer — brand, design, code &amp;
-                    content, shipped by one person.
-                  </p>
+        {/* ══ CONTACT ═════════════════════════════════════════════════════ */}
+        <section id="contact" className="relative overflow-hidden py-24 lg:py-36">
+          {/* Background glow */}
+          <div
+            className="pointer-events-none absolute left-0 top-1/2 h-[60%] w-[45%] -translate-y-1/2"
+            style={{ background: "radial-gradient(ellipse 60% 50% at 20% 50%, oklch(0.64 0.145 168 / 0.06), transparent 70%)" }}
+          />
+
+          <div className="relative z-10 mx-auto max-w-375 px-4 sm:px-8 lg:px-12">
+            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+
+              {/* Left: text */}
+              <div>
+                <div className="mb-8 flex items-center gap-3">
+                  <span className="h-px w-5 bg-primary" />
+                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Contact</span>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <a
-                    href={PERSONAL.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="LinkedIn"
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-white/8 text-white transition-colors hover:bg-primary"
-                  >
-                    <LinkedinLogo size={20} weight="fill" />
-                  </a>
-                  <a
-                    href={`mailto:${PERSONAL.email}`}
-                    className="inline-flex items-center rounded-full bg-white/8 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] transition-colors hover:bg-white/16"
-                  >
-                    Email me
-                  </a>
-                  <button
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    aria-label="Back to top"
-                    className="group flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-105"
-                  >
-                    <ArrowUp size={18} weight="bold" className="transition-transform duration-500 group-hover:-translate-y-0.5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="h-px w-full bg-white/10" />
-
-              <div className="flex flex-col-reverse gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <span className="text-xs text-white/40">
-                  © {new Date().getFullYear()} {PERSONAL.name}. All rights reserved.
+                <RevealText
+                  as="h2"
+                  className="display-hero text-[clamp(3rem,8vw,7rem)] max-w-[10ch]"
+                  lines={["Let's create", "something."]}
+                />
+                <p className="mt-6 max-w-[38ch] text-base leading-relaxed text-foreground/45">
+                  Open to the right role in Germany — brand, marketing, or product. Let's build something worth talking about.
+                </p>
+                <span className="mt-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs text-primary">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                  Available for the right role
                 </span>
-                <nav className="flex flex-wrap gap-x-7 gap-y-2">
-                  {NAV_LINKS.map((link) => (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      className="text-sm font-medium text-white/55 transition-colors hover:text-white"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </nav>
               </div>
+
+              {/* Right: contact links card */}
+              <motion.div
+                className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10% 0px" }}
+                transition={{ duration: 0.65, ease: EASE, delay: 0.1 }}
+              >
+                <a
+                  href={`mailto:${PERSONAL.email}`}
+                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                >
+                  <div>
+                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Email</p>
+                    <p className="text-sm font-medium text-foreground">{PERSONAL.email}</p>
+                  </div>
+                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                </a>
+                <a
+                  href={PERSONAL.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                >
+                  <div>
+                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">LinkedIn</p>
+                    <p className="text-sm font-medium text-foreground">nadeemsaifrind</p>
+                  </div>
+                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                </a>
+                <a
+                  href="/nadeem-saif-cv.pdf"
+                  download
+                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                >
+                  <div>
+                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Resume</p>
+                    <p className="text-sm font-medium text-foreground">Download CV — PDF</p>
+                  </div>
+                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                </a>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ FOOTER ══════════════════════════════════════════════════════ */}
+        <footer className="border-t border-border px-4 sm:px-8 lg:px-12">
+          <div className="mx-auto w-full max-w-375 py-12 lg:py-16">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="select-none text-4xl font-black lowercase tracking-[-0.06em] text-foreground lg:text-5xl">
+                  nadeem<span className="text-primary">.</span>
+                </p>
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-foreground/38">
+                  Creative Technologist &amp; Marketing Designer — brand, design, code &amp; content, shipped by one person.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={PERSONAL.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground/50 transition hover:border-primary/40 hover:text-primary"
+                >
+                  <LinkedinLogo size={16} weight="fill" />
+                </a>
+                <a
+                  href={`mailto:${PERSONAL.email}`}
+                  className="inline-flex items-center rounded-full border border-border bg-surface px-5 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-foreground/50 transition hover:border-primary/40 hover:text-primary"
+                >
+                  Email me
+                </a>
+                <button
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                  aria-label="Back to top"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-105"
+                >
+                  <ArrowUp size={16} weight="bold" />
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col-reverse gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-xs text-foreground/28">
+                © {new Date().getFullYear()} {PERSONAL.name}. All rights reserved.
+              </span>
+              <nav className="flex flex-wrap gap-x-6 gap-y-2">
+                {NAV_LINKS.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="text-xs text-foreground/38 transition hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
             </div>
           </div>
         </footer>
 
-        <CaseStudies selected={selectedCase} setSelected={setSelectedCase} dialogOnly />
       </main>
+
+      <CaseStudies selected={selectedCase} setSelected={setSelectedCase} dialogOnly />
     </div>
-  );
-}
-
-function ProjectsGrid({ onSelect }: { onSelect: (cs: CaseStudy) => void }) {
-  return (
-    <section
-      id="projects"
-      className="relative w-screen px-4 pb-10 pt-12 md:px-8 lg:px-12 lg:pb-16 lg:pt-16"
-    >
-      <div className="mx-auto flex w-full max-w-375 flex-col gap-5 lg:gap-10">
-        <div className="flex flex-col gap-4">
-          <RevealText
-            as="p"
-            className="display-hero max-w-[17ch] text-[clamp(2.4rem,7vw,7rem)]"
-            lines={["I turn ideas into", "visual systems and products."]}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-8">
-          {CASE_STUDIES.slice(0, 6).map((project, index) => (
-            <motion.button
-              key={project.id}
-              type="button"
-              onClick={() => onSelect(project)}
-              className="group relative aspect-video w-full overflow-hidden rounded-lg bg-ink text-left"
-              initial={{ opacity: 0, y: 44, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-              transition={{ delay: index * 0.04, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.018 }}
-            >
-              {project.coverImage && (
-                <motion.img
-                  src={project.coverImage}
-                  alt={project.title}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  whileHover={{ scale: 1.08 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                />
-              )}
-              <div className="absolute inset-x-0 bottom-0 z-10 h-1/2 bg-linear-to-t from-black/65 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center gap-3 overflow-x-clip pb-[0.12em] lg:bottom-8 lg:left-8">
-                <span className="hidden w-8 -translate-x-full text-white transition-transform duration-500 group-hover:translate-x-0 lg:block">
-                  <ArrowRight size={32} weight="bold" />
-                </span>
-                <span className="text-2xl font-semibold leading-[1.05] tracking-tightest text-white transition-transform duration-500 group-hover:translate-x-0 lg:-translate-x-11 lg:text-5xl">
-                  {project.title}
-                </span>
-              </div>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { CASE_STUDIES, type CaseStudy } from "@/lib/portfolio-data";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 
 interface Props {
   selected?: CaseStudy | null;
@@ -68,154 +70,81 @@ export function CaseStudies({
   return (
     <>
       {!dialogOnly && (
-        <section className="border-t border-border" id="projects">
-          <div className="container mx-auto px-6 lg:px-10 py-24">
-            <div className="flex items-end justify-between mb-12">
+        <section className="section-glow section-glow-r border-t border-border" id="projects">
+          <div className="mx-auto max-w-375 px-4 sm:px-8 lg:px-12 py-16 sm:py-24 lg:py-36">
+
+            {/* Section header */}
+            <div className="mb-12 lg:mb-16 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
               <div>
-                <span className="font-mono text-xs tracking-[0.2em]" style={{ color: "#02AC87" }}>
-                  FEATURED CASE STUDIES
-                </span>
-                <h2 className="text-3xl md:text-4xl mt-4 max-w-2xl leading-tight">
+                <div className="mb-5 flex items-center gap-3">
+                  <span className="h-px w-5 bg-primary" />
+                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Case Studies</span>
+                </div>
+                <h2 className="display-hero text-[clamp(2rem,4vw,4rem)] max-w-[18ch]">
                   Evidence, not claims.
                 </h2>
-                <p className="mt-3 text-sm text-muted-foreground max-w-md">
-                  Real client work, real competition results, real products shipped. Click any case
-                  to see the full breakdown.
-                </p>
               </div>
-              <span className="font-mono text-xs text-muted-foreground hidden md:inline self-end">
-                {CASE_STUDIES.length} cases
-              </span>
+              <p className="text-sm text-foreground/40 max-w-[38ch] leading-relaxed sm:pb-1">
+                Real client work, real competition results, real products shipped.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {CASE_STUDIES.map((cs, i) => {
-                const isLastOdd = i === CASE_STUDIES.length - 1 && CASE_STUDIES.length % 2 !== 0;
-                return (
-                  <motion.button
-                    key={cs.id}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-60px" }}
-                    transition={{ delay: (i % 2) * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                    onClick={() => {
-                      setSelected(cs);
-                      setOpenClient(null);
-                      setOpenMediaFolder(null);
-                    }}
-                    className={`group text-left rounded-2xl overflow-hidden border border-border/60 bg-card hover:shadow-float hover:border-[#02AC87]/25 transition-all duration-400${isLastOdd ? " md:col-span-2" : ""}`}
-                    style={{ boxShadow: "0 2px 16px oklch(0.2 0.05 250 / 0.06)" }}
-                  >
-                    {/* Top: header image or blurred backdrop */}
-                    <div className="relative h-44 overflow-hidden">
-                      {cs.coverImage ? (
-                        /* Clean header image — shown when coverImage is set */
-                        <img
-                          src={cs.coverImage}
-                          alt={`${cs.title} cover`}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                          draggable={false}
-                        />
-                      ) : (
-                        /* Fallback: blurred backdrop + gradient */
-                        <>
-                          <img
-                            src={cs.image}
-                            alt=""
-                            aria-hidden
-                            className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-50 transition-all duration-700 group-hover:opacity-65 group-hover:scale-105"
-                            draggable={false}
-                          />
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              background: `linear-gradient(160deg, color-mix(in oklab, ${cs.accent} 25%, oklch(0.12 0.02 250)) 0%, oklch(0.1 0.02 250 / 0.85) 100%)`,
-                            }}
-                          />
-                          {/* Letter placeholder when no image */}
-                          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center">
-                              <span className="text-white font-semibold text-xl">
-                                {cs.title.charAt(0)}
-                              </span>
-                            </div>
-                            <span className="font-mono text-[9px] tracking-[0.22em] text-white/35">
-                              ADD COVER IMAGE
-                            </span>
-                          </div>
-                        </>
-                      )}
-
-                      {/* Achievement badge — top right */}
-                      {cs.achievement && (
-                        <div className="absolute top-3 right-3">
-                          <span
-                            className="flex items-center gap-1 font-mono text-[9px] tracking-[0.14em] px-2.5 py-1 rounded-full border border-white/20 backdrop-blur-sm"
-                            style={{
-                              background: `color-mix(in oklab, ${cs.accent} 30%, oklch(0.1 0.02 250 / 0.6))`,
-                              color: "white",
-                            }}
-                          >
-                            ★ {cs.achievement}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Context tag — bottom left */}
-                      <div className="absolute bottom-3 left-3">
-                        <span className="font-mono text-[9px] tracking-[0.15em] text-white/60 bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-full">
-                          {cs.context}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Card body */}
-                    <div className="p-5">
-                      {/* Role + year */}
-                      <div className="flex items-center justify-between mb-2.5">
-                        <span className="font-mono text-[9px] tracking-[0.18em] text-muted-foreground/60">
-                          {cs.tag}
-                        </span>
-                        <span className="font-mono text-[9px] text-muted-foreground/40">
-                          {cs.year}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-lg font-medium tracking-tight leading-snug mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {CASE_STUDIES.map((cs, i) => (
+                <motion.button
+                  key={cs.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: (i % 3) * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  onClick={() => {
+                    setSelected(cs);
+                    setOpenClient(null);
+                    setOpenMediaFolder(null);
+                  }}
+                  className="group text-left flex flex-col rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-500 hover:border-white/14"
+                >
+                  {/* Full-bleed image with title overlaid */}
+                  <div className="relative aspect-video overflow-hidden bg-surface-2">
+                    {(cs.coverImage ?? cs.image) && (
+                      <img
+                        src={cs.coverImage ?? cs.image}
+                        alt={cs.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+                      />
+                    )}
+                    {/* Strong bottom gradient for text legibility */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                    {/* Achievement badge top-right */}
+                    {cs.achievement && (
+                      <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary/90 backdrop-blur-sm px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
+                        {cs.achievement}
+                      </span>
+                    )}
+                    {/* Title + context overlaid at bottom of image */}
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+                        {cs.context}
+                      </p>
+                      <h3 className="text-[15px] font-bold leading-snug tracking-tight text-white">
                         {cs.title}
                       </h3>
-
-                      {/* One-line description */}
-                      <p className="text-[13px] text-muted-foreground leading-snug line-clamp-2 mb-4">
-                        {cs.challenge}
-                      </p>
-
-                      {/* Skills preview */}
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {cs.skillsDemonstrated.slice(0, 3).map((s) => (
-                          <span
-                            key={s}
-                            className="font-mono text-[9px] tracking-widest text-muted-foreground/50 border border-border/60 px-2 py-0.5 rounded-full"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* CTA row */}
-                      <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                        <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground group-hover:text-[#02AC87] transition-colors">
-                          VIEW CASE STUDY
-                        </span>
-                        <span className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted-foreground/40 group-hover:bg-[#02AC87] group-hover:text-white group-hover:border-[#02AC87] transition-all duration-300 text-xs">
-                          →
-                        </span>
-                      </div>
                     </div>
-                  </motion.button>
-                );
-              })}
+                  </div>
+
+                  {/* Minimal footer strip */}
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
+                      {cs.tag}
+                    </span>
+                    <div className="flex items-center gap-2 text-foreground/28">
+                      <span className="font-mono text-[9px]">{cs.year}</span>
+                      <ArrowUpRight size={11} weight="bold" className="transition-colors duration-200 group-hover:text-primary" />
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
             </div>
           </div>
         </section>
