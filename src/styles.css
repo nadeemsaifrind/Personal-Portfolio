@@ -4,10 +4,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Signatie";
+  src: url("./assets/Fonts/Signatie.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --font-display: "Inter", "Inter Fallback", system-ui, sans-serif;
   --font-sans: "Inter", "Inter Fallback", system-ui, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-serif-accent: "Instrument Serif", "Times New Roman", serif;
+  --font-signature: "Signatie", cursive;
 
   --radius-sm: calc(var(--radius) - 12px);
   --radius-md: calc(var(--radius) - 8px);

@@ -148,6 +148,21 @@ export const PERSONAL = {
   location: "Germany",
 } as const;
 
+// ─── Disciplines (hero marquee + circular badge text) ─────────────────────────
+
+export const DISCIPLINES = [
+  "Brand Identity",
+  "Marketing Design",
+  "Content Creation",
+  "UX Design",
+  "Web Development",
+  "Startup Strategy",
+  "Photography",
+  "Social Media",
+  "Campaign Design",
+  "Motion & Video",
+] as const;
+
 // ─── Modes (6 categories for the node hero) ──────────────────────────────────
 
 export type ModeId = "brand" | "content" | "marketing" | "ux" | "web" | "startup";
@@ -617,6 +632,7 @@ export interface CaseStudy {
     highlightName?: string;
     postUrl: string;
     date?: string;
+    isOwnPost?: boolean; // true when the "testimonial" is Nadeem's own announcement post, not a third party's
   };
   newsletter?: {
     name: string;
@@ -767,6 +783,16 @@ export const CASE_STUDIES: CaseStudy[] = [
     tools: ["Figma", "FigJam", "Notion", "Miro"],
     skillsDemonstrated: ["UX Research", "Persona Development", "Journey Mapping", "Information Architecture", "Mobile UI Design", "Figma Prototyping", "Stakeholder Presentation"],
     highlights: ["1st Place — Germany", "Mobile-first UX", "10k+ employee scope", "Enterprise pitch"],
+    testimonial: {
+      name: "Yvonne Karolus",
+      title: "Innovation & Ecosystem Manager @WISAG · Driving Innovation forward",
+      quote:
+        "32h from the challenge to the prototype. The challenge in controlling is rarely the lack of data, but rather the ability to draw the right insights from the abundance. What particularly impressed me was the speed and motivation of the participants. Congratulations to the winning team Montana Plank, Muhammad Moghees and Nadeem Saif! I am curious to see how we can continue to drive the results at WISAG.",
+      highlightName: "Nadeem Saif",
+      postUrl:
+        "https://www.linkedin.com/posts/yvonne-karolus-wisag_builddays-hackathon-wisaginsights-activity-7455133937875447808-vgQc?utm_source=share&utm_medium=member_desktop&rcm=ACoAACJp5dkBYZ_a6crwcUEeQ4reoxHfgF4vbRk",
+      date: "2024",
+    },
   },
   {
     id: "kenergy",
@@ -798,6 +824,16 @@ export const CASE_STUDIES: CaseStudy[] = [
     tools: ["Figma", "FigJam", "Notion", "Whimsical"],
     skillsDemonstrated: ["Behavioral Design", "Gamification Strategy", "Product Strategy", "UX Research", "UI Design", "Competitive Pitching", "Sustainability Design"],
     highlights: ["1st Place + Comm. Fav", "Dual award winner", "Behavioral design", "Kenergy · Germany"],
+    testimonial: {
+      name: "Nadeem Saif",
+      title: "Graphics & Marketing @Oliverlott · Media Technology & Society",
+      quote:
+        "The winning streak continues: we secured 1st place at the LAUNCH Rhein-Main Build Days for Kenergy Solutions GmbH Challenge. After winning the WISAG Challenge at Futury, our team Montana Plank and Muhammad Moghees jumped straight into the next challenge: another intense 32 hours of building, brainstorming, and problem solving. This time, our solution not only earned 1st place but also won the Community Favorite Award.",
+      postUrl:
+        "https://www.linkedin.com/posts/nadeemsaifrind_hackathon-winning-newacievement-activity-7467138741934047232-Q3OY?utm_source=share&utm_medium=member_desktop&rcm=ACoAACJp5dkBYZ_a6crwcUEeQ4reoxHfgF4vbRk",
+      date: "2024",
+      isOwnPost: true,
+    },
   },
   {
     id: "nextstep",
@@ -1076,6 +1112,71 @@ export const WORKFLOW: WorkflowStep[] = [
     label: "Growth",
     description: "Campaigns launched. Audience scaled. Revenue built.",
     discipline: "Marketing & Growth",
+  },
+];
+
+// ─── Work Gallery ─────────────────────────────────────────────────────────────
+
+export interface WorkGalleryItem {
+  title: string;
+  tag: string;
+  year: string;
+  cover: string;
+}
+
+export interface WorkGalleryCategory {
+  query: string;
+  subtitle: string;
+  items: WorkGalleryItem[];
+}
+
+export const WORK_GALLERY: WorkGalleryCategory[] = [
+  {
+    query: "Posters & Print",
+    subtitle: "Graphic design, posters, and print-ready assets for clients across Pakistan",
+    items: [
+      { title: "Arascow",          tag: "PRINT · DESIGN",    year: "2023", cover: nsArascow1 },
+      { title: "BCL",              tag: "PRINT · DESIGN",    year: "2023", cover: nsBcl1 },
+      { title: "Potential Wecker", tag: "CAMPAIGN DESIGN",   year: "2023", cover: nsPotentialwecker1 },
+      { title: "Ednex",            tag: "BRAND · PRINT",     year: "2024", cover: nsEdnex1 },
+    ],
+  },
+  {
+    query: "Branding",
+    subtitle: "Visual identities built from brief to complete brand system",
+    items: [
+      { title: "OliverLott IT",     tag: "BRAND IDENTITY", year: "2024", cover: csOliverlott1 },
+      { title: "Next Step Digital", tag: "AGENCY BRAND",   year: "2023", cover: csNextstep1 },
+      { title: "Dreamfly",          tag: "STARTUP BRAND",  year: "2024", cover: csDfc1 },
+    ],
+  },
+  {
+    query: "Food Industry",
+    subtitle: "Campaigns and visual design for food and product brands",
+    items: [
+      { title: "Pak World Honey",    tag: "FMCG · BRAND",        year: "2023", cover: nsPakworldhoney1 },
+      { title: "Mousa Albargi Cargo", tag: "CARGO · CAMPAIGNS",  year: "2023", cover: nsMousamargi1 },
+    ],
+  },
+  {
+    query: "Social Media",
+    subtitle: "Content systems, campaign visuals, and social media design",
+    items: [
+      { title: "Dreamfly Campaigns",    tag: "SOCIAL · CAMPAIGNS", year: "2024", cover: dfcCampaign1 },
+      { title: "Livingroom Apartments", tag: "SOCIAL CONTENT",     year: "2023", cover: csLivingroomReel1 },
+      { title: "Arascow Social",        tag: "SOCIAL · DESIGN",    year: "2023", cover: nsArascow5 },
+      { title: "Potentialwecker",       tag: "SOCIAL · CAMPAIGNS", year: "2023", cover: nsPotentialwecker5 },
+    ],
+  },
+  {
+    query: "German Projects",
+    subtitle: "Brand, marketing, and product work done in the German market",
+    items: [
+      { title: "OliverLott IT",         tag: "BRANDING · MARKETING", year: "2024", cover: coverOliverlott },
+      { title: "Livingroom Apartments", tag: "CONTENT · CAMPAIGNS",  year: "2023", cover: coverLivingroom },
+      { title: "WISAG Challenge",       tag: "UX · 1ST PLACE",       year: "2024", cover: coverWisag },
+      { title: "Kenergy Challenge",     tag: "UX · 1ST PLACE",       year: "2024", cover: coverKenergy },
+    ],
   },
 ];
 

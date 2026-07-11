@@ -12,16 +12,21 @@ gsap.registerPlugin(ScrollTrigger);
 export function SmoothScroll() {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (reduce || isMobile) return;          // native scroll on mobile — faster
 
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 0.65,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
     (window as any).__lenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
+    // Framer Motion's useScroll() listens to the native window "scroll" event,
+    // which Lenis already fires as it animates window.scrollTop — no manual
+    // re-dispatch needed (doing so re-triggers Lenis's own native-scroll
+    // listener and recurses infinitely).
 
     const onRaf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(onRaf);

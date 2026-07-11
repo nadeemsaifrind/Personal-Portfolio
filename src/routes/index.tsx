@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowUp,
@@ -9,10 +9,18 @@ import {
   X,
 } from "@phosphor-icons/react";
 import heroCutoutImg from "@/assets/hero-cutout.png";
-import { PERSONAL, CASE_STUDIES, type CaseStudy } from "@/lib/portfolio-data";
+import { PERSONAL, CASE_STUDIES, DISCIPLINES, type CaseStudy } from "@/lib/portfolio-data";
 import { CaseStudies } from "@/components/portfolio/CaseStudies";
+import { WorkGallery } from "@/components/portfolio/WorkGallery";
 import { ServiceStack } from "@/components/portfolio/ServiceStack";
+import { Hero } from "@/components/portfolio/Hero";
+import { WhyGeneralist } from "@/components/portfolio/WhyGeneralist";
+import { NextStepFeature } from "@/components/portfolio/NextStepFeature";
+import { CaseStudyFeature } from "@/components/portfolio/CaseStudyFeature";
+import { JourneyTimeline } from "@/components/portfolio/JourneyTimeline";
+import { StatsAchievements } from "@/components/portfolio/StatsAchievements";
 import { RevealText } from "@/components/portfolio/sohub";
+import { RevealCard, WorkCard } from "@/components/portfolio/WorkCard";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export const Route = createFileRoute("/")({
@@ -37,41 +45,13 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-/* ── Nav links ─────────────────────────────────────────────────────── */
+/* ── Nav links ── */
 const NAV_LINKS = [
   { href: "#projects", label: "Case Studies" },
   { href: "#contact", label: "Contact" },
 ];
 
-/* ── Discipline marquee items ───────────────────────────────────────── */
-const DISCIPLINES = [
-  "Brand Identity",
-  "Marketing Design",
-  "Content Creation",
-  "UX Design",
-  "Web Development",
-  "Startup Strategy",
-  "Photography",
-  "Social Media",
-  "Campaign Design",
-  "Motion & Video",
-];
-
-/* ── Stats ──────────────────────────────────────────────────────────── */
-const STATS = [
-  { value: "6+", label: "Years of creative work", sub: "Film school through to Germany" },
-  { value: "20+", label: "Projects shipped", sub: "Across brand, digital, and product" },
-  { value: "2", label: "Hackathon & award wins", sub: "WISAG & Kenergy competitions" },
-];
-
-/* ── Client showcase gallery rows ──────────────────────────────────── */
-const _ns = CASE_STUDIES.find(cs => cs.id === "nextstep")!;
-const _g = (slug: string) => _ns.clientGallery?.find(g => g.slug === slug)?.images ?? [];
-
-const SHOWCASE_ROW_A = [..._g("arascow"), ..._g("bcl"), ..._g("pakworldhoney")];
-const SHOWCASE_ROW_B = [..._g("potentialwecker"), ..._g("ednex"), ..._g("mousamargi")];
-
-/* ── Role SEO ───────────────────────────────────────────────────────── */
+/* ── Role SEO ── */
 const roles = [
   {
     slug: "marketing-designer",
@@ -119,193 +99,10 @@ function getRoleMeta(role?: (typeof roles)[number]) {
   return { title, description };
 }
 
-/* ── Ease ───────────────────────────────────────────────────────────── */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* ── Client Work Showcase ───────────────────────────────────────────── */
-function ClientShowcase() {
-  return (
-    <section className="section-glow section-glow-r py-12 sm:py-16 lg:py-24">
-      {/* Header */}
-      <div className="mx-auto max-w-375 px-4 sm:px-8 lg:px-12 mb-10 lg:mb-14">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div>
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-px w-5 bg-primary" />
-              <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Client Portfolio</span>
-            </div>
-            <RevealText
-              as="h2"
-              className="display-hero text-[clamp(2rem,4vw,4rem)] max-w-[14ch]"
-              lines={["Visual work done", "for real clients."]}
-            />
-          </div>
-          <p className="text-sm text-foreground/40 max-w-[38ch] leading-relaxed sm:pb-1">
-            Graphic design, branding, social visuals, and campaign assets — delivered across six industries.
-          </p>
-        </div>
-      </div>
-
-      {/* Scrolling rows */}
-      <div className="space-y-3 overflow-hidden">
-        {/* Row A — scrolls left */}
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
-          <div className="animate-marquee-slow">
-            {[...SHOWCASE_ROW_A, ...SHOWCASE_ROW_A].map((img, i) => (
-              <div key={i} className="shrink-0 mx-1.5 w-44 sm:w-56 lg:w-64 aspect-square overflow-hidden rounded-xl bg-surface border border-border/50">
-                <img
-                  src={img}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Row B — scrolls right */}
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
-          <div className="animate-marquee-reverse">
-            {[...SHOWCASE_ROW_B, ...SHOWCASE_ROW_B].map((img, i) => (
-              <div key={i} className="shrink-0 mx-1.5 w-44 sm:w-56 lg:w-64 aspect-square overflow-hidden rounded-xl bg-surface border border-border/50">
-                <img
-                  src={img}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Hero portrait with grayscale→color brush reveal on hover ────── */
-const BRUSH = 150;
-
-function HeroPortrait() {
-  const imgWrapRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ x: -800, y: -800 });
-
-  const onMove = (e: React.MouseEvent) => {
-    const rect = imgWrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const onTouch = (e: React.TouchEvent) => {
-    const rect = imgWrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const touch = e.touches[0];
-    if (!touch) return;
-    setPos({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });
-  };
-
-  const mask = `radial-gradient(circle ${BRUSH}px at ${pos.x}px ${pos.y}px, transparent 30%, black ${BRUSH}px)`;
-  const active = pos.x > 0 && pos.y > 0;
-
-  return (
-    <>
-      {/* ── Mobile (<sm): full-bleed background — object-cover, no stretching ── */}
-      <div className="pointer-events-none absolute inset-0 z-5 sm:hidden">
-        <img
-          src={heroCutoutImg}
-          alt=""
-          aria-hidden
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-cover object-[center_8%]"
-          style={{ filter: "grayscale(100%) brightness(0.48) contrast(1.12)" }}
-        />
-        {/* Left-heavy gradient — text zone stays dark, right edge shows portrait */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(110deg, var(--background) 28%, oklch(0.072 0.005 250 / 0.78) 52%, oklch(0.072 0.005 250 / 0.22) 88%)",
-          }}
-        />
-        {/* Top vignette — blends behind fixed nav */}
-        <div
-          className="absolute inset-x-0 top-0 h-28"
-          style={{ background: "linear-gradient(to bottom, var(--background), transparent)" }}
-        />
-        {/* Bottom vignette — dissolves cleanly into next section */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-16"
-          style={{ background: "linear-gradient(to top, var(--background), transparent)" }}
-        />
-      </div>
-
-      {/* ── Tablet & Desktop (sm+): right-column, brush-reveal on hover ── */}
-      <div
-        className="pointer-events-none absolute bottom-0 right-0 z-5 hidden sm:block sm:w-[55%] sm:h-full lg:w-[60%] lg:h-screen"
-      >
-        {/* Left-edge fade */}
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-2/5"
-          style={{ background: "linear-gradient(to right, var(--background) 10%, transparent)" }}
-        />
-        {/* Top-edge fade */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36"
-          style={{ background: "linear-gradient(to bottom, var(--background), transparent)" }}
-        />
-
-        {/* Inner wrapper sized by image — getBoundingClientRect() aligns with mask coords */}
-        <div
-          ref={imgWrapRef}
-          onMouseMove={onMove}
-          onMouseLeave={() => setPos({ x: -800, y: -800 })}
-          onTouchStart={onTouch}
-          onTouchMove={onTouch}
-          onTouchEnd={() => setPos({ x: -800, y: -800 })}
-          onTouchCancel={() => setPos({ x: -800, y: -800 })}
-          className="pointer-events-auto absolute bottom-0 right-0 select-none touch-none"
-          style={{ height: "96%", cursor: "none" }}
-        >
-          {/* Color base */}
-          <img
-            src={heroCutoutImg}
-            alt="Nadeem Saif"
-            draggable={false}
-            className="block h-full w-auto"
-            style={{ filter: "drop-shadow(0 30px 80px rgba(0,0,0,0.55))" }}
-          />
-          {/* Grayscale overlay with brush-reveal mask */}
-          <img
-            src={heroCutoutImg}
-            alt=""
-            aria-hidden
-            draggable={false}
-            className="absolute top-0 left-0 block h-full w-auto"
-            style={{
-              filter: "grayscale(100%) brightness(0.82) contrast(1.1)",
-              WebkitMaskImage: mask,
-              maskImage: mask,
-            }}
-          />
-          {/* Brush cursor ring */}
-          {active && (
-            <div
-              className="pointer-events-none absolute rounded-full border border-white/30"
-              style={{ width: BRUSH * 2, height: BRUSH * 2, left: pos.x - BRUSH, top: pos.y - BRUSH }}
-            />
-          )}
-        </div>
-      </div>
-    </>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════ */
+/* ── Flagship case studies told in full, directly in the page flow ── */
+const FEATURED_CASE_IDS = ["oliverlott", "dreamfly", "kenergy"];
 
 function Index() {
   const { role } = Route.useSearch();
@@ -314,7 +111,6 @@ function Index() {
 
   const activeRole = useMemo(() => getRoleBySlug(role), [role]);
 
-  /* Update meta tags for role-based SEO links */
   useEffect(() => {
     const meta = getRoleMeta(activeRole);
     document.title = meta.title;
@@ -325,14 +121,17 @@ function Index() {
     document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", meta.description);
   }, [activeRole]);
 
+  const featured = FEATURED_CASE_IDS.map((id) => CASE_STUDIES.find((cs) => cs.id === id)!).filter(Boolean);
+  const nextstepCase = CASE_STUDIES.find((cs) => cs.id === "nextstep")!;
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-clip">
 
-      {/* ══ NAV ══════════════════════════════════════════════════════════ */}
+      {/* ══ NAV ══════════════════════════════════════════════════════ */}
       <motion.header
-        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-4 py-3.5 md:px-8 lg:px-10"
+        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-4 py-2.5 md:px-6 lg:px-8"
         style={{
-          background: "oklch(0.072 0.005 250 / 0.88)",
+          background: "oklch(0.072 0.005 250 / 0.82)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid oklch(0.97 0.003 250 / 0.07)",
@@ -341,53 +140,50 @@ function Index() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: EASE }}
       >
-        {/* Logo */}
-        <a
-          href="#top"
-          className="text-[20px] font-black lowercase tracking-[-0.06em] text-foreground select-none"
-        >
+        <a href="#top" className="text-[17px] font-black lowercase tracking-[-0.06em] text-foreground select-none">
           nadeem<span className="text-primary">.</span>
         </a>
 
-        {/* Desktop links */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 rounded-full border border-white/8 p-1 md:flex"
+          style={{ background: "oklch(0.97 0.003 250 / 0.04)" }}
+        >
           {NAV_LINKS.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-foreground/50 transition-colors hover:bg-surface hover:text-foreground"
+              className="rounded-full px-4 py-1.5 text-[13px] font-medium text-foreground/55 transition-colors hover:bg-white/8 hover:text-foreground"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        {/* Right CTAs */}
         <div className="flex items-center gap-2">
           <a
             href="/nadeem-saif-cv.pdf"
             download
-            className="hidden items-center rounded-full border border-border px-4 py-2 text-[13px] font-medium text-foreground/55 transition hover:border-white/18 hover:text-foreground md:flex"
+            className="hidden items-center rounded-full border border-border px-3.5 py-1.5 text-[12.5px] font-medium text-foreground/55 transition hover:border-white/18 hover:text-foreground md:flex"
           >
             Download CV
           </a>
           <a
             href="#contact"
-            className="hidden items-center rounded-full border border-border bg-surface px-5 py-2 text-[13px] font-medium text-foreground/80 transition hover:bg-surface-2 md:flex"
+            className="hidden items-center rounded-full bg-primary px-4 py-1.5 text-[12.5px] font-semibold text-primary-foreground transition hover:opacity-90 md:flex"
           >
             Let's talk
           </a>
           <button
             onClick={() => setMobileOpen(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition hover:bg-surface-2 md:hidden"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition hover:bg-surface-2 md:hidden"
             aria-label="Open menu"
           >
-            <DotsThree size={20} weight="bold" />
+            <DotsThree size={18} weight="bold" />
           </button>
         </div>
       </motion.header>
 
-      {/* ══ MOBILE SHEET ═════════════════════════════════════════════════ */}
+      {/* ══ MOBILE SHEET ═════════════════════════════════════════════ */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="right" className="w-80 flex flex-col border-l border-border bg-background [&>button]:hidden">
           <button
@@ -427,291 +223,208 @@ function Index() {
 
       <main id="top">
 
-        {/* ══ HERO ════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden lg:min-h-screen">
-          {/* Background glows */}
-          <div className="pointer-events-none absolute inset-0" aria-hidden>
-            <div className="absolute right-0 top-0 h-full w-[55%]"
-              style={{ background: "radial-gradient(ellipse 70% 55% at 80% 45%, oklch(0.64 0.145 168 / 0.07), transparent 70%)" }} />
-            <div className="absolute bottom-0 right-[18%] h-80 w-80 rounded-full bg-primary/5 blur-[110px]" />
-          </div>
+        {/* ══ HERO — identity first ═══════════════════════════════════ */}
+        <Hero />
 
-          {/* Portrait — absolutely positioned, full section height, brush reveal on hover */}
-          <HeroPortrait />
-
-          {/* Text content — z-10 floats above portrait; pointer-events-none on wrappers so mouse events reach the portrait behind */}
-          <div className="pointer-events-none relative z-10 mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
-            <motion.div
-              className="pointer-events-none flex flex-col justify-start pt-24 pb-16 sm:pt-28 sm:pb-14 lg:pt-36 lg:pb-20"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: EASE }}
-            >
-              {/* Availability chip */}
-              <span className="mb-10 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] text-foreground/45">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                Open to work · Germany
-              </span>
-
-              {/* Name */}
-              <h1
-                className="font-black lowercase text-foreground"
-                style={{
-                  fontSize: "clamp(3.2rem, 14vw, 15rem)",
-                  letterSpacing: "-0.06em",
-                  lineHeight: 0.88,
-                }}
-              >
-                nadeem<span className="text-primary">.</span>
-              </h1>
-
-              {/* Lightweight tagline */}
-              <p
-                className="mt-5 sm:mt-6 max-w-[44ch] sm:max-w-[52ch] text-foreground/38"
-                style={{ fontSize: "clamp(0.78rem, 2.8vw, 1.05rem)", fontWeight: 300, lineHeight: 1.5 }}
-              >
-                Graphic Designer &amp; Content Creator&nbsp;&nbsp;|&nbsp;&nbsp;
-                <span className="hidden sm:inline">Social Media · Marketing · Digital Publishing · Branding</span>
-                <span className="sm:hidden">Social Media · Marketing · Branding</span>
-              </p>
-
-              {/* CTAs */}
-              <div className="pointer-events-auto mt-10 flex flex-wrap items-center gap-3">
-                <a
-                  href="#projects"
-                  className="inline-flex items-center rounded-full bg-foreground px-7 py-3.5 text-sm font-semibold text-background transition hover:bg-foreground/88"
-                >
-                  View Projects
-                </a>
-                <a
-                  href="/nadeem-saif-cv.pdf"
-                  download
-                  className="inline-flex items-center rounded-full border border-border bg-surface px-7 py-3.5 text-sm font-semibold text-foreground/65 transition hover:bg-surface-2 hover:text-foreground"
-                >
-                  Download CV
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ══ DISCIPLINE MARQUEE ══════════════════════════════════════════ */}
+        {/* ══ DISCIPLINE MARQUEE ══════════════════════════════════════ */}
         <div className="relative overflow-hidden border-y border-border py-4">
           <div className="animate-marquee flex">
             {[...DISCIPLINES, ...DISCIPLINES].map((item, i) => (
               <div key={i} className="flex shrink-0 items-center gap-5 px-5">
-                <span className="text-[11px] uppercase tracking-[0.24em] text-foreground/28">
-                  {item}
-                </span>
+                <span className="text-[11px] uppercase tracking-[0.24em] text-foreground/28">{item}</span>
                 <span className="text-primary" aria-hidden>·</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ══ CLIENT SHOWCASE ═════════════════════════════════════════════ */}
-        <ClientShowcase />
+        {/* ══ WHY A GENERALIST ════════════════════════════════════════ */}
+        <WhyGeneralist />
 
-        {/* ══ PROJECTS ════════════════════════════════════════════════════ */}
+        {/* ══ NEXT STEP DIGITAL — interactive client-card feature ═════ */}
+        <NextStepFeature onOpenCaseStudy={() => setSelectedCase(nextstepCase)} />
+
+        {/* ══ FEATURED CASE STUDIES — told in full, no modal needed ═══ */}
         <section id="projects" className="section-glow py-16 sm:py-24 lg:py-36">
           <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
-
-            {/* Section header — label + heading left, subtext right */}
-            <div className="mb-12 lg:mb-16 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-              <div>
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="h-px w-5 bg-primary" />
-                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Selected Work</span>
-                </div>
-                <RevealText
-                  as="h2"
-                  className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)]"
-                  lines={["Projects worth", "looking at."]}
-                />
-              </div>
-              <p className="text-sm text-foreground/40 max-w-[34ch] leading-relaxed sm:pb-1">
-                Case studies across brand, product, and digital — each one solving a real problem.
-              </p>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-px w-5 bg-primary" />
+              <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Case Studies</span>
             </div>
+            <RevealText
+              as="h2"
+              className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)] mb-4"
+              lines={["Evidence, not claims."]}
+            />
+            <p className="max-w-[46ch] text-sm leading-relaxed text-foreground/40">
+              Real client work, real competition results, real products shipped.
+            </p>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {CASE_STUDIES.slice(0, 6).map((project, index) => (
-                <motion.button
-                  key={project.id}
-                  type="button"
-                  onClick={() => setSelectedCase(project)}
-                  className="group text-left flex flex-col rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-500 hover:border-white/14"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-10% 0px" }}
-                  transition={{ delay: index * 0.05, duration: 0.6, ease: EASE }}
-                >
-                  {/* Full-bleed image with title overlaid */}
-                  <div className="relative aspect-video overflow-hidden bg-surface-2">
-                    {project.coverImage && (
-                      <img
-                        src={project.coverImage}
-                        alt={project.title}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-                      />
-                    )}
-                    {/* Strong bottom gradient for text legibility */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-                    {/* Achievement badge top-right */}
-                    {project.achievement && (
-                      <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary/90 backdrop-blur-sm px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
-                        {project.achievement}
-                      </span>
-                    )}
-                    {/* Title + context overlaid at bottom of image */}
-                    <div className="absolute inset-x-0 bottom-0 p-4">
-                      <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
-                        {project.context}
-                      </p>
-                      <h3 className="text-[15px] font-bold leading-snug tracking-tight text-white">
-                        {project.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Minimal footer strip */}
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
-                      {project.tag}
-                    </span>
-                    <div className="flex items-center gap-2 text-foreground/28">
-                      <span className="font-mono text-[9px]">{project.year}</span>
-                      <ArrowUpRight size={11} weight="bold" className="transition-colors duration-200 group-hover:text-primary" />
-                    </div>
-                  </div>
-                </motion.button>
+            <div className="mt-6 divide-y divide-border">
+              {featured.map((cs, i) => (
+                <CaseStudyFeature
+                  key={cs.id}
+                  cs={cs}
+                  reverse={i % 2 === 1}
+                  onOpenFull={() => setSelectedCase(cs)}
+                />
               ))}
             </div>
 
+            {/* Browse-all grid */}
+            <div className="mt-16 lg:mt-20">
+              <p className="mb-8 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/35">
+                All case studies
+              </p>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {CASE_STUDIES.map((cs, i) => (
+                  <RevealCard key={cs.id} index={i % 3}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCase(cs)}
+                      className="w-full text-left"
+                    >
+                      <WorkCard
+                        image={cs.coverImage ?? cs.image}
+                        eyebrow={cs.context}
+                        title={cs.title}
+                        badge={cs.achievement}
+                        tagLabel={cs.tag}
+                        meta={cs.year}
+                      />
+                    </button>
+                  </RevealCard>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ══ SERVICES (ServiceStack bento) ═══════════════════════════════ */}
+        {/* ══ WORK GALLERY ═════════════════════════════════════════════ */}
+        <WorkGallery />
+
+        {/* ══ SERVICES ═════════════════════════════════════════════════ */}
         <ServiceStack />
 
-        {/* ══ STATS ═══════════════════════════════════════════════════════ */}
-        <section className="section-glow section-glow-r border-y border-border py-12 sm:py-20 lg:py-28">
-          <div className="mx-auto max-w-375 px-4 sm:px-8 lg:px-12">
-            <div className="mb-14 lg:mb-18">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="h-px w-5 bg-primary" />
-                <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">By the numbers</span>
-              </div>
-              <RevealText
-                as="h2"
-                className="display-hero text-[clamp(2rem,4vw,4rem)] max-w-[18ch]"
-                lines={["Actions speak", "louder than words."]}
-              />
-            </div>
+        {/* ══ JOURNEY ══════════════════════════════════════════════════ */}
+        <JourneyTimeline />
 
-            <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {STATS.map((stat, i) => (
-                <motion.div
-                  key={stat.value}
-                  className="flex flex-col gap-2 py-10 sm:px-10 lg:px-14 first:pl-0 last:pr-0 first:pt-0 last:pb-0 sm:first:pt-10 sm:last:pb-10"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-8% 0px" }}
-                  transition={{ duration: 0.65, ease: EASE, delay: i * 0.08 }}
-                >
-                  <p
-                    className="font-black tracking-tightest leading-none text-foreground"
-                    style={{ fontSize: "clamp(3.5rem, 7vw, 6.5rem)" }}
+        {/* ══ STATS + ACHIEVEMENTS ═════════════════════════════════════ */}
+        <StatsAchievements />
+
+        {/* ══ CONTACT ══════════════════════════════════════════════════ */}
+        <section id="contact" className="relative overflow-hidden" style={{ background: "var(--background)", minHeight: "100svh" }}>
+          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 68% 72% at 50% 56%, oklch(0.30 0.082 168 / 0.38), transparent 70%)" }} />
+          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 52% 58% at 12% 48%, oklch(0.26 0.065 235 / 0.22), transparent 68%)" }} />
+          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 55% at 50% 100%, oklch(0.34 0.09 168 / 0.32), transparent 65%)" }} />
+          <div className="pointer-events-none absolute inset-x-0 top-0" style={{ zIndex: 25, height: 120, background: "linear-gradient(to bottom, var(--background) 25%, transparent)" }} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0" style={{ zIndex: 25, height: 80, background: "linear-gradient(to top, var(--background) 20%, transparent)" }} />
+
+          <div className="relative z-10 flex items-center" style={{ minHeight: "100svh" }}>
+            <div className="w-full mx-auto max-w-375">
+              <div className="grid lg:grid-cols-2 items-stretch">
+
+                {/* Left: portrait */}
+                <div className="relative flex items-end justify-center overflow-hidden" style={{ minHeight: "70svh" }}>
+                  <div className="absolute inset-x-0 pointer-events-none flex justify-center" style={{ bottom: "14%", zIndex: 5 }}>
+                    <motion.h2
+                      className="font-black lowercase text-foreground whitespace-nowrap"
+                      style={{ fontSize: "clamp(3.4rem, 17vw, 13rem)", letterSpacing: "-0.06em", lineHeight: 1 }}
+                      initial={{ opacity: 0, y: 40, scale: 0.93 }}
+                      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                      viewport={{ once: true, margin: "0px" }}
+                      transition={{ delay: 0.15, duration: 1, ease: EASE }}
+                    >
+                      nadeem<span style={{ color: "oklch(0.64 0.145 168)" }}>.</span>
+                    </motion.h2>
+                  </div>
+
+                  <motion.div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2"
+                    style={{ zIndex: 10 }}
+                    initial={{ opacity: 0, y: 60, scale: 0.86 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "0px" }}
+                    transition={{ duration: 1.0, ease: EASE, delay: 0.05 }}
                   >
-                    {stat.value}
-                  </p>
-                  <p className="text-sm font-semibold text-foreground/75">{stat.label}</p>
-                  <p className="text-xs text-foreground/38">{stat.sub}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ══ CONTACT ═════════════════════════════════════════════════════ */}
-        <section id="contact" className="relative overflow-hidden py-24 lg:py-36">
-          {/* Background glow */}
-          <div
-            className="pointer-events-none absolute left-0 top-1/2 h-[60%] w-[45%] -translate-y-1/2"
-            style={{ background: "radial-gradient(ellipse 60% 50% at 20% 50%, oklch(0.64 0.145 168 / 0.06), transparent 70%)" }}
-          />
-
-          <div className="relative z-10 mx-auto max-w-375 px-4 sm:px-8 lg:px-12">
-            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-
-              {/* Left: text */}
-              <div>
-                <div className="mb-8 flex items-center gap-3">
-                  <span className="h-px w-5 bg-primary" />
-                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Contact</span>
+                    <div
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+                      style={{
+                        width: "min(520px, 90vw)",
+                        height: "min(320px, 44vw)",
+                        background: "radial-gradient(ellipse at 50% 85%, oklch(0.64 0.145 168 / 0.32), transparent 65%)",
+                        filter: "blur(32px)",
+                      }}
+                    />
+                    <img
+                      src={heroCutoutImg}
+                      alt="Nadeem Saif"
+                      className="relative select-none block w-auto object-contain object-bottom"
+                      style={{ height: "min(72svh, 680px)", filter: "drop-shadow(0 -8px 72px oklch(0.64 0.145 168 / 0.26)) drop-shadow(0 60px 140px oklch(0 0 0 / 0.76))" }}
+                      draggable={false}
+                    />
+                  </motion.div>
                 </div>
-                <RevealText
-                  as="h2"
-                  className="display-hero text-[clamp(3rem,8vw,7rem)] max-w-[10ch]"
-                  lines={["Let's create", "something."]}
-                />
-                <p className="mt-6 max-w-[38ch] text-base leading-relaxed text-foreground/45">
-                  Open to the right role in Germany — brand, marketing, or product. Let's build something worth talking about.
-                </p>
-                <span className="mt-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs text-primary">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                  Available for the right role
-                </span>
-              </div>
 
-              {/* Right: contact links card */}
-              <motion.div
-                className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10% 0px" }}
-                transition={{ duration: 0.65, ease: EASE, delay: 0.1 }}
-              >
-                <a
-                  href={`mailto:${PERSONAL.email}`}
-                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
-                >
-                  <div>
-                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Email</p>
-                    <p className="text-sm font-medium text-foreground">{PERSONAL.email}</p>
+                {/* Right: contact links */}
+                <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-12 py-16 lg:py-0">
+                  <div className="mb-6 flex items-center gap-3">
+                    <span className="h-px w-5 bg-primary" />
+                    <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Contact</span>
                   </div>
-                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
-                </a>
-                <a
-                  href={PERSONAL.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
-                >
-                  <div>
-                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">LinkedIn</p>
-                    <p className="text-sm font-medium text-foreground">nadeemsaifrind</p>
-                  </div>
-                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
-                </a>
-                <a
-                  href="/nadeem-saif-cv.pdf"
-                  download
-                  className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
-                >
-                  <div>
-                    <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Resume</p>
-                    <p className="text-sm font-medium text-foreground">Download CV — PDF</p>
-                  </div>
-                  <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
-                </a>
-              </motion.div>
+                  <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs text-primary w-fit">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                    Available for the right role
+                  </span>
+                  <motion.div
+                    className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10% 0px" }}
+                    transition={{ duration: 0.65, ease: EASE, delay: 0.1 }}
+                  >
+                    <a
+                      href={`mailto:${PERSONAL.email}`}
+                      className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                    >
+                      <div>
+                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Email</p>
+                        <p className="text-sm font-medium text-foreground">{PERSONAL.email}</p>
+                      </div>
+                      <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                    </a>
+                    <a
+                      href={PERSONAL.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                    >
+                      <div>
+                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">LinkedIn</p>
+                        <p className="text-sm font-medium text-foreground">nadeemsaifrind</p>
+                      </div>
+                      <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                    </a>
+                    <a
+                      href="/nadeem-saif-cv.pdf"
+                      download
+                      className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
+                    >
+                      <div>
+                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Resume</p>
+                        <p className="text-sm font-medium text-foreground">Download CV &ndash; PDF</p>
+                      </div>
+                      <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
+                    </a>
+                  </motion.div>
+                </div>
+
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ══ FOOTER ══════════════════════════════════════════════════════ */}
+        {/* ══ FOOTER ═══════════════════════════════════════════════════ */}
         <footer className="border-t border-border px-4 sm:px-8 lg:px-12">
           <div className="mx-auto w-full max-w-375 py-12 lg:py-16">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
