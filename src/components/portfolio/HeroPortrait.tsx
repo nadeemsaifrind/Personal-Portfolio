@@ -55,7 +55,7 @@ export function HeroPortrait({ step }: { step: number }) {
 
   return (
     <motion.div
-      className="pointer-events-none relative z-20 -mt-28 mb-10 flex w-full items-end justify-center sm:-mt-32 sm:mb-14 md:absolute md:top-0 md:bottom-12 md:right-0 md:mt-0 md:mb-0 md:w-[52%]"
+      className="pointer-events-none relative z-20 -mt-28 mb-10 flex w-full items-end justify-center sm:-mt-32 sm:mb-14 md:absolute md:top-0 md:bottom-0 md:right-[6%] md:mt-0 md:mb-0 md:w-[52%]"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
