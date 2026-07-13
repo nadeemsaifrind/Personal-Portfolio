@@ -1,16 +1,9 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { DISCIPLINES } from "@/lib/portfolio-data";
-import frame1 from "@/assets/hero-sequence/frame-001.png";
-import frame2 from "@/assets/hero-sequence/frame-002.png";
-import frame3 from "@/assets/hero-sequence/frame-003.png";
-import frame4 from "@/assets/hero-sequence/frame-004.png";
-import frame5 from "@/assets/hero-sequence/frame-005.png";
 import frame7 from "@/assets/hero-sequence/frame-007.png";
 
-// frame-006 dropped — it came out blurry.
-export const HERO_PORTRAIT_FRAME_COUNT = 6;
-const FRAMES = [frame1, frame2, frame3, frame4, frame5, frame7];
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 // Same copy as the discipline marquee under the hero — looped around the badge.
 const BADGE_TEXT = `${DISCIPLINES.join("   •   ")}   •   `;
@@ -43,30 +36,29 @@ function DisciplineBadge() {
   );
 }
 
-export function HeroPortrait({ step }: { step: number }) {
-  useEffect(() => {
-    FRAMES.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-
-  const frameSrc = FRAMES[step]!;
+export function HeroPortrait() {
+  // Same clip-reveal mechanic as PassionProjects' PortraitPanel: a fixed
+  // overflow-hidden frame (frameRef) stays put while the photo itself rises
+  // from y:100% (fully below the frame, invisible) to y:0%, clipped into
+  // view rather than fading in place. Same duration/easing too, and not
+  // "once" — scrolling back out and back in replays it every time.
+  const frameRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(frameRef, { once: false, amount: 0.4 });
 
   return (
     <motion.div
       className="pointer-events-none relative z-20 -mt-28 mb-10 flex w-full items-end justify-center overflow-visible sm:-mt-32 sm:mb-14 md:absolute md:right-[6%] md:bottom-0 md:mt-0 md:mb-0 md:w-[clamp(18rem,40vw,34rem)] md:h-[clamp(28rem,54vw,42rem)]"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+      transition={{ duration: 0.9, ease: EASE, delay: 0.3 }}
       aria-hidden
     >
-      {/* Nothing in this chain clips — object-contain always shows the whole
-          frame (figure plus its transparent margins), so no pose in the
-          sequence can ever have its leg, chair, or lower body cut off. The
-          source frames carry a transparent margin above the head, which is
-          what lets the box render tall enough for the head to clear the card
-          without scaling or distorting the photo itself. */}
+      {/* Nothing in this chain clips at rest — object-contain always shows the
+          whole frame (figure plus its transparent margins), so the pose never
+          has its leg, chair, or lower body cut off. The source frame carries a
+          transparent margin above the head, which is what lets the box render
+          tall enough for the head to clear the card without scaling or
+          distorting the photo itself. */}
       <div className="relative z-10 mx-auto aspect-7/8 w-[clamp(15rem,80vw,22rem)] overflow-visible md:mx-0 md:aspect-auto md:h-full md:w-full">
         {/* Contact shadow — grounds the figure on mobile's floor look. Desktop/tablet
             drop the person flush against the white section instead, so a soft
@@ -81,19 +73,24 @@ export function HeroPortrait({ step }: { step: number }) {
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div
-            className="relative h-full w-full"
-            style={{ filter: "brightness(1.04) contrast(1.08) saturate(0.86) drop-shadow(0 26px 34px rgba(0,0,0,0.6))" }}
-          >
-            <img
-              src={frameSrc}
-              alt=""
-              className="absolute inset-0 h-full w-full object-contain object-bottom md:object-bottom-right"
-            />
+          <div ref={frameRef} className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="relative h-full w-full"
+              style={{ filter: "brightness(1.04) contrast(1.08) saturate(0.86) drop-shadow(0 26px 34px rgba(0,0,0,0.6))" }}
+              initial={{ y: "100%", opacity: 0 }}
+              animate={inView ? { y: "0%", opacity: 1 } : { y: "100%", opacity: 0 }}
+              transition={{ duration: 1.1, ease: EASE }}
+            >
+              <img
+                src={frame7}
+                alt=""
+                className="absolute inset-0 h-full w-full object-contain object-bottom md:object-bottom-right"
+              />
+            </motion.div>
           </div>
-        </motion.div>
 
-        <DisciplineBadge />
+          <DisciplineBadge />
+        </motion.div>
       </div>
 
       {/* Fades the image into the section background so the frame reads as an

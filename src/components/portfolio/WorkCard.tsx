@@ -63,13 +63,13 @@ export function WorkCard({
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
         {badge && (
-          <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary/90 backdrop-blur-sm px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
+          <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary/90 backdrop-blur-sm px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
             {badge}
           </span>
         )}
         <div className="absolute inset-x-0 bottom-0 p-4">
           {eyebrow && (
-            <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+            <p className="mb-1 text-xs text-white/45">
               {eyebrow}
             </p>
           )}
@@ -84,12 +84,12 @@ export function WorkCard({
       {(tagLabel || meta) && (
         <div className="flex items-center justify-between px-4 py-3">
           {tagLabel && (
-            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
+            <span className="text-xs text-foreground/35">
               {tagLabel}
             </span>
           )}
           {meta && (
-            <span className="font-mono text-[9px] text-foreground/28">{meta}</span>
+            <span className="text-xs text-foreground/28">{meta}</span>
           )}
         </div>
       )}

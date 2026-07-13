@@ -160,27 +160,24 @@ type StackPosition = keyof typeof STACK_ROUNDING;
    baked onto opaque white squares (not transparent), so each mark sits in
    its own small white chip rather than fighting the dark surface. All three
    cards are identically sized — no hierarchy — and sit flush against each
-   other with no gap, reading as one continuous stacked block. */
-function VentureCard({ venture, index, position }: { venture: Venture; index: number; position: StackPosition }) {
+   other with no gap, reading as one continuous stacked block. No entrance
+   animation and no hover transitions — static, immediate, no motion at all. */
+function VentureCard({ venture, position }: { venture: Venture; position: StackPosition }) {
   return (
-    <motion.a
+    <a
       href={venture.url}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Visit ${venture.name}`}
-      className={`group relative block overflow-hidden border border-white/8 transition-all duration-500 ease-out hover:z-10 hover:-translate-y-1 hover:border-white/16 hover:shadow-[0_20px_40px_-18px_rgba(0,0,0,0.45)] ${STACK_ROUNDING[position]}`}
+      className={`group relative block overflow-hidden border border-white/8 hover:z-10 hover:border-white/16 hover:shadow-[0_20px_40px_-18px_rgba(0,0,0,0.45)] ${STACK_ROUNDING[position]}`}
       style={{
         background: "linear-gradient(155deg, oklch(0.115 0.007 250) 0%, oklch(0.045 0.004 250) 100%)",
       }}
-      initial={{ opacity: 0, y: 26, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.6, ease: EASE, delay: 0.12 * index }}
     >
       {/* Subtle texture + sheen, same visual language as the Hero's card */}
       <div className="grid-bg pointer-events-none absolute inset-0 opacity-30" />
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100"
         style={{ background: "radial-gradient(circle at 18% 12%, oklch(0.64 0.145 168 / 0.16), transparent 60%)" }}
       />
 
@@ -201,10 +198,10 @@ function VentureCard({ venture, index, position }: { venture: Venture; index: nu
         <ArrowUpRight
           size={15}
           weight="bold"
-          className="shrink-0 text-white/40 transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white/80"
+          className="shrink-0 text-white/40 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white/80"
         />
       </div>
-    </motion.a>
+    </a>
   );
 }
 
@@ -244,25 +241,13 @@ export function PassionProjects() {
         </div>
 
         <div className={`relative ${PAGE_CONTAINER} pb-14 sm:pb-16 md:pb-20 lg:pb-24`}>
-          <motion.div
-            className="relative overflow-visible rounded-[clamp(1.25rem,4vw,2.75rem)] bg-white shadow-[0_20px_60px_-20px_rgba(0,0,0,0.18)] ring-1 ring-black/5"
-            initial={{ opacity: 0, y: 36, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 0.9, ease: EASE }}
-          >
+          <div className="relative overflow-visible rounded-[clamp(1.25rem,4vw,2.75rem)] bg-white shadow-[0_20px_60px_-20px_rgba(0,0,0,0.18)] ring-1 ring-black/5">
             <div className="relative flex flex-col px-6 py-10 sm:px-8 sm:py-12 md:flex-row md:items-stretch md:gap-10 md:px-12 md:py-16 lg:gap-14 lg:px-16 lg:py-20">
 
               {/* Left column: heading on top, the three cards stacked
                   directly beneath it with no gap — one continuous block. */}
               <div className="relative md:w-[46%] md:shrink-0">
-                <motion.div
-                  className="relative z-20"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-15% 0px" }}
-                  transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-                >
+                <div className="relative z-20">
                   <h2 className="display-hero text-[clamp(2.1rem,4.2vw,3.75rem)] text-black">
                     <span className="block">
                       <span
@@ -281,14 +266,13 @@ export function PassionProjects() {
                       of.
                     </span>
                   </h2>
-                </motion.div>
+                </div>
 
                 <div className="relative z-10 mt-8 flex flex-col sm:mt-10">
                   {VENTURES.map((venture, i) => (
                     <VentureCard
                       key={venture.name}
                       venture={venture}
-                      index={i}
                       position={i === 0 ? "first" : i === VENTURES.length - 1 ? "last" : "middle"}
                     />
                   ))}
@@ -310,7 +294,7 @@ export function PassionProjects() {
               </div>
 
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

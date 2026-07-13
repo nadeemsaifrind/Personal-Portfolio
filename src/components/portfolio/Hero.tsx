@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, DotsThree } from "@phosphor-icons/react";
 import { PERSONAL } from "@/lib/portfolio-data";
-import { HeroPortrait, HERO_PORTRAIT_FRAME_COUNT } from "./HeroPortrait";
+import { HeroPortrait } from "./HeroPortrait";
 import { useSectionEntry, useStepSequence } from "./useHeroSequence";
 import heroBg from "@/assets/hero-bg.png";
 import heroBg2 from "@/assets/hero-bg-2.png";
@@ -11,8 +11,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 // Tagline word loop — independent from the portrait's frame timing.
 const TAGLINE_WORDS = ["Ideas", "Brands", "Products", "Businesses", "Visions", "Growth"];
 const WORD_STEP_MS = 1400;
-// Portrait plays faster, as its own flipbook, and freezes on the last frame.
-const PORTRAIT_STEP_MS = 110;
 
 // Shared by the nav strip and the hero card so both align to the exact same
 // left/right edges and read as two parts of one design system.
@@ -26,7 +24,6 @@ interface HeroProps {
 export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
   const { sectionRef, visible, entry } = useSectionEntry();
   const wordStep = useStepSequence(TAGLINE_WORDS.length, WORD_STEP_MS, visible, entry, true);
-  const portraitStep = useStepSequence(HERO_PORTRAIT_FRAME_COUNT, PORTRAIT_STEP_MS, visible, entry, false);
 
   return (
     <>
@@ -171,7 +168,7 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
                 </span>
               </motion.h1>
 
-              <HeroPortrait step={portraitStep} />
+              <HeroPortrait />
 
               <div>
                 <motion.p

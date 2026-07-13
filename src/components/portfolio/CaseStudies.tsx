@@ -168,42 +168,38 @@ export function CaseStudies({
           <DialogDescription className="sr-only">{selected?.context ?? ""}</DialogDescription>
           {selected && (
             <div className="flex flex-col">
-              {/* Hero image */}
-              <div
-                className="relative w-full shrink-0 overflow-hidden"
-                style={{ aspectRatio: "2.8 / 1" }}
-              >
+              {/* Hero image — shown whole, uncropped, sharp edges */}
+              <div className="flex w-full justify-center overflow-hidden bg-secondary/20">
                 <img
                   src={selected.coverImage ?? selected.image}
                   alt={selected.title}
-                  className="w-full h-full object-cover"
+                  className="max-h-96 w-auto max-w-full object-contain"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/10 to-transparent" />
+              </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-3 flex-wrap">
-                    <span className="font-mono text-[9px] tracking-[0.15em] text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
-                      {selected.context}
+              <div className="p-8 pb-0 md:p-10 md:pb-0">
+                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                  <span className="text-xs text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-full">
+                    {selected.context}
+                  </span>
+                  {selected.achievement && (
+                    <span
+                      className="text-xs font-semibold px-2.5 py-1 rounded-full border border-border"
+                      style={{
+                        color: selected.accent,
+                        background: `color-mix(in oklab, ${selected.accent} 20%, transparent)`,
+                      }}
+                    >
+                      ★ {selected.achievement}
                     </span>
-                    {selected.achievement && (
-                      <span
-                        className="font-mono text-[9px] tracking-[0.15em] px-2.5 py-1 rounded-full border border-white/25"
-                        style={{
-                          color: selected.accent,
-                          background: `color-mix(in oklab, ${selected.accent} 20%, transparent)`,
-                        }}
-                      >
-                        ★ {selected.achievement.toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <h2 className="text-2xl md:text-3xl text-white font-normal tracking-[-0.03em] leading-tight mb-1">
-                    {selected.title}
-                  </h2>
-                  <p className="font-mono text-[10px] tracking-[0.15em] text-white/60">
-                    {selected.role.toUpperCase()} · {selected.year}
-                  </p>
+                  )}
                 </div>
+                <h2 className="text-2xl md:text-3xl text-foreground font-normal tracking-[-0.03em] leading-tight mb-1">
+                  {selected.title}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {selected.role} · {selected.year}
+                </p>
               </div>
 
               {/* Body */}
@@ -219,8 +215,8 @@ export function CaseStudies({
                           boxShadow: `0 0 8px ${selected.accent}`,
                         }}
                       />
-                      <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
-                        THE PLATFORM
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        The platform
                       </span>
                     </div>
                     {/* Browser chrome */}
@@ -264,7 +260,7 @@ export function CaseStudies({
                         />
                       </div>
                     </div>
-                    <p className="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/40 text-center mt-2">
+                    <p className="text-xs text-muted-foreground/40 text-center mt-2">
                       {selected.platformCaption ?? ""}
                     </p>
                   </div>
@@ -272,8 +268,8 @@ export function CaseStudies({
 
                 {/* Challenge */}
                 <div>
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                    CHALLENGE
+                  <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                    Challenge
                   </span>
                   <p className="text-base text-foreground/80 leading-relaxed">
                     {selected.challenge}
@@ -282,13 +278,13 @@ export function CaseStudies({
 
                 {/* Actions Taken */}
                 <div>
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-4">
-                    ACTIONS TAKEN
+                  <span className="text-xs font-semibold text-muted-foreground block mb-4">
+                    Actions taken
                   </span>
                   <ol className="space-y-3">
                     {selected.actionsToken.map((action, i) => (
                       <li key={i} className="flex items-start gap-4">
-                        <span className="font-mono text-[10px] text-muted-foreground/50 mt-0.75 w-5 shrink-0">
+                        <span className="text-xs text-muted-foreground/50 mt-0.75 w-5 shrink-0">
                           {(i + 1).toString().padStart(2, "0")}
                         </span>
                         <span className="text-sm text-foreground/80 leading-relaxed">{action}</span>
@@ -300,119 +296,58 @@ export function CaseStudies({
                 {/* BTS photos — right below actions, only for instagramProof cases */}
                 {selected.instagramProof?.btsPhotos?.some(Boolean) && (
                   <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                      ON-SITE · BEHIND THE LENS
+                    <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                      On-site — behind the lens
                     </span>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3">
                       {selected.instagramProof.btsPhotos.map((photo, i) =>
                         photo ? (
-                          <div key={i} className="overflow-hidden rounded-2xl aspect-4/3">
-                            <img
-                              src={photo}
-                              alt={`Behind the scenes ${i + 1}`}
-                              className="w-full h-full object-cover hover:scale-[1.04] transition-transform duration-500"
-                            />
-                          </div>
-                        ) : (
-                          <div
+                          <img
                             key={i}
-                            className="rounded-2xl border-2 border-dashed border-border bg-secondary/20 aspect-4/3 flex items-center justify-center"
-                          >
-                            <span className="font-mono text-[9px] text-muted-foreground/30">
-                              BTS PHOTO {i + 1}
-                            </span>
-                          </div>
-                        ),
+                            src={photo}
+                            alt={`Behind the scenes ${i + 1}`}
+                            className="h-56 w-auto max-w-full object-contain shadow-[0_14px_30px_-16px_rgba(0,0,0,0.5)]"
+                          />
+                        ) : null,
                       )}
                     </div>
                   </div>
                 )}
 
                 {/* Image collage */}
-                {selected.screens?.some(Boolean) && !selected.instagramProof ? (
+                {selected.screens?.some(Boolean) && !selected.instagramProof && (
                   <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                      PROJECT SCREENS & DELIVERABLES
+                    <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                      Project screens &amp; deliverables
                     </span>
-                    <div className="flex flex-col gap-2.5">
-                      {/* Row 1 — hero image, full width */}
-                      {selected.screens[0] && (
-                        <div className="h-64 overflow-hidden rounded-2xl">
+                    <div className="flex flex-wrap gap-3">
+                      {selected.screens.map((src, i) =>
+                        src ? (
                           <img
-                            src={selected.screens[0]}
-                            alt="Project screen 1"
-                            className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
+                            key={i}
+                            src={src}
+                            alt={`Project screen ${i + 1}`}
+                            className="h-64 w-auto max-w-full object-contain shadow-[0_14px_30px_-16px_rgba(0,0,0,0.5)]"
                           />
-                        </div>
-                      )}
-
-                      {/* Row 2 — up to 3 equal columns */}
-                      {(selected.screens[1] || selected.screens[2] || selected.screens[3]) && (
-                        <div
-                          className="grid gap-2.5 h-44"
-                          style={{
-                            gridTemplateColumns:
-                              [
-                                selected.screens[1],
-                                selected.screens[2],
-                                selected.screens[3],
-                              ].filter(Boolean).length === 2
-                                ? "1fr 1fr"
-                                : "1fr 1fr 1fr",
-                          }}
-                        >
-                          {[1, 2, 3].map((i) =>
-                            selected.screens![i] ? (
-                              <div key={i} className="overflow-hidden rounded-2xl h-full">
-                                <img
-                                  src={selected.screens![i]}
-                                  alt={`Project screen ${i + 1}`}
-                                  className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
-                                />
-                              </div>
-                            ) : null,
-                          )}
-                        </div>
-                      )}
-
-                      {/* Row 3 — 5th image full width if present */}
-                      {selected.screens[4] && (
-                        <div className="h-44 overflow-hidden rounded-2xl">
-                          <img
-                            src={selected.screens[4]}
-                            alt="Project screen 5"
-                            className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
-                          />
-                        </div>
+                        ) : null,
                       )}
                     </div>
                   </div>
-                ) : !selected.instagramProof ? (
-                  <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                      PROJECT SCREENS & DELIVERABLES
-                    </span>
-                    <div className="rounded-xl border-2 border-dashed border-border bg-secondary/20 h-32 flex items-center justify-center">
-                      <span className="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/35">
-                        cs-{selected.id}-1 … 5.jpg
-                      </span>
-                    </div>
-                  </div>
-                ) : null}
+                )}
 
                 {/* Client Gallery — Next Step */}
                 {selected.clientGallery && selected.clientGallery.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
-                        CLIENT WORK
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        Client work
                       </span>
                       {openClient && (
                         <button
                           onClick={() => setOpenClient(null)}
-                          className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.15em] text-muted-foreground hover:text-foreground transition-colors"
+                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          ← ALL CLIENTS
+                          ← All clients
                         </button>
                       )}
                     </div>
@@ -423,16 +358,13 @@ export function CaseStudies({
                         if (!client) return null;
                         return (
                           <div>
-                            <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/50 mb-4">
-                              {client.name.toUpperCase()}
+                            <p className="text-sm font-semibold text-foreground/60 mb-4">
+                              {client.name}
                             </p>
                             {client.images.length > 0 ? (
                               <div className="columns-2 gap-2.5 space-y-2.5">
                                 {client.images.map((img, i) => (
-                                  <div
-                                    key={i}
-                                    className="break-inside-avoid overflow-hidden rounded-xl"
-                                  >
+                                  <div key={i} className="break-inside-avoid">
                                     <img
                                       src={img}
                                       alt={`${client.name} design ${i + 1}`}
@@ -444,15 +376,15 @@ export function CaseStudies({
                               </div>
                             ) : (
                               <div className="rounded-xl border-2 border-dashed border-border bg-secondary/20 h-40 flex flex-col items-center justify-center gap-2">
-                                <span className="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/35">
+                                <span className="text-xs text-muted-foreground/35">
                                   ns-{client.slug}-1.jpg · ns-{client.slug}-2.jpg · …
                                 </span>
-                                <span className="font-mono text-[8px] text-muted-foreground/25">
+                                <span className="text-[11px] text-muted-foreground/25">
                                   Add images to src/assets/ then import in portfolio-data.ts
                                 </span>
                               </div>
                             )}
-                            <p className="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/35 text-center mt-3">
+                            <p className="text-xs text-muted-foreground/35 text-center mt-3">
                               We built these.
                             </p>
                           </div>
@@ -464,10 +396,10 @@ export function CaseStudies({
                           <button
                             key={client.slug}
                             onClick={() => setOpenClient(client.slug)}
-                            className="group text-left rounded-2xl border border-border/60 bg-card hover:border-foreground/15 hover:shadow-float transition-all duration-300 overflow-hidden"
+                            className="group text-left border border-border/60 bg-card hover:border-foreground/15 hover:shadow-float transition-all duration-300 overflow-hidden"
                           >
                             {/* Preview strip — first 3 images or placeholder */}
-                            <div className="h-24 bg-secondary/40 overflow-hidden grid grid-cols-3 gap-px">
+                            <div className="h-24 bg-secondary/40 grid grid-cols-3 gap-px">
                               {client.images.length > 0 ? (
                                 [0, 1, 2].map((i) =>
                                   client.images[i] ? (
@@ -476,7 +408,7 @@ export function CaseStudies({
                                       src={client.images[i]}
                                       alt=""
                                       aria-hidden
-                                      className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-500"
+                                      className="h-full w-full object-contain"
                                     />
                                   ) : (
                                     <div key={i} className="w-full h-full bg-border/40" />
@@ -499,8 +431,8 @@ export function CaseStudies({
                             </div>
                             {/* Name */}
                             <div className="px-3 py-2.5 flex items-center justify-between">
-                              <span className="font-mono text-[10px] tracking-[0.12em] text-foreground/70 leading-tight">
-                                {client.name.toUpperCase()}
+                              <span className="text-sm font-medium text-foreground/70 leading-tight">
+                                {client.name}
                               </span>
                               <span className="text-muted-foreground/30 group-hover:text-foreground/50 transition-colors text-xs">
                                 →
@@ -538,15 +470,15 @@ export function CaseStudies({
                   return (
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
-                          GALLERY
+                        <span className="text-xs font-semibold text-muted-foreground">
+                          Gallery
                         </span>
                         {openMediaFolder && (
                           <button
                             onClick={() => setOpenMediaFolder(null)}
-                            className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.15em] text-muted-foreground hover:text-foreground transition-colors"
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                           >
-                            ← ALL FOLDERS
+                            ← All folders
                           </button>
                         )}
                       </div>
@@ -556,15 +488,12 @@ export function CaseStudies({
                           if (openMediaFolder === "events" && selected.eventGallery?.length) {
                             return (
                               <>
-                                <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/50 mb-4">
-                                  EVENTS
+                                <p className="text-sm font-semibold text-foreground/50 mb-4">
+                                  Events
                                 </p>
                                 <div className="columns-2 gap-2.5 space-y-2.5">
                                   {selected.eventGallery.map((src, i) => (
-                                    <div
-                                      key={i}
-                                      className="break-inside-avoid overflow-hidden rounded-xl"
-                                    >
+                                    <div key={i} className="break-inside-avoid">
                                       <img
                                         src={src}
                                         alt={`Event ${i + 1}`}
@@ -580,22 +509,20 @@ export function CaseStudies({
                           if (openMediaFolder === "success" && selected.successStories?.length) {
                             return (
                               <>
-                                <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/50 mb-4">
-                                  SUCCESS STORIES
+                                <p className="text-sm font-semibold text-foreground/50 mb-4">
+                                  Success stories
                                 </p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <div className="flex flex-wrap gap-3">
                                   {selected.successStories.map((story, i) => (
                                     <div key={i} className="flex flex-col gap-1.5">
-                                      <div className="overflow-hidden rounded-2xl aspect-3/4">
-                                        <img
-                                          src={story.image}
-                                          alt={story.caption ?? `Story ${i + 1}`}
-                                          className="w-full h-full object-cover hover:scale-[1.04] transition-transform duration-500"
-                                          draggable={false}
-                                        />
-                                      </div>
+                                      <img
+                                        src={story.image}
+                                        alt={story.caption ?? `Story ${i + 1}`}
+                                        className="h-72 w-auto max-w-full object-contain"
+                                        draggable={false}
+                                      />
                                       {story.caption && (
-                                        <p className="font-mono text-[9px] tracking-[0.12em] text-muted-foreground/60 text-center leading-snug">
+                                        <p className="text-xs text-muted-foreground/60 text-center leading-snug">
                                           {story.caption}
                                         </p>
                                       )}
@@ -608,15 +535,12 @@ export function CaseStudies({
                           if (openMediaFolder === "campaigns" && selected.campaignGallery?.length) {
                             return (
                               <>
-                                <p className="font-mono text-[10px] tracking-[0.2em] text-foreground/50 mb-4">
-                                  MARKETING CAMPAIGNS
+                                <p className="text-sm font-semibold text-foreground/50 mb-4">
+                                  Marketing campaigns
                                 </p>
                                 <div className="columns-2 gap-2.5 space-y-2.5">
                                   {selected.campaignGallery.map((src, i) => (
-                                    <div
-                                      key={i}
-                                      className="break-inside-avoid overflow-hidden rounded-xl"
-                                    >
+                                    <div key={i} className="break-inside-avoid">
                                       <img
                                         src={src}
                                         alt={`Campaign ${i + 1}`}
@@ -637,9 +561,9 @@ export function CaseStudies({
                             <button
                               key={folder.slug}
                               onClick={() => setOpenMediaFolder(folder.slug)}
-                              className="group text-left rounded-2xl border border-border/60 bg-card hover:border-foreground/15 hover:shadow-float transition-all duration-300 overflow-hidden"
+                              className="group text-left border border-border/60 bg-card hover:border-foreground/15 hover:shadow-float transition-all duration-300 overflow-hidden"
                             >
-                              <div className="h-24 bg-secondary/40 overflow-hidden grid grid-cols-3 gap-px">
+                              <div className="h-24 bg-secondary/40 grid grid-cols-3 gap-px">
                                 {[0, 1, 2].map((i) =>
                                   folder.preview[i] ? (
                                     <img
@@ -647,7 +571,7 @@ export function CaseStudies({
                                       src={folder.preview[i]}
                                       alt=""
                                       aria-hidden
-                                      className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-500"
+                                      className="h-full w-full object-contain"
                                     />
                                   ) : (
                                     <div key={i} className="w-full h-full bg-border/40" />
@@ -655,8 +579,8 @@ export function CaseStudies({
                                 )}
                               </div>
                               <div className="px-3 py-2.5 flex items-center justify-between">
-                                <span className="font-mono text-[10px] tracking-[0.12em] text-foreground/70">
-                                  {folder.name.toUpperCase()}
+                                <span className="text-sm font-medium text-foreground/70">
+                                  {folder.name}
                                 </span>
                                 <span className="text-muted-foreground/30 group-hover:text-foreground/50 transition-colors text-xs">
                                   →
@@ -672,8 +596,8 @@ export function CaseStudies({
 
                 {/* Result */}
                 <div className="border-l-2 pl-5" style={{ borderColor: selected.accent }}>
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                    RESULT
+                  <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                    Result
                   </span>
                   <p className="text-base text-foreground/80 leading-relaxed">{selected.outcome}</p>
                 </div>
@@ -681,14 +605,14 @@ export function CaseStudies({
                 {/* Tools + Skills */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2 border-t border-border">
                   <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-4">
-                      TOOLS USED
+                    <span className="text-xs font-semibold text-muted-foreground block mb-4">
+                      Tools used
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {selected.tools.map((t) => (
                         <span
                           key={t}
-                          className="font-mono text-[10px] tracking-[0.12em] text-muted-foreground border border-border rounded-full px-3 py-1.5"
+                          className="text-xs text-muted-foreground border border-border rounded-full px-3 py-1.5"
                         >
                           {t}
                         </span>
@@ -696,14 +620,14 @@ export function CaseStudies({
                     </div>
                   </div>
                   <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-4">
-                      SKILLS DEMONSTRATED
+                    <span className="text-xs font-semibold text-muted-foreground block mb-4">
+                      Skills demonstrated
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {selected.skillsDemonstrated.map((s) => (
                         <span
                           key={s}
-                          className="font-mono text-[10px] tracking-[0.12em] text-foreground/70 border border-foreground/20 rounded-full px-3 py-1.5"
+                          className="text-xs text-foreground/70 border border-foreground/20 rounded-full px-3 py-1.5"
                         >
                           {s}
                         </span>
@@ -714,13 +638,13 @@ export function CaseStudies({
 
                 {/* Highlights */}
                 <div>
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-4">
-                    AT A GLANCE
+                  <span className="text-xs font-semibold text-muted-foreground block mb-4">
+                    At a glance
                   </span>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
                     {selected.highlights.map((h) => (
                       <div key={h} className="bg-background p-5">
-                        <p className="font-mono text-[11px] tracking-[0.08em] text-foreground/80 leading-snug">
+                        <p className="text-sm text-foreground/80 leading-snug">
                           {h}
                         </p>
                       </div>
@@ -743,8 +667,8 @@ export function CaseStudies({
                           >
                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                           </svg>
-                          <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">
-                            INSTAGRAM PRESENCE BUILT
+                          <span className="text-xs font-semibold text-muted-foreground">
+                            Instagram presence built
                           </span>
                         </div>
 
@@ -752,14 +676,14 @@ export function CaseStudies({
                         <div className="grid grid-cols-3 gap-3">
                           {/* Profile screenshot — same card style as reels */}
                           <div
-                            className="relative overflow-hidden rounded-2xl"
+                            className="relative overflow-hidden"
                             style={{ aspectRatio: "9/16" }}
                           >
                             {ig.profileScreen ? (
                               <img
                                 src={ig.profileScreen}
                                 alt="Instagram profile"
-                                className="w-full h-full object-cover object-top hover:scale-[1.03] transition-transform duration-500"
+                                className="w-full h-full object-contain"
                               />
                             ) : (
                               <div className="w-full h-full bg-linear-to-b from-gray-100 to-gray-50 flex flex-col items-center justify-center gap-2">
@@ -788,14 +712,14 @@ export function CaseStudies({
                           {ig.reels.map((reel, i) => (
                             <div
                               key={i}
-                              className="relative overflow-hidden rounded-2xl"
+                              className="relative overflow-hidden"
                               style={{ aspectRatio: "9/16" }}
                             >
                               {reel.thumbnail ? (
                                 <img
                                   src={reel.thumbnail}
                                   alt={`Reel ${i + 1}`}
-                                  className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
+                                  className="w-full h-full object-contain"
                                 />
                               ) : (
                                 <div className="w-full h-full bg-linear-to-b from-gray-800 to-gray-950 flex flex-col items-center justify-center gap-2">
@@ -861,8 +785,8 @@ export function CaseStudies({
                     const parts = t.highlightName ? t.quote.split(t.highlightName) : [t.quote];
                     return (
                       <div>
-                        <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                          CLIENT TESTIMONIAL
+                        <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                          Client testimonial
                         </span>
                         <a
                           href={t.postUrl}
@@ -900,7 +824,7 @@ export function CaseStudies({
                                 >
                                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                 </svg>
-                                <span className="font-mono text-[9px] tracking-widest text-[#0a66c2]/70">
+                                <span className="text-xs text-[#0a66c2]/70">
                                   LinkedIn · {t.date}
                                 </span>
                               </div>
@@ -924,7 +848,7 @@ export function CaseStudies({
                           </div>
                           {/* Footer */}
                           <div className="px-5 py-3 border-t border-[#0a66c2]/10 bg-[#0a66c2]/2 flex items-center justify-end">
-                            <span className="flex items-center gap-1 font-mono text-[10px] text-[#0a66c2]/60 group-hover/li:text-[#0a66c2] transition-colors">
+                            <span className="flex items-center gap-1 text-xs text-[#0a66c2]/60 group-hover/li:text-[#0a66c2] transition-colors">
                               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                               </svg>
@@ -942,8 +866,8 @@ export function CaseStudies({
                     const n = selected.newsletter;
                     return (
                       <div>
-                        <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground block mb-3">
-                          NEWSLETTER DELIVERED
+                        <span className="text-xs font-semibold text-muted-foreground block mb-3">
+                          Newsletter delivered
                         </span>
                         <a
                           href={n.url}
@@ -973,11 +897,11 @@ export function CaseStudies({
                               <span className="font-semibold text-base text-foreground leading-tight">
                                 {n.name}
                               </span>
-                              <span className="flex items-center gap-1 font-mono text-[9px] tracking-[0.15em] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                                ✓ {n.subscribers}+ SUBSCRIBERS
+                              <span className="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                ✓ {n.subscribers}+ subscribers
                               </span>
                             </div>
-                            <p className="text-[11px] text-muted-foreground/60 font-mono tracking-widest mb-1.5">
+                            <p className="text-xs text-muted-foreground/60 mb-1.5">
                               {n.frequency}
                             </p>
                             <p className="text-sm text-muted-foreground leading-snug line-clamp-2">
@@ -985,7 +909,7 @@ export function CaseStudies({
                             </p>
                           </div>
                           {/* Arrow */}
-                          <span className="font-mono text-[10px] text-[#0a66c2]/50 group-hover/nl:text-[#0a66c2] transition-colors shrink-0">
+                          <span className="text-xs text-[#0a66c2]/50 group-hover/nl:text-[#0a66c2] transition-colors shrink-0">
                             Read ↗
                           </span>
                         </a>

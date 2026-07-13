@@ -7,14 +7,14 @@ import {
   LinkedinLogo,
   X,
 } from "@phosphor-icons/react";
-import heroCutoutImg from "@/assets/hero-cutout.png";
+import heroBg from "@/assets/hero-bg.png";
+import heroBg2 from "@/assets/hero-bg-2.png";
 import { PERSONAL, CASE_STUDIES, type CaseStudy } from "@/lib/portfolio-data";
 import { CaseStudies } from "@/components/portfolio/CaseStudies";
-import { WorkGallery } from "@/components/portfolio/WorkGallery";
-import { ServiceStack } from "@/components/portfolio/ServiceStack";
 import { Hero } from "@/components/portfolio/Hero";
 import { PassionProjects } from "@/components/portfolio/PassionProjects";
-import { WhyGeneralist } from "@/components/portfolio/WhyGeneralist";
+import { AchievementsBanner } from "@/components/portfolio/AchievementsBanner";
+import { CaseStudyCarousel } from "@/components/portfolio/CaseStudyCarousel";
 import { NextStepFeature } from "@/components/portfolio/NextStepFeature";
 import { CaseStudyFeature } from "@/components/portfolio/CaseStudyFeature";
 import { JourneyTimeline } from "@/components/portfolio/JourneyTimeline";
@@ -108,6 +108,7 @@ function Index() {
   const { role } = Route.useSearch();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+  const [showAllCases, setShowAllCases] = useState(false);
 
   const activeRole = useMemo(() => getRoleBySlug(role), [role]);
 
@@ -173,8 +174,11 @@ function Index() {
         {/* ══ PASSION PROJECTS — editorial scroll story ═══════════════ */}
         <PassionProjects />
 
-        {/* ══ WHY A GENERALIST ════════════════════════════════════════ */}
-        <WhyGeneralist />
+        {/* ══ ACHIEVEMENTS IN GERMANY — hackathon photo banner ═════════ */}
+        <AchievementsBanner />
+
+        {/* ══ CASE STUDY — Vanessa Veith, horizontal filmstrip ═════════ */}
+        <CaseStudyCarousel />
 
         {/* ══ NEXT STEP DIGITAL — interactive client-card feature ═════ */}
         <NextStepFeature onOpenCaseStudy={() => setSelectedCase(nextstepCase)} />
@@ -182,10 +186,6 @@ function Index() {
         {/* ══ FEATURED CASE STUDIES — told in full, no modal needed ═══ */}
         <section id="projects" className="section-glow py-16 sm:py-24 lg:py-36">
           <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-px w-5 bg-primary" />
-              <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Case Studies</span>
-            </div>
             <RevealText
               as="h2"
               className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)] mb-4"
@@ -196,21 +196,77 @@ function Index() {
             </p>
 
             <div className="mt-6 divide-y divide-border">
-              {featured.map((cs, i) => (
+              {featured
+                .filter((cs) => cs.id !== "dreamfly" && cs.id !== "kenergy")
+                .map((cs, i) => (
+                  <CaseStudyFeature
+                    key={cs.id}
+                    cs={cs}
+                    reverse={i % 2 === 1}
+                    onOpenFull={() => setSelectedCase(cs)}
+                  />
+                ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ DREAMFLY — white band ═══════════════════════════════════════ */}
+        {featured
+          .filter((cs) => cs.id === "dreamfly")
+          .map((cs) => (
+            <section key={cs.id} className="relative overflow-hidden bg-white py-16 sm:py-24 lg:py-36">
+              <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
                 <CaseStudyFeature
-                  key={cs.id}
                   cs={cs}
-                  reverse={i % 2 === 1}
+                  reverse
+                  onOpenFull={() => setSelectedCase(cs)}
+                  hideCover
+                  light
+                />
+              </div>
+            </section>
+          ))}
+
+        {/* ══ KENERGY ══════════════════════════════════════════════════ */}
+        {featured
+          .filter((cs) => cs.id === "kenergy")
+          .map((cs) => (
+            <section key={cs.id} className="section-glow relative overflow-hidden py-16 sm:py-24 lg:py-36" style={{ background: "var(--background)" }}>
+              <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
+                <CaseStudyFeature
+                  cs={cs}
+                  reverse
                   onOpenFull={() => setSelectedCase(cs)}
                 />
-              ))}
-            </div>
+              </div>
+            </section>
+          ))}
 
-            {/* Browse-all grid */}
-            <div className="mt-16 lg:mt-20">
-              <p className="mb-8 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/35">
-                All case studies
-              </p>
+        {/* ══ EXPLORE MORE — white band, same rhythm as the Branding section ═══ */}
+        <section className="relative overflow-hidden bg-white py-16 sm:py-24 lg:py-32">
+          <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
+            {!showAllCases ? (
+              <motion.button
+                type="button"
+                onClick={() => setShowAllCases(true)}
+                className="group flex w-full items-center justify-between gap-6 text-left"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10% 0px" }}
+                transition={{ duration: 0.6, ease: EASE }}
+              >
+                <span className="display-hero text-[clamp(1.75rem,3.6vw,3rem)] text-black">
+                  Explore{" "}
+                  <span className="font-normal italic" style={{ fontFamily: "var(--font-serif-accent)", color: "var(--primary)" }}>
+                    more
+                  </span>{" "}
+                  case studies.
+                </span>
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-black/15 bg-black/5 text-black/70 transition group-hover:border-black/30 group-hover:bg-black/10 group-hover:text-black sm:h-16 sm:w-16">
+                  <ArrowUpRight size={22} weight="bold" />
+                </span>
+              </motion.button>
+            ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {CASE_STUDIES.map((cs, i) => (
                   <RevealCard key={cs.id} index={i % 3}>
@@ -231,15 +287,9 @@ function Index() {
                   </RevealCard>
                 ))}
               </div>
-            </div>
+            )}
           </div>
         </section>
-
-        {/* ══ WORK GALLERY ═════════════════════════════════════════════ */}
-        <WorkGallery />
-
-        {/* ══ SERVICES ═════════════════════════════════════════════════ */}
-        <ServiceStack />
 
         {/* ══ JOURNEY ══════════════════════════════════════════════════ */}
         <JourneyTimeline />
@@ -247,24 +297,31 @@ function Index() {
         {/* ══ STATS + ACHIEVEMENTS ═════════════════════════════════════ */}
         <StatsAchievements />
 
-        {/* ══ CONTACT ══════════════════════════════════════════════════ */}
-        <section id="contact" className="relative overflow-hidden" style={{ background: "var(--background)", minHeight: "100svh" }}>
-          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 68% 72% at 50% 56%, oklch(0.30 0.082 168 / 0.38), transparent 70%)" }} />
-          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 52% 58% at 12% 48%, oklch(0.26 0.065 235 / 0.22), transparent 68%)" }} />
-          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 55% at 50% 100%, oklch(0.34 0.09 168 / 0.32), transparent 65%)" }} />
-          <div className="pointer-events-none absolute inset-x-0 top-0" style={{ zIndex: 25, height: 120, background: "linear-gradient(to bottom, var(--background) 25%, transparent)" }} />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0" style={{ zIndex: 25, height: 80, background: "linear-gradient(to top, var(--background) 20%, transparent)" }} />
+        {/* ══ CONTACT — mirrors the Hero card: white margin, floating rounded
+             dark card, same cosmos-glow/grid-bg background treatment ══════ */}
+        <section id="contact" className="relative bg-white pt-10 pb-4 sm:pt-14 md:pb-6 lg:pt-20">
+          <div className="mx-auto w-full max-w-375 px-3 sm:px-6 md:px-10 lg:px-12 xl:px-16 2xl:px-24">
+            <div className="relative overflow-hidden rounded-[clamp(1.25rem,4vw,2.75rem)] shadow-[0_30px_80px_-40px_rgba(0,0,0,0.35)]" style={{ background: "var(--background)" }}>
+              {/* Background layers — identical treatment to the Hero card */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+                <img src={heroBg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-[0.06] mix-blend-overlay" />
+                <img src={heroBg2} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, var(--background) 0%, transparent 22%, transparent 65%, var(--background) 100%)" }} />
+              </div>
+              <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+                <div style={{ position: "absolute", width: "58%", height: "60%", top: "-10%", left: "-10%", background: "radial-gradient(ellipse at center, oklch(0.36 0.13 168 / 0.26), transparent 68%)", filter: "blur(72px)" }} />
+                <div style={{ position: "absolute", width: "52%", height: "56%", bottom: "-8%", right: "-10%", background: "radial-gradient(ellipse at center, oklch(0.42 0.14 308 / 0.24), transparent 68%)", filter: "blur(72px)" }} />
+                <div className="grid-bg absolute inset-0 opacity-40" />
+              </div>
 
-          <div className="relative z-10 flex items-center" style={{ minHeight: "100svh" }}>
-            <div className="w-full mx-auto max-w-375">
-              <div className="grid lg:grid-cols-2 items-stretch">
+              <div className="relative z-10 grid lg:grid-cols-2 items-stretch">
 
-                {/* Left: portrait */}
-                <div className="relative flex items-end justify-center overflow-hidden" style={{ minHeight: "70svh" }}>
-                  <div className="absolute inset-x-0 pointer-events-none flex justify-center" style={{ bottom: "14%", zIndex: 5 }}>
+                {/* Left: wordmark, centered */}
+                <div className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: "62svh", containerType: "inline-size" }}>
+                  <div className="pointer-events-none flex justify-center px-4">
                     <motion.h2
                       className="font-black lowercase text-foreground whitespace-nowrap"
-                      style={{ fontSize: "clamp(3.4rem, 17vw, 13rem)", letterSpacing: "-0.06em", lineHeight: 1 }}
+                      style={{ fontSize: "clamp(2.4rem, 15cqw, 10rem)", letterSpacing: "-0.06em", lineHeight: 1 }}
                       initial={{ opacity: 0, y: 40, scale: 0.93 }}
                       whileInView={{ opacity: 1, y: 0, scale: 1 }}
                       viewport={{ once: true, margin: "0px" }}
@@ -273,46 +330,37 @@ function Index() {
                       nadeem<span style={{ color: "oklch(0.64 0.145 168)" }}>.</span>
                     </motion.h2>
                   </div>
-
-                  <motion.div
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2"
-                    style={{ zIndex: 10 }}
-                    initial={{ opacity: 0, y: 60, scale: 0.86 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "0px" }}
-                    transition={{ duration: 1.0, ease: EASE, delay: 0.05 }}
-                  >
-                    <div
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
-                      style={{
-                        width: "min(520px, 90vw)",
-                        height: "min(320px, 44vw)",
-                        background: "radial-gradient(ellipse at 50% 85%, oklch(0.64 0.145 168 / 0.32), transparent 65%)",
-                        filter: "blur(32px)",
-                      }}
-                    />
-                    <img
-                      src={heroCutoutImg}
-                      alt="Nadeem Saif"
-                      className="relative select-none block w-auto object-contain object-bottom"
-                      style={{ height: "min(72svh, 680px)", filter: "drop-shadow(0 -8px 72px oklch(0.64 0.145 168 / 0.26)) drop-shadow(0 60px 140px oklch(0 0 0 / 0.76))" }}
-                      draggable={false}
-                    />
-                  </motion.div>
                 </div>
 
-                {/* Right: contact links */}
-                <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-12 py-16 lg:py-0">
-                  <div className="mb-6 flex items-center gap-3">
-                    <span className="h-px w-5 bg-primary" />
-                    <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Contact</span>
-                  </div>
-                  <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs text-primary w-fit">
+                {/* Right: headline + contact links */}
+                <div className="flex flex-col justify-center px-4 pb-12 pt-10 sm:px-8 lg:px-12 lg:py-16">
+                  <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs text-primary w-fit">
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                     Available for the right role
                   </span>
+
+                  <motion.h3
+                    className="display-hero max-w-[14ch] text-[clamp(1.9rem,3.6vw,3rem)]"
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10% 0px" }}
+                    transition={{ duration: 0.7, ease: EASE }}
+                  >
+                    Let's build something{" "}
+                    <span
+                      className="pr-1 font-normal"
+                      style={{ fontFamily: "var(--font-signature)", fontSize: "0.85em" }}
+                    >
+                      worth
+                    </span>
+                    <span className="font-normal italic" style={{ fontFamily: "var(--font-serif-accent)", color: "var(--primary)" }}>
+                      remembering
+                    </span>
+                    .
+                  </motion.h3>
+
                   <motion.div
-                    className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
+                    className="mt-8 flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-10% 0px" }}
@@ -323,7 +371,7 @@ function Index() {
                       className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
                     >
                       <div>
-                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Email</p>
+                        <p className="mb-1 text-xs text-foreground/35">Email</p>
                         <p className="text-sm font-medium text-foreground">{PERSONAL.email}</p>
                       </div>
                       <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
@@ -335,7 +383,7 @@ function Index() {
                       className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
                     >
                       <div>
-                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">LinkedIn</p>
+                        <p className="mb-1 text-xs text-foreground/35">LinkedIn</p>
                         <p className="text-sm font-medium text-foreground">nadeemsaifrind</p>
                       </div>
                       <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
@@ -346,7 +394,7 @@ function Index() {
                       className="group flex items-center justify-between rounded-xl border border-border bg-surface-2 px-5 py-4 transition-all hover:border-white/14 hover:bg-surface"
                     >
                       <div>
-                        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/35">Resume</p>
+                        <p className="mb-1 text-xs text-foreground/35">Resume</p>
                         <p className="text-sm font-medium text-foreground">Download CV &ndash; PDF</p>
                       </div>
                       <ArrowUpRight size={16} weight="bold" className="text-foreground/30 transition group-hover:text-primary" />
@@ -383,7 +431,7 @@ function Index() {
                 </a>
                 <a
                   href={`mailto:${PERSONAL.email}`}
-                  className="inline-flex items-center rounded-full border border-border bg-surface px-5 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-foreground/50 transition hover:border-primary/40 hover:text-primary"
+                  className="inline-flex items-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-medium text-foreground/50 transition hover:border-primary/40 hover:text-primary"
                 >
                   Email me
                 </a>

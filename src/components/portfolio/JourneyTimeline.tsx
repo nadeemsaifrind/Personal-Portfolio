@@ -17,14 +17,28 @@ export function JourneyTimeline() {
     <section id="journey" className="section-glow section-glow-r py-16 sm:py-24 lg:py-32 border-t border-border">
       <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
         <div className="mb-14 lg:mb-20">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="h-px w-5 bg-primary" />
-            <span className="text-xs font-mono uppercase tracking-[0.22em] text-foreground/40">Journey</span>
-          </div>
           <RevealText
             as="h2"
             className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)]"
-            lines={["Pakistan to Germany,", "frame by frame."]}
+            lines={[
+              <>
+                Pakistan{" "}
+                <span
+                  className="pr-1 font-normal"
+                  style={{ fontFamily: "var(--font-signature)", fontSize: "0.9em" }}
+                >
+                  to
+                </span>
+                Germany,
+              </>,
+              <>
+                frame by{" "}
+                <span className="font-normal italic" style={{ fontFamily: "var(--font-serif-accent)", color: "var(--primary)" }}>
+                  frame
+                </span>
+                .
+              </>,
+            ]}
           />
         </div>
 
@@ -48,7 +62,7 @@ export function JourneyTimeline() {
                 transition={{ duration: 0.6, ease: EASE, delay: (i % 4) * 0.05 }}
               >
                 <span className="absolute -left-8 top-1 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-primary bg-background sm:-left-10" />
-                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary/70">
+                <p className="mb-1.5 text-sm font-medium text-primary/70">
                   {step.era}
                 </p>
                 <h3 className="mb-2 text-lg font-semibold tracking-tight text-foreground sm:text-xl">

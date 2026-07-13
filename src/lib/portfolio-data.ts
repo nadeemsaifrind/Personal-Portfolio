@@ -31,11 +31,7 @@ import csWisag3 from "@/assets/cs-wisag-3.jpg";
 import csWisag4 from "@/assets/cs-wisag-4.jpg";
 import csWisag5 from "@/assets/cs-wisag-5.jpg";
 
-import csDreamfly1 from "@/assets/cs-dreamfly-1.png";
-import csDreamfly2 from "@/assets/cs-dreamfly-2.png";
 import csDreamfly3 from "@/assets/cs-dreamfly-3.png";
-import csDreamfly4 from "@/assets/cs-dreamfly-4.png";
-import csDreamfly5 from "@/assets/cs-dreamfly-5.png";
 
 import csLivingroomInsta  from "@/assets/cs-livingroom-insta.jpeg";
 import csLivingroomReel1  from "@/assets/cs-livingroom-reel-1.jpeg";
@@ -751,7 +747,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     tools: ["React", "Next.js", "Supabase", "Tailwind CSS", "TypeScript", "Figma", "Vercel"],
     skillsDemonstrated: ["Product Thinking", "Full-Stack Development", "UI/UX Design", "Supabase Auth & DB", "AI-Assisted Development", "System Architecture", "Business Problem Solving"],
     highlights: ["Live production app", "Zero extra hire needed", "Real-time audit reports", "Solo built & shipped"],
-    screens: [csDreamfly1, csDreamfly2, csDreamfly3, csDreamfly4, csDreamfly5],
+    screens: [csDreamfly3],
   },
   {
     id: "wisag",
@@ -976,46 +972,6 @@ export const JOURNEY: JourneyStep[] = [
     title: "AI-Assisted Builder",
     description:
       "Building products, brands, and campaigns at the intersection of design, technology, and storytelling. Using AI as a collaborator. Always shipping.",
-  },
-];
-
-// ─── Why Work With Me ─────────────────────────────────────────────────────────
-
-export interface WhyItem {
-  statement: string;
-  explanation: string;
-}
-
-export const WHY_ME: WhyItem[] = [
-  {
-    statement: "Most professionals specialise in one area. I connect five.",
-    explanation:
-      "Business problem → Brand → Marketing → Product → Code. Most companies need 4–5 people for this arc. I cover the whole journey — the connections between disciplines are where real value lives.",
-  },
-  {
-    statement: "I've competed against specialists — and won.",
-    explanation:
-      "WISAG and Kenergy selected my work over dedicated design teams. Not because of breadth — because I solved the right problem more completely.",
-  },
-  {
-    statement: "I've worked in the German market for two years.",
-    explanation:
-      "IT, real estate, consulting. I understand precision and what builds trust in a German B2B context. International perspective, German professional standards.",
-  },
-  {
-    statement: "I ship products. Not presentations.",
-    explanation:
-      "The finance dashboard is deployed code. This portfolio runs on SSR. Next Step has paying clients. I measure success by what ships.",
-  },
-  {
-    statement: "My Film & TV background is a design advantage.",
-    explanation:
-      "Narrative, composition, emotional timing — skills most designers don't have. This perspective shapes every brand, campaign, and product I make.",
-  },
-  {
-    statement: "I understand the brief and the business behind it.",
-    explanation:
-      "I've been the client, the designer, and the founder at the same time. That shapes how I prioritise, communicate, and define done.",
   },
 ];
 
