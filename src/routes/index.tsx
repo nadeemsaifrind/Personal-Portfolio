@@ -4,16 +4,16 @@ import { motion } from "framer-motion";
 import {
   ArrowUp,
   ArrowUpRight,
-  DotsThree,
   LinkedinLogo,
   X,
 } from "@phosphor-icons/react";
 import heroCutoutImg from "@/assets/hero-cutout.png";
-import { PERSONAL, CASE_STUDIES, DISCIPLINES, type CaseStudy } from "@/lib/portfolio-data";
+import { PERSONAL, CASE_STUDIES, type CaseStudy } from "@/lib/portfolio-data";
 import { CaseStudies } from "@/components/portfolio/CaseStudies";
 import { WorkGallery } from "@/components/portfolio/WorkGallery";
 import { ServiceStack } from "@/components/portfolio/ServiceStack";
 import { Hero } from "@/components/portfolio/Hero";
+import { PassionProjects } from "@/components/portfolio/PassionProjects";
 import { WhyGeneralist } from "@/components/portfolio/WhyGeneralist";
 import { NextStepFeature } from "@/components/portfolio/NextStepFeature";
 import { CaseStudyFeature } from "@/components/portfolio/CaseStudyFeature";
@@ -127,62 +127,6 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-clip">
 
-      {/* ══ NAV ══════════════════════════════════════════════════════ */}
-      <motion.header
-        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-4 py-2.5 md:px-6 lg:px-8"
-        style={{
-          background: "oklch(0.072 0.005 250 / 0.82)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderBottom: "1px solid oklch(0.97 0.003 250 / 0.07)",
-        }}
-        initial={{ y: -28, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.45, ease: EASE }}
-      >
-        <a href="#top" className="text-[17px] font-black lowercase tracking-[-0.06em] text-foreground select-none">
-          nadeem<span className="text-primary">.</span>
-        </a>
-
-        <nav
-          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 rounded-full border border-white/8 p-1 md:flex"
-          style={{ background: "oklch(0.97 0.003 250 / 0.04)" }}
-        >
-          {NAV_LINKS.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="rounded-full px-4 py-1.5 text-[13px] font-medium text-foreground/55 transition-colors hover:bg-white/8 hover:text-foreground"
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <a
-            href="/nadeem-saif-cv.pdf"
-            download
-            className="hidden items-center rounded-full border border-border px-3.5 py-1.5 text-[12.5px] font-medium text-foreground/55 transition hover:border-white/18 hover:text-foreground md:flex"
-          >
-            Download CV
-          </a>
-          <a
-            href="#contact"
-            className="hidden items-center rounded-full bg-primary px-4 py-1.5 text-[12.5px] font-semibold text-primary-foreground transition hover:opacity-90 md:flex"
-          >
-            Let's talk
-          </a>
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition hover:bg-surface-2 md:hidden"
-            aria-label="Open menu"
-          >
-            <DotsThree size={18} weight="bold" />
-          </button>
-        </div>
-      </motion.header>
-
       {/* ══ MOBILE SHEET ═════════════════════════════════════════════ */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="right" className="w-80 flex flex-col border-l border-border bg-background [&>button]:hidden">
@@ -224,19 +168,10 @@ function Index() {
       <main id="top">
 
         {/* ══ HERO — identity first ═══════════════════════════════════ */}
-        <Hero />
+        <Hero navLinks={NAV_LINKS} onOpenMobileMenu={() => setMobileOpen(true)} />
 
-        {/* ══ DISCIPLINE MARQUEE ══════════════════════════════════════ */}
-        <div className="relative overflow-hidden border-y border-border py-4">
-          <div className="animate-marquee flex">
-            {[...DISCIPLINES, ...DISCIPLINES].map((item, i) => (
-              <div key={i} className="flex shrink-0 items-center gap-5 px-5">
-                <span className="text-[11px] uppercase tracking-[0.24em] text-foreground/28">{item}</span>
-                <span className="text-primary" aria-hidden>·</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* ══ PASSION PROJECTS — editorial scroll story ═══════════════ */}
+        <PassionProjects />
 
         {/* ══ WHY A GENERALIST ════════════════════════════════════════ */}
         <WhyGeneralist />

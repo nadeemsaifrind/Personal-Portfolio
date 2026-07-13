@@ -19,7 +19,7 @@ const BADGE_TEXT = `${DISCIPLINES.join("   •   ")}   •   `;
    around it endlessly, like a record label or a stamp of approval. */
 function DisciplineBadge() {
   return (
-    <div className="absolute left-[66%] top-[66%] z-20 h-[clamp(3.75rem,10.5vw,9.5rem)] w-[clamp(3.75rem,10.5vw,9.5rem)]">
+    <div className="absolute left-[66%] top-[66%] z-20 h-[clamp(3.75rem,10.5vw,9.5rem)] w-[clamp(3.75rem,10.5vw,9.5rem)] md:top-auto md:bottom-[6%]">
       <motion.svg
         viewBox="0 0 200 200"
         className="h-full w-full"
@@ -55,16 +55,24 @@ export function HeroPortrait({ step }: { step: number }) {
 
   return (
     <motion.div
-      className="pointer-events-none relative z-20 -mt-28 mb-10 flex w-full items-end justify-center sm:-mt-32 sm:mb-14 md:absolute md:top-0 md:bottom-0 md:right-[6%] md:mt-0 md:mb-0 md:w-[52%]"
+      className="pointer-events-none relative z-20 -mt-28 mb-10 flex w-full items-end justify-center overflow-visible sm:-mt-32 sm:mb-14 md:absolute md:right-[6%] md:bottom-0 md:mt-0 md:mb-0 md:w-[clamp(18rem,40vw,34rem)] md:h-[clamp(28rem,54vw,42rem)]"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
       aria-hidden
     >
-      <div className="relative z-10 mx-auto aspect-7/8 w-[clamp(15rem,80vw,22rem)] md:aspect-auto md:h-full md:w-full">
-        {/* Contact shadow — grounds the figure into the spotlight pool on the floor */}
+      {/* Nothing in this chain clips — object-contain always shows the whole
+          frame (figure plus its transparent margins), so no pose in the
+          sequence can ever have its leg, chair, or lower body cut off. The
+          source frames carry a transparent margin above the head, which is
+          what lets the box render tall enough for the head to clear the card
+          without scaling or distorting the photo itself. */}
+      <div className="relative z-10 mx-auto aspect-7/8 w-[clamp(15rem,80vw,22rem)] overflow-visible md:mx-0 md:aspect-auto md:h-full md:w-full">
+        {/* Contact shadow — grounds the figure on mobile's floor look. Desktop/tablet
+            drop the person flush against the white section instead, so a soft
+            grounding shadow there would just read as a smudge on the boundary. */}
         <div
-          className="absolute bottom-[4%] h-[7%] w-[70%] rounded-[100%]"
+          className="absolute bottom-[4%] h-[7%] w-[70%] rounded-[100%] md:hidden"
           style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 72%)", filter: "blur(6px)" }}
         />
 
@@ -80,7 +88,7 @@ export function HeroPortrait({ step }: { step: number }) {
             <img
               src={frameSrc}
               alt=""
-              className="absolute inset-0 h-full w-full object-contain object-bottom"
+              className="absolute inset-0 h-full w-full object-contain object-bottom md:object-bottom-right"
             />
           </div>
         </motion.div>
