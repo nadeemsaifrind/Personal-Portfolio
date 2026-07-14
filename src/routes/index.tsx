@@ -189,7 +189,15 @@ function Index() {
             <RevealText
               as="h2"
               className="display-hero max-w-[20ch] text-[clamp(2rem,4vw,4rem)] mb-4"
-              lines={["Evidence, not claims."]}
+              lines={[
+                <>
+                  Evidence, not{" "}
+                  <span className="font-normal italic" style={{ fontFamily: "var(--font-serif-accent)", color: "var(--primary)" }}>
+                    claims
+                  </span>
+                  .
+                </>,
+              ]}
             />
             <p className="max-w-[46ch] text-sm leading-relaxed text-foreground/40">
               Real client work, real competition results, real products shipped.

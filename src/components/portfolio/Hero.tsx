@@ -38,7 +38,7 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
           {/* Nav strip — a small rounded black bar matching the hero card,
               scrolls away with the page instead of staying pinned. */}
           <motion.header
-            className="relative z-30 mb-6 flex items-center justify-between rounded-[clamp(1rem,3vw,2rem)] px-4 py-2.5 sm:mb-8 md:mb-10 md:px-6 lg:mb-14 lg:px-8"
+            className="relative z-30 mx-auto mb-6 flex w-fit items-center gap-6 rounded-[clamp(1rem,3vw,2rem)] px-4 py-2.5 sm:mb-8 md:mb-10 md:gap-10 md:px-6 lg:mb-14 lg:px-8"
             style={{
               background: "oklch(0.072 0.005 250 / 0.82)",
               backdropFilter: "blur(16px)",
@@ -54,7 +54,7 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
             </a>
 
             <nav
-              className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 rounded-full border border-white/8 p-1 md:flex"
+              className="hidden items-center gap-0.5 rounded-full border border-white/8 p-1 md:flex"
               style={{ background: "oklch(0.97 0.003 250 / 0.04)" }}
             >
               {navLinks.map((item) => (

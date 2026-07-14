@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { CASE_STUDIES } from "@/lib/portfolio-data";
 import { JustifiedGallery } from "./JustifiedGallery";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -70,19 +71,29 @@ export function NextStepFeature({ onOpenCaseStudy }: { onOpenCaseStudy: () => vo
             onClick={() => setOpenClient(client)}
             className="group shrink-0 text-left"
             style={{ scrollSnapAlign: "start" }}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 0.6, ease: EASE, delay: 0.05 * i }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.06 * i }}
           >
-            <img
-              src={client.images[0]}
-              alt={client.name}
-              className="h-[52vh] w-auto max-w-none max-h-160 object-contain shadow-[0_20px_45px_-20px_rgba(0,0,0,0.55)] transition-transform duration-500 ease-out group-hover:-translate-y-1"
-            />
-            <p className="mt-4 text-xl font-black tracking-tight text-foreground sm:text-2xl">
-              {client.name}
-            </p>
+            <div className="overflow-hidden shadow-[0_20px_45px_-20px_rgba(0,0,0,0.55)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_30px_60px_-18px_rgba(0,0,0,0.65)]">
+              <img
+                src={client.images[0]}
+                alt={client.name}
+                className="h-[52vh] w-auto max-w-none max-h-160 object-contain transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+              />
+            </div>
+            <div className="mt-4 flex items-baseline gap-3">
+              <span className="font-mono text-[10px] tracking-[0.14em] text-foreground/30">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p className="text-xl font-black tracking-tight text-foreground sm:text-2xl">
+                {client.name}
+              </p>
+            </div>
+            <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              View gallery <ArrowUpRight size={12} weight="bold" />
+            </span>
           </motion.button>
         ))}
       </div>

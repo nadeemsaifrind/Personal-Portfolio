@@ -16,10 +16,10 @@ const PAGE_CONTAINER = "mx-auto w-full max-w-375 px-3 sm:px-6 md:px-10 lg:px-12 
 
 const BANNER_STATS = [
   { value: "2+", label: "Years in Germany" },
-  { value: "M.A.", label: "Media, Technology and Society" },
+  { value: "M.A.", label: "Media, Technology" },
   { value: "B2", label: "German proficiency" },
-  { value: "18mo", label: "Werkstudent — Branding & Marketing" },
-  { value: "WISAG · Kenergy", label: "Design challenges won — ×2" },
+  { value: "18mo", label: "Werkstudent, Branding & Marketing" },
+  { value: "WISAG · Kenergy", label: "Prototype winner — ×2" },
 ];
 
 // Photo sequence for the scroll stack, each tuned so its subjects stay in
@@ -139,22 +139,29 @@ export function AchievementsBanner() {
                       className="pr-1 font-normal"
                       style={{ fontFamily: "var(--font-signature)", fontSize: "0.9em" }}
                     >
-                      in
+                      In
                     </span>
                     Germany.
                   </span>
                 </h2>
 
-                <div className="mt-10 flex max-w-md flex-col gap-6 sm:gap-7">
+                {/* Fact-sheet grid — two justified columns of hairline-divided
+                    rows, numbers set in tabular figures so they line up like
+                    a running spec sheet rather than a loose stack. The odd
+                    fifth stat spans both columns to close the grid cleanly. */}
+                <div className="mt-10 grid max-w-md grid-cols-2 border-t border-black/10">
                   {BANNER_STATS.map((item, i) => (
                     <motion.div
                       key={item.label}
+                      className={`border-b border-black/10 py-5 ${
+                        i % 2 === 0 ? "pr-6" : "pl-6"
+                      } ${i === BANNER_STATS.length - 1 ? "col-span-2" : ""}`}
                       initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-8% 0px" }}
                       transition={{ duration: 0.6, ease: EASE, delay: 0.2 + i * 0.1 }}
                     >
-                      <p className="text-3xl font-black leading-none tracking-tight text-black sm:text-4xl">
+                      <p className="text-3xl leading-none font-black tracking-tight text-black tabular-nums sm:text-4xl">
                         {item.value}
                       </p>
                       <p className="mt-2 text-xs font-medium uppercase tracking-[0.08em] text-black/45 sm:text-sm">
