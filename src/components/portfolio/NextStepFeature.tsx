@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { Plus } from "@phosphor-icons/react";
 import { CASE_STUDIES } from "@/lib/portfolio-data";
 import { JustifiedGallery } from "./JustifiedGallery";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -12,6 +12,56 @@ type NSClient = { name: string; slug: string; images: string[] };
 const nextstepCase = CASE_STUDIES.find((c) => c.id === "nextstep")!;
 const NEXTSTEP_GALLERY = (nextstepCase.clientGallery ?? []) as NSClient[];
 
+// Hovering within this many px of either edge of the rail auto-scrolls it —
+// lets you reach every card without a visible scrollbar or a drag gesture.
+const EDGE_ZONE_PX = 90;
+const EDGE_SCROLL_PX_PER_FRAME = 9;
+
+function ClientCard({
+  client,
+  index,
+  onOpen,
+}: {
+  client: NSClient;
+  index: number;
+  onOpen: () => void;
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onOpen}
+      className="group relative aspect-3/4 w-[38vw] shrink-0 overflow-hidden rounded-lg text-left shadow-[0_16px_36px_-18px_rgba(0,0,0,0.55)] hover:z-20 sm:w-60 md:w-64"
+      initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      whileHover={{ scale: 1.1 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{
+        duration: 0.7,
+        ease: EASE,
+        delay: 0.06 * index,
+        // Overrides just the hover response — the entrance fade stays slow
+        // and staggered, but the zoom itself needs to feel instant, both in
+        // and out, so it reads as clean and responsive rather than laggy.
+        scale: { duration: 0.22, ease: "easeOut", delay: 0 },
+      }}
+    >
+      <img
+        src={client.images[0]}
+        alt={client.name}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-x-0 bottom-0 flex h-[18%] min-h-14 items-center justify-between gap-2 border-t border-white/15 bg-black/35 px-4 backdrop-blur-md">
+        <p className="text-sm font-bold uppercase leading-tight tracking-wide text-white sm:text-base">
+          {client.name}
+        </p>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:rotate-45 sm:h-9 sm:w-9">
+          <Plus size={16} weight="bold" />
+        </span>
+      </div>
+    </motion.button>
+  );
+}
+
 /* Replaces the old fanned-card stack (small preview tiles you had to tap,
    then a bespoke 300vh scroll story per client) with the same language as
    the Vanessa case study: one big headline, then the real work itself —
@@ -21,13 +71,50 @@ const NEXTSTEP_GALLERY = (nextstepCase.clientGallery ?? []) as NSClient[];
    own separate "View full case study" button. */
 export function NextStepFeature({ onOpenCaseStudy }: { onOpenCaseStudy: () => void }) {
   const [openClient, setOpenClient] = useState<NSClient | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollDirRef = useRef(0);
+
+  // A single always-on rAF loop, driving scrollLeft directly whenever the
+  // cursor is sitting in an edge zone — smoother and more controllable than
+  // stacking up scrollBy({behavior:"smooth"}) calls, and it's a no-op the
+  // rest of the time.
+  useEffect(() => {
+    let raf: number;
+    const tick = () => {
+      const el = scrollRef.current;
+      if (el && scrollDirRef.current !== 0) {
+        el.scrollLeft += scrollDirRef.current * EDGE_SCROLL_PX_PER_FRAME;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const { left, width } = el.getBoundingClientRect();
+    const x = e.clientX - left;
+    if (x < EDGE_ZONE_PX) {
+      scrollDirRef.current = -1;
+    } else if (x > width - EDGE_ZONE_PX) {
+      scrollDirRef.current = 1;
+    } else {
+      scrollDirRef.current = 0;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    scrollDirRef.current = 0;
+  };
 
   return (
-    <section className="section-glow py-16 sm:py-24 lg:py-32 border-t border-border" style={{ background: "var(--background)" }}>
+    <section className="bg-white py-16 sm:py-24 lg:py-32 border-t border-border">
       <div className="mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12">
         <div className="max-w-[46ch]">
           <motion.h2
-            className="display-hero text-[clamp(2rem,4vw,4rem)]"
+            className="display-hero text-[clamp(2rem,4vw,4rem)] text-black"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10% 0px" }}
@@ -45,56 +132,44 @@ export function NextStepFeature({ onOpenCaseStudy }: { onOpenCaseStudy: () => vo
             </span>{" "}
             you.
           </motion.h2>
-          <p className="mt-5 text-sm leading-relaxed text-foreground/45">
+          <p className="mt-5 text-sm leading-relaxed text-black/45">
             {nextstepCase.outcome}
           </p>
           <button
             type="button"
             onClick={onOpenCaseStudy}
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-medium text-foreground/80 transition hover:border-white/20 hover:bg-surface-2"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-black/12 bg-black/3 px-5 py-2.5 text-sm font-medium text-black/70 transition hover:border-black/25 hover:bg-black/6"
           >
             View full case study →
           </button>
         </div>
       </div>
 
-      {/* Full-bleed rail of real client work — same mechanic as the Vanessa
-          case study: fixed height, width intrinsic, object-contain, sharp
-          corners. Each frame opens a lightbox of every image for that
-          client — the "Next Step Digital" case study itself stays behind
-          its own button above, not this rail. */}
-      <div className="scrollbar-none mt-10 flex gap-5 overflow-x-auto px-4 sm:mt-14 sm:gap-6 sm:px-8 lg:mt-16 lg:px-12" style={{ scrollSnapType: "x mandatory" }}>
+      {/* Full-bleed rail of real client work — smaller, slightly rounded
+          portrait cards, cropped to fill, each with a bottom "frosted" bar
+          carrying the client name and a "+" affordance. No auto-motion:
+          the rail sits still, and hovering a card zooms it up cleanly
+          (whileHover, not a CSS class, so it composes with the entrance
+          animation's own transform instead of fighting it); move straight
+          from one card into the next and the zoom hands off between them
+          with no reset. Hovering within EDGE_ZONE_PX of either side of the
+          rail auto-scrolls it, so every card is reachable without a
+          scrollbar or a drag. Each frame opens a lightbox of every image for
+          that client — the "Next Step Digital" case study itself stays
+          behind its own button above, not this rail. */}
+      <div
+        ref={scrollRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="scrollbar-none mt-10 flex gap-4 overflow-x-auto px-4 py-6 sm:mt-14 sm:gap-5 sm:px-8 lg:mt-16 lg:px-12"
+      >
         {NEXTSTEP_GALLERY.map((client, i) => (
-          <motion.button
+          <ClientCard
             key={client.slug}
-            type="button"
-            onClick={() => setOpenClient(client)}
-            className="group shrink-0 text-left"
-            style={{ scrollSnapAlign: "start" }}
-            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.06 * i }}
-          >
-            <div className="overflow-hidden shadow-[0_20px_45px_-20px_rgba(0,0,0,0.55)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_30px_60px_-18px_rgba(0,0,0,0.65)]">
-              <img
-                src={client.images[0]}
-                alt={client.name}
-                className="h-[52vh] w-auto max-w-none max-h-160 object-contain transition-transform duration-700 ease-out group-hover:scale-[1.035]"
-              />
-            </div>
-            <div className="mt-4 flex items-baseline gap-3">
-              <span className="font-mono text-[10px] tracking-[0.14em] text-foreground/30">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <p className="text-xl font-black tracking-tight text-foreground sm:text-2xl">
-                {client.name}
-              </p>
-            </div>
-            <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              View gallery <ArrowUpRight size={12} weight="bold" />
-            </span>
-          </motion.button>
+            client={client}
+            index={i}
+            onOpen={() => setOpenClient(client)}
+          />
         ))}
       </div>
 

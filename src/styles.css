@@ -212,6 +212,75 @@
     background: radial-gradient(ellipse 55% 50% at 22% 55%, oklch(1 0 0 / 0.032) 0%, transparent 65%);
     animation: glow-float 18s ease-in-out infinite;
   }
+
+  /* Liquid-glass nav lens — one persistent capsule that springs between nav
+     items, sitting BEHIND the labels (see z-1/z-2 in LiquidGlassNav). Base
+     rule is the no-blur fallback; @supports layers in backdrop-filter only
+     where supported. Reflections come from ::before/::after, not a second
+     outline — only one real border on the lens itself. */
+  .liquid-nav-lens {
+    position: absolute;
+    border-radius: 9999px;
+    overflow: hidden;
+    background: radial-gradient(
+      ellipse at 45% 18%,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.02) 38%,
+      rgba(255, 255, 255, 0.006) 68%,
+      rgba(255, 255, 255, 0.026) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.22),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.17),
+      inset -1px -1px 2px rgba(0, 0, 0, 0.15);
+    will-change: transform, width;
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .liquid-nav-lens {
+      backdrop-filter: blur(6px) saturate(175%) brightness(1.08);
+      -webkit-backdrop-filter: blur(6px) saturate(175%) brightness(1.08);
+    }
+  }
+
+  /* Short curved specular highlight — a small ellipse hugging the upper-left
+     rim, not a strip spanning the capsule. Fades well before the centre. */
+  .liquid-nav-lens::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 14%;
+    width: 34%;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.06) 45%,
+      transparent 72%
+    );
+    filter: blur(1px);
+  }
+
+  /* Barely-visible cyan/warm edge separation, tight to the perimeter — not a
+     rainbow ring. */
+  .liquid-nav-lens::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 95% 16%, rgba(80, 190, 255, 0.075), transparent 12%),
+      radial-gradient(circle at 6% 86%, rgba(255, 120, 60, 0.055), transparent 13%);
+    filter: blur(1.5px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .liquid-nav-lens { transition: none; }
+  }
   .section-glow-r::before {
     background: radial-gradient(ellipse 55% 50% at 78% 45%, oklch(1 0 0 / 0.032) 0%, transparent 65%);
     animation-delay: -9s;

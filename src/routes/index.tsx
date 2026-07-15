@@ -48,7 +48,13 @@ export const Route = createFileRoute("/")({
 /* ── Nav links ── */
 const NAV_LINKS = [
   { href: "#projects", label: "Case Studies" },
-  { href: "#contact", label: "Contact" },
+  { href: "#expertise", label: "Expertise" },
+  { href: "#journey", label: "Story" },
+];
+
+const ACTION_LINKS = [
+  { href: "/nadeem-saif-cv.pdf", label: "Download CV", download: true },
+  { href: "#contact", label: "Let's Talk", accent: true },
 ];
 
 /* ── Role SEO ── */
@@ -169,7 +175,7 @@ function Index() {
       <main id="top">
 
         {/* ══ HERO — identity first ═══════════════════════════════════ */}
-        <Hero navLinks={NAV_LINKS} onOpenMobileMenu={() => setMobileOpen(true)} />
+        <Hero navLinks={NAV_LINKS} actionLinks={ACTION_LINKS} onOpenMobileMenu={() => setMobileOpen(true)} />
 
         {/* ══ PASSION PROJECTS — editorial scroll story ═══════════════ */}
         <PassionProjects />

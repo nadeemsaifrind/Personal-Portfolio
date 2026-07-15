@@ -1,12 +1,19 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, DotsThree } from "@phosphor-icons/react";
 import { PERSONAL } from "@/lib/portfolio-data";
 import { HeroPortrait } from "./HeroPortrait";
+import { LiquidGlassNav } from "./LiquidGlassNav";
+import { useGlassAura } from "./useGlassAura";
 import { useSectionEntry, useStepSequence } from "./useHeroSequence";
 import heroBg from "@/assets/hero-bg.png";
 import heroBg2 from "@/assets/hero-bg-2.png";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+// Same spring feel as the navbar's liquid-glass lens, so every glass surface
+// on the site moves identically.
+const AURA_SPRING = { type: "spring" as const, stiffness: 190, damping: 25, mass: 0.85 };
+const AURA_REDUCED = { type: "tween" as const, duration: 0.15, ease: "easeOut" as const };
 
 // Tagline word loop — independent from the portrait's frame timing.
 const TAGLINE_WORDS = ["Ideas", "Brands", "Products", "Businesses", "Visions", "Growth"];
@@ -16,14 +23,25 @@ const WORD_STEP_MS = 1400;
 // left/right edges and read as two parts of one design system.
 const PAGE_CONTAINER = "mx-auto w-full max-w-375 px-3 sm:px-6 md:px-10 lg:px-12 xl:px-16 2xl:px-24";
 
+interface NavItem {
+  href: string;
+  label: string;
+  download?: boolean;
+  accent?: boolean;
+}
+
 interface HeroProps {
-  navLinks: { href: string; label: string }[];
+  navLinks: NavItem[];
+  actionLinks: NavItem[];
   onOpenMobileMenu: () => void;
 }
 
-export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
+export function Hero({ navLinks, actionLinks, onOpenMobileMenu }: HeroProps) {
   const { sectionRef, visible, entry } = useSectionEntry();
   const wordStep = useStepSequence(TAGLINE_WORDS.length, WORD_STEP_MS, visible, entry, true);
+  const reducedMotion = useReducedMotion();
+  const ctaAura = useGlassAura(8);
+  const ctaTransition = reducedMotion ? AURA_REDUCED : AURA_SPRING;
 
   return (
     <>
@@ -38,9 +56,9 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
           {/* Nav strip — a small rounded black bar matching the hero card,
               scrolls away with the page instead of staying pinned. */}
           <motion.header
-            className="relative z-30 mx-auto mb-6 flex w-fit items-center gap-6 rounded-[clamp(1rem,3vw,2rem)] px-4 py-2.5 sm:mb-8 md:mb-10 md:gap-10 md:px-6 lg:mb-14 lg:px-8"
+            className="relative z-30 mb-6 grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-[clamp(1rem,3vw,2rem)] px-5 py-3.5 sm:mb-8 md:mb-10 md:px-8 md:py-4 lg:mb-14 lg:px-10"
             style={{
-              background: "oklch(0.072 0.005 250 / 0.82)",
+              background: "oklch(0.065 0.004 250 / 0.88)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
               border: "1px solid oklch(0.97 0.003 250 / 0.09)",
@@ -49,39 +67,16 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.45, ease: EASE }}
           >
-            <a href="#top" className="text-[17px] font-black lowercase tracking-[-0.06em] text-foreground select-none">
+            <a href="#top" className="justify-self-start text-[18px] font-black lowercase tracking-[-0.06em] text-foreground select-none md:text-[19px]">
               nadeem<span className="text-primary">.</span>
             </a>
 
-            <nav
-              className="hidden items-center gap-0.5 rounded-full border border-white/8 p-1 md:flex"
-              style={{ background: "oklch(0.97 0.003 250 / 0.04)" }}
-            >
-              {navLinks.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="rounded-full px-4 py-1.5 text-[13px] font-medium text-foreground/55 transition-colors hover:bg-white/8 hover:text-foreground"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
+            <div className="col-start-2 justify-self-center">
+              <LiquidGlassNav items={navLinks} />
+            </div>
 
-            <div className="flex items-center gap-2">
-              <a
-                href="/nadeem-saif-cv.pdf"
-                download
-                className="hidden items-center rounded-full border border-border px-3.5 py-1.5 text-[12.5px] font-medium text-foreground/55 transition hover:border-white/18 hover:text-foreground md:flex"
-              >
-                Download CV
-              </a>
-              <a
-                href="#contact"
-                className="hidden items-center rounded-full bg-primary px-4 py-1.5 text-[12.5px] font-semibold text-primary-foreground transition hover:opacity-90 md:flex"
-              >
-                Let's talk
-              </a>
+            <div className="flex items-center justify-self-end gap-2">
+              <LiquidGlassNav items={actionLinks} />
               <button
                 onClick={onOpenMobileMenu}
                 className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition hover:bg-surface-2 md:hidden"
@@ -181,20 +176,48 @@ export function Hero({ navLinks, onOpenMobileMenu }: HeroProps) {
                 </motion.p>
 
                 <motion.div
-                  className="mt-9 flex flex-wrap gap-3"
+                  ref={(el) => {
+                    ctaAura.trackRef.current = el;
+                  }}
+                  className="relative mt-9 flex flex-wrap gap-3"
+                  onMouseLeave={ctaAura.hide}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.55, ease: EASE, delay: 0.56 }}
                 >
+                  {/* One persistent glass aura shared by both CTAs — behind them,
+                      slightly larger, so it peeks around whichever is hovered/
+                      focused rather than covering the green fill or the label. */}
+                  <motion.div
+                    className="liquid-nav-lens pointer-events-none absolute z-0 rounded-full"
+                    style={{ top: 0, left: 0 }}
+                    animate={{
+                      x: ctaAura.target.x,
+                      y: ctaAura.target.y,
+                      width: ctaAura.target.width,
+                      height: ctaAura.target.height,
+                      opacity: ctaAura.hoverIndex !== null ? 1 : 0,
+                    }}
+                    transition={ctaTransition}
+                  />
+
                   <a
+                    ref={ctaAura.setItemRef(0)}
                     href="#projects"
-                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                    onMouseEnter={() => ctaAura.show(0)}
+                    onFocus={() => ctaAura.show(0)}
+                    onBlur={ctaAura.hide}
+                    className="relative z-10 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
                   >
                     View Work <ArrowUpRight size={14} weight="bold" />
                   </a>
                   <a
+                    ref={ctaAura.setItemRef(1)}
                     href="#contact"
-                    className="inline-flex items-center rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground/65 transition hover:bg-surface"
+                    onMouseEnter={() => ctaAura.show(1)}
+                    onFocus={() => ctaAura.show(1)}
+                    onBlur={ctaAura.hide}
+                    className="relative z-10 inline-flex items-center rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground/65 transition hover:bg-surface"
                   >
                     Let's talk
                   </a>

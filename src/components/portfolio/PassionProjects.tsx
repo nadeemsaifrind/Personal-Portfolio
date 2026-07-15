@@ -1,7 +1,8 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { DISCIPLINES } from "@/lib/portfolio-data";
+import { useGlassAura } from "./useGlassAura";
 import dreamflyLogo from "@/assets/logos/dreamfly.svg";
 import nextstepLogo from "@/assets/logos/nextstep.svg";
 import nexttechLogo from "@/assets/logos/nexttech.svg";
@@ -10,6 +11,10 @@ import heroBg2 from "@/assets/hero-bg-2.png";
 import portraitFrame from "@/assets/proud-portrait.png";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+// Same spring feel as the navbar's liquid-glass lens.
+const AURA_SPRING = { type: "spring" as const, stiffness: 190, damping: 25, mass: 0.85 };
+const AURA_REDUCED = { type: "tween" as const, duration: 0.15, ease: "easeOut" as const };
 
 // Sits behind the portrait as a faint watermark, filling the whole frame
 // so the photo reads as a portrait in a frame rather than a floating cutout.
@@ -147,40 +152,35 @@ function PortraitPanel() {
   );
 }
 
-// Corner rounding for a seamless, gapless stack — only the outer edges of
-// the whole block are rounded; cards touching in the middle stay square.
-const STACK_ROUNDING = {
-  first: "rounded-t-3xl",
-  middle: "",
-  last: "rounded-b-3xl",
-} as const;
-type StackPosition = keyof typeof STACK_ROUNDING;
-
-/* A dark "product card" per venture. Two of the three source logos are
-   baked onto opaque white squares (not transparent), so each mark sits in
-   its own small white chip rather than fighting the dark surface. All three
-   cards are identically sized — no hierarchy — and sit flush against each
-   other with no gap, reading as one continuous stacked block. No entrance
-   animation and no hover transitions — static, immediate, no motion at all. */
-function VentureCard({ venture, position }: { venture: Venture; position: StackPosition }) {
+/* A row inside the shared venture stack. The dark surface, texture and
+   rounding now live once on the wrapping stack (see VentureStack below) —
+   each row is just a transparent click target holding the icon chip, name,
+   domain and arrow, sitting above the stack's shared moving glass lens. */
+function VentureCard({
+  venture,
+  registerRef,
+  onActivate,
+  onDeactivate,
+  divider,
+}: {
+  venture: Venture;
+  registerRef: (el: HTMLAnchorElement | null) => void;
+  onActivate: () => void;
+  onDeactivate: () => void;
+  divider: boolean;
+}) {
   return (
     <a
+      ref={registerRef}
       href={venture.url}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Visit ${venture.name}`}
-      className={`group relative block overflow-hidden border border-white/8 hover:z-10 hover:border-white/16 hover:shadow-[0_20px_40px_-18px_rgba(0,0,0,0.45)] ${STACK_ROUNDING[position]}`}
-      style={{
-        background: "linear-gradient(155deg, oklch(0.115 0.007 250) 0%, oklch(0.045 0.004 250) 100%)",
-      }}
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      onBlur={onDeactivate}
+      className={`group relative z-2 block focus-visible:outline-none ${divider ? "border-t border-white/8" : ""}`}
     >
-      {/* Subtle texture + sheen, same visual language as the Hero's card */}
-      <div className="grid-bg pointer-events-none absolute inset-0 opacity-30" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100"
-        style={{ background: "radial-gradient(circle at 18% 12%, oklch(0.64 0.145 168 / 0.16), transparent 60%)" }}
-      />
-
       <div className="relative flex items-center gap-5 px-6 py-5 sm:px-7 sm:py-6">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white sm:h-14 sm:w-14">
           <img
@@ -205,6 +205,50 @@ function VentureCard({ venture, position }: { venture: Venture; position: StackP
   );
 }
 
+/* The shared dark surface + one persistent glass lens behind all three rows.
+   The lens fades in and springs to whichever row is hovered/focused —
+   exactly the navbar's liquid-glass mechanics, oriented vertically. */
+function VentureStack() {
+  const reducedMotion = useReducedMotion();
+  const aura = useGlassAura(0);
+  const transition = reducedMotion ? AURA_REDUCED : AURA_SPRING;
+
+  return (
+    <div
+      ref={(el) => {
+        aura.trackRef.current = el;
+      }}
+      onMouseLeave={aura.hide}
+      className="relative z-10 mt-8 flex flex-col overflow-hidden rounded-3xl border border-white/8 sm:mt-10"
+      style={{ background: "linear-gradient(155deg, oklch(0.115 0.007 250) 0%, oklch(0.045 0.004 250) 100%)" }}
+    >
+      <div className="grid-bg pointer-events-none absolute inset-0 opacity-30" />
+      <motion.div
+        className="liquid-nav-lens pointer-events-none absolute z-1 rounded-2xl"
+        style={{ top: 0, left: 0 }}
+        animate={{
+          x: aura.target.x,
+          y: aura.target.y,
+          width: aura.target.width,
+          height: aura.target.height,
+          opacity: aura.hoverIndex !== null ? 1 : 0,
+        }}
+        transition={transition}
+      />
+      {VENTURES.map((venture, i) => (
+        <VentureCard
+          key={venture.name}
+          venture={venture}
+          registerRef={aura.setItemRef(i)}
+          onActivate={() => aura.show(i)}
+          onDeactivate={aura.hide}
+          divider={i > 0}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* The section immediately after the Hero — its inverted twin, reached
    through an intentional transition rather than a hard cut. It opens on the
    page's white background (room for the skills strip to breathe), then the
@@ -213,7 +257,7 @@ function VentureCard({ venture, position }: { venture: Venture; position: StackP
    the same way the Hero's card sits above white. */
 export function PassionProjects() {
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section id="expertise" className="relative overflow-hidden bg-white">
       {/* White transition band — just enough space for the relocated skills
           strip to breathe, kept tight so the Hero and this section read as
           adjacent, not separated by a dead zone. */}
@@ -268,15 +312,7 @@ export function PassionProjects() {
                   </h2>
                 </div>
 
-                <div className="relative z-10 mt-8 flex flex-col sm:mt-10">
-                  {VENTURES.map((venture, i) => (
-                    <VentureCard
-                      key={venture.name}
-                      venture={venture}
-                      position={i === 0 ? "first" : i === VENTURES.length - 1 ? "last" : "middle"}
-                    />
-                  ))}
-                </div>
+                <VentureStack />
               </div>
 
               {/* Right column: the portrait frame. On mobile/tablet it stacks
