@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion } from "framer-motion";
 import img1 from "@/assets/Crousel CS/cs vanees 01.png";
 import img2 from "@/assets/Crousel CS/cs vanees 02.png";
 import img3 from "@/assets/Crousel CS/cs vanees 03.png";
@@ -20,6 +20,15 @@ const PAGE_CONTAINER = "mx-auto w-full max-w-375 px-4 sm:px-8 lg:px-12";
 // loop always feels equally slow regardless of how wide the rendered image
 // set ends up being on a given screen.
 const PX_PER_SECOND = 55;
+
+// Keeps a value inside [min, max) by wrapping, not clamping — the track is
+// two back-to-back copies of the slide set, so wrapping x by exactly one
+// set's width lands on a pixel-identical frame and the loop reads as
+// seamless whichever direction (autoplay or a drag) pushed it out of range.
+const wrap = (min: number, max: number, v: number) => {
+  const range = max - min;
+  return range === 0 ? min : ((((v - min) % range) + range) % range) + min;
+};
 
 const IMAGE_CLASS =
   "h-[68vh] w-auto max-w-none max-h-160 shrink-0 object-contain shadow-[0_20px_45px_-20px_rgba(0,0,0,0.55)]";
@@ -44,11 +53,22 @@ const SLIDES = [
    exactly one set's width (measured, not guessed, since each photo keeps
    its own native aspect ratio) — so the moment the loop restarts, the
    second copy is sitting exactly where the first one started, and the
-   motion reads as endless rather than resetting. */
+   motion reads as endless rather than resetting.
+
+   It's also grab-draggable — a single MotionValue (`x`) drives the track,
+   nudged left every frame by the autoplay loop and overridden directly by
+   Framer's drag gesture while a pointer/finger is down (`isDragging` just
+   pauses the autoplay nudge; drag itself writes straight into `x` because
+   it's passed as the element's own `style.x`). Both writers wrap the same
+   value into [-setWidth, 0) so it never drifts outside the two rendered
+   copies, and control simply hands back to autoplay wherever the drag let
+   go — no separate "resume" animation to fight with. */
 export function CaseStudyCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [setWidth, setSetWidth] = useState(0);
   const reducedMotion = useReducedMotion();
+  const x = useMotionValue(0);
+  const isDragging = useRef(false);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -61,7 +81,11 @@ export function CaseStudyCarousel() {
   }, []);
 
   const playing = !reducedMotion && setWidth > 0;
-  const duration = setWidth / PX_PER_SECOND;
+
+  useAnimationFrame((_, delta) => {
+    if (!playing || isDragging.current) return;
+    x.set(wrap(-setWidth, 0, x.get() - (PX_PER_SECOND * delta) / 1000));
+  });
 
   return (
     <section id="case-study" className="section-glow pt-10 pb-8 sm:pt-16 sm:pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-20 border-t border-border" style={{ background: "var(--background)" }}>
@@ -98,22 +122,28 @@ export function CaseStudyCarousel() {
           version did; everything after that is the looping track. */}
       <div className="mt-6 overflow-hidden px-4 sm:mt-10 sm:px-8 lg:mt-12 lg:px-12">
         <motion.div
-          className="flex"
-          animate={playing ? { x: [0, -setWidth] } : undefined}
-          transition={
-            playing
-              ? { duration, ease: "linear", repeat: Infinity, repeatType: "loop" }
-              : undefined
-          }
+          className="flex cursor-grab active:cursor-grabbing"
+          style={{ x }}
+          drag={setWidth > 0 ? "x" : false}
+          dragMomentum={false}
+          onDragStart={() => {
+            isDragging.current = true;
+          }}
+          onDrag={() => {
+            x.set(wrap(-setWidth, 0, x.get()));
+          }}
+          onDragEnd={() => {
+            isDragging.current = false;
+          }}
         >
           <div ref={trackRef} className="flex shrink-0 gap-5 pr-5 sm:gap-6 sm:pr-6">
             {SLIDES.map((slide) => (
-              <img key={slide.src} src={slide.src} alt={slide.alt} className={IMAGE_CLASS} />
+              <img key={slide.src} src={slide.src} alt={slide.alt} className={IMAGE_CLASS} draggable={false} />
             ))}
           </div>
           <div className="flex shrink-0 gap-5 pr-5 sm:gap-6 sm:pr-6" aria-hidden="true">
             {SLIDES.map((slide) => (
-              <img key={`${slide.src}-repeat`} src={slide.src} alt="" className={IMAGE_CLASS} />
+              <img key={`${slide.src}-repeat`} src={slide.src} alt="" className={IMAGE_CLASS} draggable={false} />
             ))}
           </div>
         </motion.div>

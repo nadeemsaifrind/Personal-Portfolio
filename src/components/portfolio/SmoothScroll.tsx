@@ -6,6 +6,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+// Mobile browsers resize the viewport live as the address bar collapses
+// during scroll. ScrollTrigger's default reaction is to treat that as a
+// resize and refresh() — recalculating pin start/end mid-gesture, which
+// shows up as pinned sections (e.g. AchievementsBanner's card stack)
+// jumping/overlapping on small scrolls. This opts out of that reaction.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /* Global smooth scroll (Lenis) wired into GSAP ScrollTrigger.
    Honors prefers-reduced-motion by skipping smoothing entirely. */

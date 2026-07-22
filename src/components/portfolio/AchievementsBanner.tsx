@@ -116,8 +116,8 @@ function GermanyCardBlock({
   return (
     <div
       ref={registerCardRef}
-      className={`overflow-hidden rounded-[1.75rem] shadow-[0_30px_70px_-30px_rgba(0,0,0,0.5)] md:rounded-[clamp(2.5rem,4vw,3.5rem)] ${
-        enhanced ? "absolute inset-0" : "relative mb-6 h-[54vh] md:h-[80vh]"
+      className={`overflow-hidden rounded-[1.75rem] shadow-[0_10px_24px_-14px_rgba(0,0,0,0.4)] sm:shadow-[0_30px_70px_-30px_rgba(0,0,0,0.5)] md:rounded-[clamp(2.5rem,4vw,3.5rem)] ${
+        enhanced ? "absolute inset-0" : "relative mb-6 h-[54dvh] md:h-[80dvh]"
       }`}
       style={{
         background: CARD_BACKGROUNDS[index % CARD_BACKGROUNDS.length],
@@ -148,6 +148,7 @@ function GermanyCardBlock({
         </p>
         {GLOW_CARDS.has(index) && (
           <div
+            className="hidden sm:block"
             style={{
               position: "absolute",
               width: "45%",
@@ -308,7 +309,7 @@ export function AchievementsBanner() {
       </div>
 
       <div className={`${CARDS_CONTAINER} mt-14 sm:mt-16 md:mt-20`}>
-        <div ref={pinRef} className={enhanced ? "relative h-[54vh] md:h-[80vh]" : "relative"}>
+        <div ref={pinRef} className={enhanced ? "relative h-[54dvh] md:h-[80dvh]" : "relative"}>
           {CARDS.map((card, i) => (
             <GermanyCardBlock
               key={card.title}
