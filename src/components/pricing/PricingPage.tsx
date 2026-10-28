@@ -1,9 +1,8 @@
 import { ArrowLeft, ArrowUpRight, Check, Minus, Plus } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
-import { PRESETS, PRICING, type PresetKey } from "@/config/pricing";
+import { CONTACT, PRESETS, PRICING, type PresetKey } from "@/config/pricing";
 import { cn } from "@/lib/utils";
-import { CoBrand } from "./CoBrand";
 import { createI18n, detectLang, splitAccent, storeLang, type I18n, type Lang } from "./i18n";
 import {
   calc,
@@ -402,10 +401,14 @@ export function PricingPage() {
         >
           <a
             href="/"
-            aria-label="Nadeem Saif × capture21"
-            className={cn("rounded-full text-[15px]", INK, FOCUS)}
+            aria-label="Nadeem Saif"
+            className={cn(
+              "select-none rounded-full text-[15px] font-black lowercase leading-none tracking-[-0.06em]",
+              INK,
+              FOCUS,
+            )}
           >
-            <CoBrand />
+            nadeem<span className="text-brand">.</span>
           </a>
           <div className="flex items-center gap-1">
             <a
@@ -463,6 +466,12 @@ export function PricingPage() {
               </h1>
               <p className="max-w-[52ch] text-[15px] leading-relaxed text-[#a1a1a6] sm:text-base">
                 {i.t("lead")}
+              </p>
+              <p className="mt-5 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 px-3.5 py-1.5 text-[13px] text-[#a1a1a6]">
+                <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                <span>
+                  <b className="font-semibold text-[#f5f5f7]">{CONTACT.name}</b> · {i.t("tag")}
+                </span>
               </p>
             </header>
 

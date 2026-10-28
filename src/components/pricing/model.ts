@@ -148,7 +148,7 @@ export function proposalNo(d = new Date()) {
   return `NS-${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.floor(100 + Math.random() * 900)}`;
 }
 
-/** Proposal-NadeemSaif-capture21-Mueller-und-Soehne.pdf (umlauts spelled out, ß → ss). */
+/** Proposal-NadeemSaif-Mueller-und-Soehne.pdf (umlauts spelled out, ß → ss). */
 export function proposalFileName(client: Client, i: I18n) {
   const slug =
     (client.company || client.name)
@@ -172,7 +172,7 @@ export function proposalFileName(client: Client, i: I18n) {
       .replace(/[^A-Za-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 60) || "Client";
-  return `${i.t("file")}-NadeemSaif-capture21-${slug}.pdf`;
+  return `${i.t("file")}-NadeemSaif-${slug}.pdf`;
 }
 
 /** At most four lines of goal text, so a long list can't push the PDF past A4. */

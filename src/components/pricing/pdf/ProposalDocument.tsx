@@ -27,7 +27,6 @@ import {
   type Client,
   type Selection,
 } from "../model";
-import { C21_ORANGE } from "../brand";
 import { serifCovers } from "./fonts";
 
 /* 4-page A4 proposal: dark cover → package & investment → what's included,
@@ -51,7 +50,6 @@ const C = {
   darkSoftFg: "#c8ccd0",
   darkLine: "#232426", // rgba(244,245,247,.14) on #010102
   darkCard: "#08090a", // rgba(244,245,247,.03) on #010102
-  c21: C21_ORANGE,
 };
 
 const SANS = "Inter";
@@ -117,19 +115,17 @@ const st = StyleSheet.create({
   },
 });
 
-function Logos({ size, dark }: { size: number; dark?: boolean }) {
+function Logo({ size, dark }: { size: number; dark?: boolean }) {
   return (
-    <Text style={{ fontSize: size, color: dark ? C.darkFg : C.ink }}>
-      <Text style={{ fontWeight: 700, letterSpacing: -0.06 * size }}>
-        nadeem<Text style={{ color: C.brand }}>.</Text>
-      </Text>
-      <Text style={{ fontWeight: 400, color: dark ? "#5d6268" : "#9aa0a6", fontSize: size * 0.82 }}>
-        {"  ×  "}
-      </Text>
-      {/* capture21 wordmark (text). Swap for the official SVG logo once Philipp sends it. */}
-      <Text style={{ fontWeight: 700, letterSpacing: -0.01 * size }}>
-        capture<Text style={{ color: C.c21 }}>21</Text>
-      </Text>
+    <Text
+      style={{
+        fontSize: size,
+        fontWeight: 700,
+        letterSpacing: -0.06 * size,
+        color: dark ? C.darkFg : C.ink,
+      }}
+    >
+      nadeem<Text style={{ color: C.brand }}>.</Text>
     </Text>
   );
 }
@@ -217,7 +213,7 @@ function Check() {
 function LightHeader({ i, no, compact }: { i: I18n; no: string; compact: boolean }) {
   return (
     <View style={[st.head, { marginBottom: compact ? 18 : 25.5 }]}>
-      <Logos size={12} />
+      <Logo size={12} />
       <Text style={[st.label, { fontSize: 7.5, letterSpacing: 0.75 }]}>
         {i.t("pdf_title")} · {no}
       </Text>
@@ -321,15 +317,12 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
     },
   ];
 
-  const partnerLines = [CONTACT.partnerPerson, CONTACT.partnerPlace, CONTACT.partnerWebsite].filter(
-    Boolean,
-  );
-  const ownLines = [CONTACT.email, CONTACT.phone, CONTACT.website].filter(Boolean);
+  const contactLines = [CONTACT.website, CONTACT.email, CONTACT.phone].filter(Boolean);
 
   return (
     <Document
       title={`${i.t("pdf_title")} ${no}`}
-      author="Nadeem Saif × capture21"
+      author={CONTACT.name}
       subject={`${i.t("pdf_title")} · ${who}`}
       creator="nadeemsaif.com"
       producer="nadeemsaif.com"
@@ -342,7 +335,7 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
         <View
           style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
         >
-          <Logos size={15} dark />
+          <Logo size={15} dark />
           <Text style={[st.label, { color: C.darkMuted, letterSpacing: 1.05 }]}>{no}</Text>
         </View>
 
@@ -418,7 +411,7 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
           </View>
         </View>
 
-        <Foot dark marginTop={42} left={CONTACT.website} right={CONTACT.partnerWebsite} />
+        <Foot dark marginTop={42} left={CONTACT.website} right="" />
       </Page>
 
       {/* ── 2. Package & investment ── */}
@@ -606,10 +599,7 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
           </Text>
         </View>
 
-        <Foot
-          left={`${CONTACT.website} · ${CONTACT.partnerWebsite}`}
-          right={i.t("page", { n: 2, t: 4 })}
-        />
+        <Foot left={CONTACT.website} right={i.t("page", { n: 2, t: 4 })} />
       </Page>
 
       {/* ── 3. What's included, next steps, acceptance ── */}
@@ -688,17 +678,14 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
           </View>
         </View>
 
-        <Foot
-          left={`${CONTACT.website} · ${CONTACT.partnerWebsite}`}
-          right={i.t("page", { n: 3, t: 4 })}
-        />
+        <Foot left={CONTACT.website} right={i.t("page", { n: 3, t: 4 })} />
       </Page>
 
       {/* ── 4. Closing page ── */}
       <Page size="A4" style={[st.page, st.dark]}>
         <Probe id="p4" probe={probe} />
         <DarkBackdrop />
-        <Logos size={15} dark />
+        <Logo size={15} dark />
         <View style={{ marginTop: "auto" }}>
           <Text
             style={{
@@ -723,25 +710,51 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
             <Text style={[st.label, { color: C.darkMuted, letterSpacing: 1.05 }]}>
               {i.t("get_touch")}
             </Text>
-            {/* Philipp / capture21 first, then Nadeem */}
-            <View style={{ flexDirection: "row", marginTop: 10.5 }}>
-              {[partnerLines, ownLines].map((lines, idx) => (
-                <View key={idx} style={{ flex: 1, paddingRight: idx ? 0 : 13.5 }}>
-                  {lines.map((x, k) => (
-                    <Text
-                      key={x}
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: 9.75,
-                        lineHeight: 1.6,
-                        color: k === 0 ? C.darkFg : C.darkSoftFg,
-                      }}
-                    >
-                      {x}
-                    </Text>
-                  ))}
-                </View>
-              ))}
+            {/* One full-width contact card: who on the left, how to reach on the right */}
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 12,
+                backgroundColor: C.darkCard,
+                borderWidth: 0.75,
+                borderColor: C.darkLine,
+                borderRadius: 12,
+                padding: 18,
+              }}
+            >
+              <View style={{ flex: 1.3, paddingRight: 18 }}>
+                <Text style={{ fontSize: 15, fontWeight: 700, letterSpacing: -0.4 }}>
+                  {CONTACT.name}
+                </Text>
+                <Text
+                  style={{ fontSize: 9.4, lineHeight: 1.55, color: C.darkSoftFg, marginTop: 6 }}
+                >
+                  {i.t("role")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  borderLeftWidth: 0.75,
+                  borderLeftColor: C.darkLine,
+                  paddingLeft: 18,
+                }}
+              >
+                {contactLines.map((x, k) => (
+                  <Text
+                    key={x}
+                    style={{
+                      fontFamily: MONO,
+                      fontSize: 9.75,
+                      lineHeight: 1.7,
+                      color: k === 0 ? C.darkFg : C.darkSoftFg,
+                    }}
+                  >
+                    {x}
+                  </Text>
+                ))}
+              </View>
             </View>
           </View>
         </View>

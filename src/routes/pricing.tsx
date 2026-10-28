@@ -4,9 +4,9 @@ import { PricingPage } from "@/components/pricing/PricingPage";
 
 /* Hidden page: not linked anywhere and not in the sitemap. noindex is set
    here (not in robots.txt) so crawlers can still read it. */
-const TITLE = "Pricing · Nadeem Saif × capture21";
+const TITLE = "Pricing · Nadeem Saif";
 const DESCRIPTION =
-  "Build your social media package with Nadeem Saif and capture21. See the price instantly and download your personal proposal as a PDF.";
+  "Build your social media package with Nadeem Saif. See the price instantly and download your personal proposal as a PDF.";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({

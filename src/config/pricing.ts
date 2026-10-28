@@ -1,6 +1,6 @@
 /*
   Pricing configurator settings for the hidden /pricing page
-  (Nadeem Saif × capture21 social media packages).
+  (Nadeem Saif social media packages).
 
   Change prices and settings HERE only. The page, the PDF proposal and the
   lead email all read from this file.
@@ -18,10 +18,6 @@ export const CONTACT = {
   website: "nadeemsaif.com",
   email: "nsaif092@gmail.com",
   phone: "", // e.g. "+49 151 …". Empty = not shown
-  partner: "capture21",
-  partnerPerson: "Philipp Schäfer",
-  partnerWebsite: "capture21.de",
-  partnerPlace: "Dreieich · Frankfurt am Main",
 };
 
 /* ── Lead email (Web3Forms) ──
@@ -50,7 +46,7 @@ export const PRICING = {
   // Days the PDF proposal is valid
   validDays: 30,
 
-  // Photo & video sessions with capture21 (on-site recording and shoot)
+  // Photo & video sessions (about 2 hours on site)
   shoot: {
     price: 229, // per session
     max: 4, // max sessions per month (minimum is always 0)
