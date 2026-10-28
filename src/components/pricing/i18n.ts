@@ -9,7 +9,6 @@ export type Lang = "en" | "de";
 const en = {
   back: "Portfolio",
   lang_label: "Language",
-  eyebrow: "Social media packages",
   h1: "Build your *social media* package.",
   lead: "Pick only what you need. The price updates instantly, with no hidden costs. When you are happy, download your personal proposal as a PDF.",
   presets_label: "Packages",
@@ -19,9 +18,6 @@ const en = {
   p_grow_d: "More reach, more channels",
   p_prem: "Premium",
   p_prem_d: "We take care of everything",
-  approx: "approx.",
-  popular: "Most popular",
-  full: "Full service",
   s_shoot: "Photo & video sessions",
   s_shoot_d: "On-site recording and shoot with capture21. This becomes your content for the month.",
   shoot_0: "No session. You send us your own photos and videos.",
@@ -186,7 +182,6 @@ export type TKey = keyof Dict;
 const de: Dict = {
   back: "Portfolio",
   lang_label: "Sprache",
-  eyebrow: "Social-Media-Pakete",
   h1: "Stellen Sie Ihr *Social-Media*-Paket zusammen.",
   lead: "Wählen Sie nur, was Sie brauchen. Der Preis passt sich sofort an, ohne versteckte Kosten. Danach laden Sie Ihr persönliches Angebot als PDF herunter.",
   presets_label: "Pakete",
@@ -196,9 +191,6 @@ const de: Dict = {
   p_grow_d: "Mehr Reichweite, mehr Kanäle",
   p_prem: "Premium",
   p_prem_d: "Wir kümmern uns um alles",
-  approx: "ca.",
-  popular: "Am beliebtesten",
-  full: "Rundum-Service",
   s_shoot: "Foto- & Video-Termine",
   s_shoot_d:
     "Aufnahmen und Shooting vor Ort mit capture21. Daraus entstehen Ihre Beiträge für den Monat.",

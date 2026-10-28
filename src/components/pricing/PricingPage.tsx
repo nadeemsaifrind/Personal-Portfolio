@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Check, Minus, Plus, Sparkle } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowUpRight, Check, Minus, Plus } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { PRESETS, PRICING, type PresetKey } from "@/config/pricing";
@@ -226,14 +226,9 @@ function ToggleRow({
   );
 }
 
-/* Package cards (on the dark hero) share one look. Each tier is told apart by a level meter
-   (1–3 bars), Growth by "Most popular", Premium by "Full service" and a fine
-   green line along its top edge. */
-const TIERS: Record<PresetKey, { level: number; badge: "popular" | "full" | null }> = {
-  start: { level: 1, badge: null },
-  grow: { level: 2, badge: "popular" },
-  prem: { level: 3, badge: "full" },
-};
+/* Package cards (on the dark hero) share one look; a level meter (1–3 bars)
+   tells the tiers apart. Only the selected card gets the green outline. */
+const TIER_LEVEL: Record<PresetKey, number> = { start: 1, grow: 2, prem: 3 };
 
 function LevelMeter({ level }: { level: number }) {
   return (
@@ -262,7 +257,6 @@ function PresetCard({
   price: string;
   onClick: () => void;
 }) {
-  const tier = TIERS[id];
   const p = PRESETS[id];
   const platforms = 1 + PLATFORM_KEYS.filter((k) => p.platforms[k]).length;
   return (
@@ -278,20 +272,9 @@ function PresetCard({
         FOCUS,
       )}
     >
-      {tier.level === 3 && (
-        <span
-          aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-[3px]"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, var(--brand) 30%, #5fd3b0 70%, transparent)",
-          }}
-        />
-      )}
-
       <span className="flex items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-2">
-          <LevelMeter level={tier.level} />
+          <LevelMeter level={TIER_LEVEL[id]} />
           <b className="text-[17px] font-semibold tracking-[-0.02em] text-white">
             {i.t(`p_${id}`)}
           </b>
@@ -311,23 +294,8 @@ function PresetCard({
         <small className="text-[13px] text-[#a1a1a6]">{i.t(`p_${id}_d`)}</small>
       </span>
 
-      {tier.badge && (
-        <span
-          className={cn(
-            "mt-2 inline-flex w-fit items-center gap-1 rounded-full px-2 py-[3px] text-[10.5px] font-semibold uppercase leading-none tracking-[0.06em]",
-            tier.badge === "popular"
-              ? "bg-brand text-white"
-              : "border border-brand/50 bg-brand/10 text-[#5fd3b0]",
-          )}
-        >
-          {tier.badge === "full" && <Sparkle size={11} weight="fill" aria-hidden="true" />}
-          {i.t(tier.badge)}
-        </span>
-      )}
-
       <span className="mt-auto pt-4">
         <span className="flex items-baseline gap-1 whitespace-nowrap">
-          <span className="text-[12px] text-[#86868b]">{i.t("approx")}</span>
           <span className="text-[26px] font-semibold leading-none tracking-[-0.035em] text-white tabular-nums">
             {price}
           </span>
@@ -499,14 +467,7 @@ export function PricingPage() {
             }}
           >
             <header>
-              <p className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-[#a1a1a6]">
-                <span
-                  aria-hidden="true"
-                  className="h-[7px] w-[7px] rounded-full bg-brand shadow-[0_0_12px_var(--brand)]"
-                />
-                {i.t("eyebrow")}
-              </p>
-              <h1 className="mb-3.5 mt-4 max-w-[15ch] text-balance text-[clamp(36px,6vw,64px)] font-bold leading-[1.02] tracking-[-0.045em]">
+              <h1 className="mb-3.5 max-w-[15ch] text-balance text-[clamp(36px,6vw,64px)] font-bold leading-[1.02] tracking-[-0.045em]">
                 <Accent text={i.t("h1")} />
               </h1>
               <p className="max-w-[52ch] text-[15px] leading-relaxed text-[#a1a1a6] sm:text-base">
