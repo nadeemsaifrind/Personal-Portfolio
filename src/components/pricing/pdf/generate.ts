@@ -18,7 +18,7 @@ import {
    both languages). The overflow check below still corrects it if needed. */
 function initialDensity(s: Selection, goal: string): Density {
   const c = calc(s);
-  const rows = c.monthly.length + (c.disc ? 1 : 0) + (c.once.length ? c.once.length + 1 : 0);
+  const rows = c.monthly.length + (c.disc ? 2 : 0) + (c.once.length ? c.once.length + 1 : 0);
   const goalLines = goal
     ? goal.split("\n").reduce((n, p) => n + Math.max(1, Math.ceil(p.length / 100)), 0)
     : 0;

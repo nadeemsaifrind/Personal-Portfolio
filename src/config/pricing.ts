@@ -52,59 +52,60 @@ export const PRICING = {
 
   // Photo & video sessions with capture21 (on-site recording and shoot)
   shoot: {
-    price: 149, // per session
+    price: 229, // per session
     max: 4, // max sessions per month (minimum is always 0)
   },
 
   // Posts per month
   post: {
-    price: 49, // base price per post (before format surcharge and volume discount)
+    price: 65, // base price per post (before format surcharge and volume discount)
     min: 2,
     max: 20,
     quickPicks: [4, 8, 12, 16], // shortcut chips next to the stepper
     // Volume discount per post: from `from` posts on, every post gets `discount` off.
-    // The highest matching tier wins.
+    // The highest matching tier wins. The discounted post price is rounded to cents.
     tiers: [
-      { from: 8, discount: 0.1 },
-      { from: 12, discount: 0.15 },
+      { from: 8, discount: 0.05 },
+      { from: 12, discount: 0.1 },
     ],
   },
 
   // Price change per post depending on the type of posts (+ surcharge / − reduction)
   formats: {
     mix: 0, // Reels & carousels
-    photo: -10, // Images only
-    reels: 15, // Reels only
+    photo: -15, // Images only
+    reels: 20, // Reels only
   },
 
   // Extra platforms per month. Instagram is always included at no cost.
   platforms: {
-    fb: 19, // Facebook
-    tt: 49, // TikTok
-    gb: 29, // Google Business Profile
+    fb: 29, // Facebook
+    tt: 59, // TikTok
+    gb: 39, // Google Business Profile
   },
 
   // Extra monthly services
   services: {
-    posting: 49, // Publishing & channel care
-    stories: 59, // Stories
-    community: 99, // Community management
-    report: 29, // Monthly report
-    ads: 99, // Ads management (ad budget not included)
+    posting: 59, // Publishing & channel care
+    stories: 69, // Stories
+    community: 179, // Community management
+    report: 39, // Monthly report
+    ads: 189, // Ads management (ad budget not included)
   },
 
   // One-time services at the start
   once: {
-    setup: 99, // Profile setup & optimisation
-    workshop: 149, // Strategy session
+    setup: 149, // Profile setup & optimisation
+    workshop: 249, // Strategy session
   },
 
-  // Contract length in months → discount on the monthly price
+  // Contract length in months → discount on the monthly subtotal.
+  // The discount is rounded to whole euros.
   terms: [
     { months: 1, discount: 0 },
     { months: 3, discount: 0.05 },
-    { months: 6, discount: 0.1 },
-    { months: 12, discount: 0.15 },
+    { months: 6, discount: 0.08 },
+    { months: 12, discount: 0.12 },
   ],
 };
 

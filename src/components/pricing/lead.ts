@@ -1,14 +1,6 @@
 import { LEADS } from "@/config/pricing";
 import { createI18n, type Lang } from "./i18n";
-import {
-  calc,
-  hasVat,
-  lineLabel,
-  platformNames,
-  withVat,
-  type Client,
-  type Selection,
-} from "./model";
+import { calc, lineLabel, platformNames, type Client, type Selection } from "./model";
 
 export const leadsEnabled = () => !!LEADS.web3formsKey;
 
@@ -21,6 +13,7 @@ export function sendLead(client: Client & { no: string }, s: Selection, clientLa
 
   const pkg = [
     ...c.monthly.map((l) => `${lineLabel(l, i)}: ${i.money(l.v)}`),
+    c.disc ? `${i.t("l_sub")}: ${i.money(c.sub)}` : "",
     c.disc ? `${i.t("l_term", { p: Math.round(c.termPct * 100) })}: −${i.money(c.disc)}` : "",
     ...c.once.map((l) => `${lineLabel(l, i)} (one-time): ${i.money(l.v)}`),
   ]
@@ -29,7 +22,7 @@ export function sendLead(client: Client & { no: string }, s: Selection, clientLa
 
   const body = {
     access_key: LEADS.web3formsKey,
-    subject: `New proposal ${client.no}: ${client.company || client.name} – ${i.money0(c.month)}/month`,
+    subject: `New proposal ${client.no}: ${client.company || client.name} – ${i.money(c.month)}/month`,
     from_name: LEADS.fromName,
     ...(client.email ? { replyto: client.email } : {}),
     "Proposal no.": client.no,
@@ -38,11 +31,10 @@ export function sendLead(client: Client & { no: string }, s: Selection, clientLa
     Email: client.email || "–",
     Goal: client.goal || "–",
     "Client language": clientLang === "de" ? "German" : "English",
-    "Monthly price (net)": i.money0(c.month),
-    "Monthly price (gross)": hasVat() ? i.money0(withVat(c.month)) : "no VAT",
-    "One-time (net)": c.onceSum ? i.money0(c.onceSum) : "–",
+    "Monthly price (net)": i.money(c.month),
+    "One-time (net)": c.onceSum ? i.money(c.onceSum) : "–",
     "Contract length": i.termLabel(s.term),
-    "Total over contract (net)": i.money0(c.total),
+    "Total over contract (net)": i.money(c.total),
     "Sessions per month": s.shoots,
     "Posts per month": `${s.posts} (${i.t(`f_${s.format}`)})`,
     Platforms: platformNames(s, i).join(", "),

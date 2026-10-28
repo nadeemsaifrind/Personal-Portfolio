@@ -17,7 +17,6 @@ import {
   PLATFORM_KEYS,
   PRESET_KEYS,
   SERVICE_KEYS,
-  withVat,
   type Client,
   type Selection,
 } from "./model";
@@ -323,7 +322,6 @@ function PresetCard({
 export function PricingPage() {
   const [lang, setLang] = useState<Lang>("en");
   const [s, setS] = useState<Selection>(defaultSelection);
-  const [gross, setGross] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [client, setClient] = useState<Client>({ name: "", company: "", email: "", goal: "" });
   const summaryRef = useRef<HTMLElement>(null);
@@ -366,8 +364,6 @@ export function PricingPage() {
   const c = useMemo(() => calc(s), [s]);
   const active = matchPreset(s);
   const vat = hasVat();
-  const shown = (v: number) => (vat && gross ? withVat(v) : v);
-  const mode = vat ? (gross ? i.t("gross") : i.t("net")) : "";
 
   const update = (patch: Partial<Selection>) => setS((prev) => ({ ...prev, ...patch }));
   const chooseLang = (l: Lang) => {
@@ -380,7 +376,7 @@ export function PricingPage() {
       <span
         className={cn("whitespace-nowrap text-right text-[13px] font-medium tabular-nums", INK)}
       >
-        +{i.money0(shown(v))}
+        +{i.money(v)}
         <small className={cn("block text-[10.5px] font-normal", INK3)}>
           {monthly ? i.t("mo") : i.t("once_lbl")}
         </small>
@@ -389,12 +385,7 @@ export function PricingPage() {
       <span className={cn("text-[12px]", INK2)}>{i.t("included")}</span>
     );
 
-  const formatDelta = (d: number) => (d > 0 ? "+" : "−") + i.money(Math.abs(shown(d)));
-  const vatNote = !vat
-    ? i.t("no_vat")
-    : gross
-      ? i.t("has_vat", { v: i.money0(c.month * PRICING.vatRate) })
-      : i.t("plus_vat", { v: i.money0(withVat(c.month)) });
+  const formatDelta = (d: number) => (d > 0 ? "+" : "−") + i.money(Math.abs(d));
 
   const openDialog = () => setDialogOpen(true);
   const unit = cn("text-[12px] tabular-nums", INK2);
@@ -486,7 +477,7 @@ export function PricingPage() {
                   id={key}
                   i={i}
                   pressed={active === key}
-                  price={i.money0(shown(calc(fromPreset(key)).month))}
+                  price={i.money(calc(fromPreset(key)).month)}
                   onClick={() => setS((prev) => fromPreset(key, prev.once))}
                 />
               ))}
@@ -501,9 +492,7 @@ export function PricingPage() {
                 title={i.t("s_shoot")}
                 hint={i.t("s_shoot_d")}
                 aside={
-                  <span className={unit}>
-                    {i.t("each", { v: i.money0(shown(PRICING.shoot.price)) })}
-                  </span>
+                  <span className={unit}>{i.t("each", { v: i.money(PRICING.shoot.price) })}</span>
                 }
               >
                 <div className="flex flex-wrap items-center gap-3">
@@ -528,7 +517,7 @@ export function PricingPage() {
                 aside={
                   <span className={cn("inline-flex items-center gap-1.5", unit)}>
                     {c.tierPct ? <Badge>−{Math.round(c.tierPct * 100)} %</Badge> : null}
-                    {i.t("each", { v: i.money(shown(c.postUnit)) })}
+                    {i.t("each", { v: i.money(c.postUnit) })}
                   </span>
                 }
               >
@@ -671,50 +660,29 @@ export function PricingPage() {
                 <h2 className={cn("text-[15px] font-semibold tracking-[-0.01em]", INK)}>
                   {i.t("sum")}
                 </h2>
-                {vat && (
-                  <div
-                    role="group"
-                    aria-label={i.t("vat_label")}
-                    className="inline-flex rounded-full bg-[#f5f5f7] p-[2px]"
-                  >
-                    {[false, true].map((g) => (
-                      <button
-                        key={String(g)}
-                        type="button"
-                        aria-pressed={gross === g}
-                        onClick={() => setGross(g)}
-                        className={cn(
-                          "rounded-full px-2.5 py-1 text-[11px] font-medium transition-all",
-                          gross === g
-                            ? "bg-white text-[#1d1d1f] shadow-[0_1px_3px_rgba(0,0,0,0.12)]"
-                            : cn("hover:text-[#1d1d1f]", INK2),
-                          FOCUS,
-                        )}
-                      >
-                        {g ? i.t("gross") : i.t("net")}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <ul className="flex flex-col gap-[7px] px-4 pb-3 text-[12.5px] tabular-nums">
                 <li className={groupLabel}>{i.t("g_month")}</li>
                 {c.monthly.map((l, idx) => (
                   <li key={idx} className={row}>
-                    <span className={cn("min-w-0", INK2)}>
-                      {lineLabel(l, i, (v) => i.money(shown(v)))}
-                    </span>
-                    <span className={cn("whitespace-nowrap font-medium", INK)}>
-                      {i.money(shown(l.v))}
-                    </span>
+                    <span className={cn("min-w-0", INK2)}>{lineLabel(l, i)}</span>
+                    <span className={cn("whitespace-nowrap font-medium", INK)}>{i.money(l.v)}</span>
                   </li>
                 ))}
                 {c.disc > 0 && (
-                  <li className={cn(row, "text-[#00805f]")}>
-                    <span>{i.t("l_term", { p: Math.round(c.termPct * 100) })}</span>
-                    <span className="whitespace-nowrap font-medium">−{i.money(shown(c.disc))}</span>
-                  </li>
+                  <>
+                    <li className={cn(row, "border-t border-black/[0.06] pt-[7px]")}>
+                      <span className={cn("min-w-0 font-medium", INK)}>{i.t("l_sub")}</span>
+                      <span className={cn("whitespace-nowrap font-medium", INK)}>
+                        {i.money(c.sub)}
+                      </span>
+                    </li>
+                    <li className={cn(row, "text-[#00805f]")}>
+                      <span>{i.t("l_term", { p: Math.round(c.termPct * 100) })}</span>
+                      <span className="whitespace-nowrap font-medium">−{i.money(c.disc)}</span>
+                    </li>
+                  </>
                 )}
                 {c.once.length > 0 && (
                   <>
@@ -723,7 +691,7 @@ export function PricingPage() {
                       <li key={idx} className={row}>
                         <span className={cn("min-w-0", INK2)}>{lineLabel(l, i)}</span>
                         <span className={cn("whitespace-nowrap font-medium", INK)}>
-                          {i.money(shown(l.v))}
+                          {i.money(l.v)}
                         </span>
                       </li>
                     ))}
@@ -739,16 +707,14 @@ export function PricingPage() {
                 }}
               >
                 <span className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#a1a1a6]">
-                  {i.t("per_month")}
-                  {mode && ` · ${mode}`}
+                  {i.t("g_month")}
                 </span>
-                <span
-                  aria-live="polite"
-                  className="text-[32px] font-semibold leading-none tracking-[-0.04em] tabular-nums"
-                >
-                  {i.money0(shown(c.month))}
+                <span aria-live="polite" className="flex flex-wrap items-baseline gap-x-1.5">
+                  <span className="text-[32px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
+                    {i.money(c.month)}
+                  </span>
+                  <span className="text-[11px] text-[#a1a1a6]">{i.perMonth()}</span>
                 </span>
-                <span className="text-[11px] tabular-nums text-[#a1a1a6]">{vatNote}</span>
               </div>
 
               <div className="flex flex-col gap-1.5 px-4 pt-3 text-[12.5px] tabular-nums">
@@ -756,20 +722,20 @@ export function PricingPage() {
                   <div className={row}>
                     <span className={INK2}>{i.t("x_once")}</span>
                     <span className={cn("whitespace-nowrap font-medium", INK)}>
-                      {i.money0(shown(c.onceSum))}
+                      {i.money(c.onceSum)}
                     </span>
                   </div>
                 )}
                 <div className={row}>
                   <span className={INK2}>{i.t("x_post")}</span>
                   <span className={cn("whitespace-nowrap font-medium", INK)}>
-                    {i.money(shown(c.perPost), 2)}
+                    {i.money(c.perPost, 2)}
                   </span>
                 </div>
                 <div className={row}>
                   <span className={INK2}>{i.t("x_term", { n: i.termLabel(s.term) })}</span>
                   <span className={cn("whitespace-nowrap font-medium", INK)}>
-                    {i.money0(shown(c.total))}
+                    {i.money(c.total)}
                   </span>
                 </div>
               </div>
@@ -810,12 +776,9 @@ export function PricingPage() {
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 border-t border-black/[0.08] bg-white/85 px-[max(16px,env(safe-area-inset-right))] pb-[calc(10px+env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-xl backdrop-saturate-150 lg:hidden">
         <div className="min-w-0">
           <span className={cn("text-[20px] font-semibold tracking-[-0.03em] tabular-nums", INK)}>
-            {i.money0(shown(c.month))}
+            {i.money(c.month)}
           </span>
-          <small className={cn("block truncate text-[11px]", INK2)}>
-            {i.t("per_month")}
-            {mode && ` · ${mode}`}
-          </small>
+          <small className={cn("block truncate text-[11px]", INK2)}>{i.perMonth()}</small>
         </div>
         <button
           type="button"

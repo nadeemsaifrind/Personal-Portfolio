@@ -24,7 +24,6 @@ import {
   platformNames,
   SERVICE_KEYS,
   ONCE_KEYS,
-  withVat,
   type Client,
   type Selection,
 } from "../model";
@@ -295,11 +294,12 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
   // Investment table rows
   const rowPad = d2 >= 3 ? 3.5 : d2 >= 1 ? 4.5 : 6;
   const rowFont = d2 >= 3 ? 9 : 9.75;
-  type Row = { label: string; value: string; kind?: "disc" | "group" };
+  type Row = { label: string; value: string; kind?: "sub" | "disc" | "group" };
   const rows: Row[] = [
     ...c.monthly.map((l) => ({ label: lineLabel(l, i), value: i.money(l.v) })),
     ...(c.disc
       ? [
+          { label: i.t("l_sub"), value: i.money(c.sub), kind: "sub" as const },
           {
             label: i.t("l_term", { p: Math.round(c.termPct * 100) }),
             value: `−${i.money(c.disc)}`,
@@ -524,6 +524,7 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
                 <Text
                   style={{
                     fontSize: rowFont,
+                    fontWeight: r.kind === "sub" ? 600 : 400,
                     color: r.kind === "disc" ? C.brand : C.ink,
                     flex: 1,
                     paddingRight: 12,
@@ -535,6 +536,7 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
                   style={{
                     fontFamily: MONO,
                     fontSize: rowFont - 0.4,
+                    fontWeight: r.kind === "sub" ? 500 : 400,
                     color: r.kind === "disc" ? C.brand : C.ink,
                   }}
                 >
@@ -571,13 +573,12 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
                   lineHeight: 1,
                 }}
               >
-                {i.money0(c.month)}
+                {i.money(c.month)}
                 <Text
                   style={{ fontSize: 9.75, fontWeight: 500, letterSpacing: 0, color: C.darkMuted }}
                 >
                   {"  "}
-                  {i.t("per_month")}
-                  {vat ? ` · ${i.t("net")}` : ""}
+                  {i.perMonth()}
                 </Text>
               </Text>
             </View>
@@ -590,19 +591,14 @@ export function ProposalDocument({ i, s, client, now, density, probe }: Proposal
                 marginLeft: 12,
               }}
             >
-              {vat ? (
-                <Text style={{ marginBottom: 3 }}>
-                  {i.t("plus_vat", { v: i.money0(withVat(c.month)) })}
-                </Text>
-              ) : null}
               {c.onceSum ? (
                 <Text
                   style={{ marginBottom: 3 }}
-                >{`${i.t("pdf_once")}: ${i.money0(c.onceSum)}`}</Text>
+                >{`${i.t("pdf_once")}: ${i.money(c.onceSum)}`}</Text>
               ) : null}
               <Text
                 style={{ color: C.brandBright, fontWeight: 500 }}
-              >{`${i.t("pdf_total_term", { n: i.termLabel(s.term) })}: ${i.money0(c.total)}`}</Text>
+              >{`${i.t("pdf_total_term", { n: i.termLabel(s.term) })}: ${i.money(c.total)}`}</Text>
             </View>
           </View>
           <Text style={[st.p, { fontSize: 8.25, lineHeight: 1.5, marginTop: 9 }]}>

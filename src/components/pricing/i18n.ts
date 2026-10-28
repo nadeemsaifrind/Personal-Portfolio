@@ -78,18 +78,13 @@ const en = {
   flex: "Cancel monthly.",
   save: "−{p} %",
   sum: "Your package",
-  net: "net",
-  gross: "gross",
-  vat_label: "Show prices",
   g_month: "Monthly",
   g_once: "One-time",
   l_shoot: "{n}× photo/video session",
   l_posts: "{n} posts × {v}",
+  l_sub: "Subtotal",
   l_term: "Contract discount {p} %",
-  per_month: "per month",
-  plus_vat: "plus {r} % VAT = {v} gross",
-  has_vat: "includes {v} VAT",
-  no_vat: "No VAT charged (§ 19 UStG)",
+  mo_vat: "/ month plus {r} % VAT",
   x_once: "One-time at start",
   x_term: "Total over {n}",
   x_post: "Price per post",
@@ -252,18 +247,13 @@ const de: Dict = {
   flex: "Monatlich kündbar.",
   save: "−{p} %",
   sum: "Ihr Paket",
-  net: "netto",
-  gross: "brutto",
-  vat_label: "Preise anzeigen",
   g_month: "Monatlich",
   g_once: "Einmalig",
   l_shoot: "{n}× Foto-/Video-Termin",
   l_posts: "{n} Beiträge × {v}",
+  l_sub: "Zwischensumme",
   l_term: "Laufzeit-Rabatt {p} %",
-  per_month: "pro Monat",
-  plus_vat: "zzgl. {r} % MwSt. = {v} brutto",
-  has_vat: "enthält {v} MwSt.",
-  no_vat: "Kein Umsatzsteuerausweis (§ 19 UStG)",
+  mo_vat: "/ Monat zzgl. {r} % MwSt.",
   x_once: "Einmalig zum Start",
   x_term: "Gesamt über {n}",
   x_post: "Preis pro Beitrag",
@@ -388,7 +378,7 @@ export function createI18n(lang: Lang) {
       v === "r" && vars.r === undefined ? String(vatPct) : String(vars[v] ?? ""),
     );
 
-  // Whole euros without decimals, otherwise two decimals (e.g. €44.10)
+  // Whole euros without decimals, otherwise two decimals (e.g. €61.75)
   const money = (v: number, decimals?: number) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
@@ -396,14 +386,13 @@ export function createI18n(lang: Lang) {
       minimumFractionDigits: decimals ?? (Math.abs(v - Math.round(v)) < 0.005 ? 0 : 2),
       maximumFractionDigits: decimals ?? 2,
     }).format(v);
-  const money0 = (v: number) => money(Math.round(v), 0);
   const num = (v: number, maxDecimals = 1) =>
     v.toLocaleString(locale, { maximumFractionDigits: maxDecimals });
   const termLabel = (m: number) => (m === 1 ? t("m1") : t("mN", { n: m }));
   const date = (d: Date) =>
     new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(d);
 
-  // "−10 % per post from 8 posts, −15 % from 12 posts." built from the config tiers
+  // "−5 % per post from 8 posts, −10 % from 12 posts." built from the config tiers
   const tierHint = () => {
     const tiers = [...PRICING.post.tiers].sort((a, b) => a.from - b.from);
     if (!tiers.length) return "";
@@ -416,7 +405,10 @@ export function createI18n(lang: Lang) {
     );
   };
 
-  return { lang, locale, t, money, money0, num, termLabel, date, tierHint, vatPct };
+  // "/ month plus 19 % VAT" next to the main price; just "/ month" without VAT
+  const perMonth = () => t(PRICING.vatMode === "standard" ? "mo_vat" : "mo");
+
+  return { lang, locale, t, money, num, termLabel, date, tierHint, perMonth, vatPct };
 }
 
 /** Splits "*accent*" markup into plain/accent parts. */

@@ -71,25 +71,31 @@ export type Line =
 
 export type Calc = ReturnType<typeof calc>;
 
+/* Receipt maths in whole cents, so every shown total is exactly the sum of its
+   lines: post price rounded to cents, contract discount to whole euros. */
+const cents = (v: number) => Math.round(v * 100);
+
 export function calc(s: Selection) {
   const tier = [...PRICING.post.tiers]
     .sort((a, b) => b.from - a.from)
     .find((t) => s.posts >= t.from);
   const tierPct = tier?.discount ?? 0;
-  const postUnit = (PRICING.post.price + PRICING.formats[s.format]) * (1 - tierPct);
+  const unitCents = cents((PRICING.post.price + PRICING.formats[s.format]) * (1 - tierPct));
+  const postUnit = unitCents / 100;
 
   const monthly: Line[] = [];
   if (s.shoots) monthly.push({ kind: "shoot", n: s.shoots, v: s.shoots * PRICING.shoot.price });
-  monthly.push({ kind: "posts", n: s.posts, unit: postUnit, v: s.posts * postUnit });
+  monthly.push({ kind: "posts", n: s.posts, unit: postUnit, v: (s.posts * unitCents) / 100 });
   for (const key of PLATFORM_KEYS)
     if (s.platforms[key]) monthly.push({ kind: "platform", key, v: PRICING.platforms[key] });
   for (const key of SERVICE_KEYS)
     if (s.services[key]) monthly.push({ kind: "service", key, v: PRICING.services[key] });
 
-  const sub = monthly.reduce((a, l) => a + l.v, 0);
+  const subCents = monthly.reduce((a, l) => a + cents(l.v), 0);
   const termPct = PRICING.terms.find((t) => t.months === s.term)?.discount ?? 0;
-  const disc = sub * termPct;
-  const month = sub - disc;
+  const disc = Math.round((subCents * termPct) / 100);
+  const sub = subCents / 100;
+  const month = (subCents - disc * 100) / 100;
 
   const once: Line[] = ONCE_KEYS.filter((k) => s.once[k]).map((key) => ({
     kind: "once",
@@ -108,21 +114,20 @@ export function calc(s: Selection) {
     onceSum,
     tierPct,
     postUnit,
-    total: month * s.term + onceSum,
+    total: (cents(month) * s.term) / 100 + onceSum,
     perPost: month / s.posts,
   };
 }
 
 export const hasVat = () => PRICING.vatMode === "standard";
-export const withVat = (v: number) => v * (1 + PRICING.vatRate);
 
-/** Label of one price line. `money` formats the post unit price (net or gross). */
-export function lineLabel(line: Line, i: I18n, money: (v: number) => string = i.money) {
+/** Label of one price line. */
+export function lineLabel(line: Line, i: I18n) {
   switch (line.kind) {
     case "shoot":
       return i.t("l_shoot", { n: line.n });
     case "posts":
-      return i.t("l_posts", { n: line.n, v: money(line.unit) });
+      return i.t("l_posts", { n: line.n, v: i.money(line.unit) });
     case "platform":
       return i.t(`pl_${line.key}`);
     case "service":
